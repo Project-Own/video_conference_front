@@ -1,15 +1,16 @@
-# Set update schedule for GitHub Actions
+# Specify location of manifest files for each package manager
 
 version: 2
 updates:
-  # Maintain dependencies for GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: "npm"
+    # Files stored in `app` directory
+    directory: "/app"
     schedule:
       interval: "daily"
 
-  # Maintain dependencies for npm
-  - package-ecosystem: "npm"
+  - package-ecosystem: "github-actions"
+    # Workflow files stored in the
+    # default location of `.github/workflows`
     directory: "/"
     schedule:
       interval: "daily"
