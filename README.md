@@ -1,5 +1,4 @@
-
-  ![example workflow](https://Project-Own/video_conference_front/actions/workflows/unit-test.yml/badge.svg)
+![example workflow](https://github.com/Project-Own/video_conference_front/actions/workflows/unit-test.yml/badge.svg)
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
