@@ -30,4 +30,4 @@ jobs:
 
       # 4: run test command
       - name: Run test command
-        run: npm run test
+        run: CI=true npm run test
