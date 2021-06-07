@@ -6,6 +6,7 @@ import logo from "./logo.svg";
 function App() {
   return (
     <div className="App">
+      <Host />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
@@ -21,7 +22,6 @@ function App() {
           Learn React
         </a>
         <Counter />
-        <Host />
       </header>
     </div>
   );
