@@ -2,10 +2,7 @@
 name: Unit Tests
 
 # execute on events
-on:
-  push:
-    branches:
-      - master
+on: [push]
 
 # jobs to run
 jobs:
