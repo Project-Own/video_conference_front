@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { Logger } from "../utils/logger";
-export const useUserMedia = (requestedMedia: MediaStreamConstraints) => {
+export const useUserMedia = (
+  requestedMedia: MediaStreamConstraints,
+  isWebcamOn: boolean
+) => {
   const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
 
   useEffect(() => {
@@ -14,15 +17,18 @@ export const useUserMedia = (requestedMedia: MediaStreamConstraints) => {
         Logger(err);
       }
     };
-
-    if (!mediaStream) {
+    const streamCleanup = () => {
+      if (!!mediaStream) {
+        mediaStream.getTracks().forEach((track) => track.stop());
+        setMediaStream(null);
+      }
+    };
+    if (isWebcamOn) {
       enableVideoStream();
     } else {
-      return function cleanup() {
-        mediaStream.getTracks().forEach((track) => track.stop());
-      };
+      streamCleanup();
     }
-  }, [mediaStream, requestedMedia]);
+  }, [isWebcamOn]);
 
   return mediaStream;
 };
