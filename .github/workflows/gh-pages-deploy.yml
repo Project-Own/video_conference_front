@@ -31,15 +31,15 @@ jobs:
 
       - name: Build
         env:
-          TURN_URL_1: ${{secrets.TURN_URL_1}}
-          TURN_CREDENTIAL_1: ${{secrets.TURN_CREDENTIAL_1}}
-          TURN_USERNAME_1: ${{secrets.TURN_USERNAME_1}}
-          TURN_URL_2: ${{secrets.TURN_URL_1}}
-          TURN_CREDENTIAL_2: ${{secrets.TURN_CREDENTIAL_2}}
-          TURN_USERNAME_2: ${{secrets.TURN_USERNAME_2}}
-          TURN_URL_3: ${{secrets.TURN_URL_1}}
-          TURN_CREDENTIAL_3: ${{secrets.TURN_CREDENTIAL_3}}
-          TURN_USERNAME_3: ${{secrets.TURN_USERNAME_3}}
+          TURN_URL_1: ${{ secrets.TURN_URL_1 }}
+          TURN_CREDENTIAL_1: ${{ secrets.TURN_CREDENTIAL_1 }}
+          TURN_USERNAME_1: ${{ secrets.TURN_USERNAME_1 }}
+          TURN_URL_2: ${{ secrets.TURN_URL_1 }}
+          TURN_CREDENTIAL_2: ${{ secrets.TURN_CREDENTIAL_2 }}
+          TURN_USERNAME_2: ${{ secrets.TURN_USERNAME_2 }}
+          TURN_URL_3: ${{ secrets.TURN_URL_1 }}
+          TURN_CREDENTIAL_3: ${{ secrets.TURN_CREDENTIAL_3 }}
+          TURN_USERNAME_3: ${{ secrets.TURN_USERNAME_3 }}
         run: yarn build
 
       - name: Upload production-ready build files
@@ -64,17 +64,9 @@ jobs:
         id: vars
         run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
 
-      - name: Deploy Main
-        uses: peaceiris/actions-gh-pages@v3
-        if: github.ref == 'refs/heads/main'
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
-
       - name: Deploy Branches
         uses: peaceiris/actions-gh-pages@v3
-        if: github.ref != 'refs/heads/main'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
-          destination_dir: ${{steps.vars.outputs.short_ref}}
+          destination_dir: ${{ steps.vars.outputs.short_ref }}
