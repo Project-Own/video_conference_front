@@ -1,13 +1,14 @@
 import "./App.css";
-import { Counter } from "./components/counter/Counter";
-import Host from "./components/host/Host";
-import logo from "./logo.svg";
+// import { Counter } from "./components/counter/Counter";
+// import Host from "./components/host/Host";
+import ConferenceGridLayout from "./components/conferenceGridView";
+// import logo from "./logo.svg";
 
 function App() {
   return (
     <div className="App">
-      <Host />
-      <header className="App-header">
+      <ConferenceGridLayout />
+      {/* <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           This is an example page only containing counter have fun!! Edit{" "}
@@ -22,7 +23,7 @@ function App() {
           Learn React
         </a>
         <Counter />
-      </header>
+      </header> */}
     </div>
   );
 }
