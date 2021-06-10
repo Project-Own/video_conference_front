@@ -29,6 +29,8 @@ jobs:
       - name: Install
         run: yarn install --frozen-lockfile
 
+      - run: echo ${{secrets.TURN_URL_1}}
+
       - name: Build
         env:
           TURN_URL_1: ${{secrets.TURN_URL_1}}
@@ -64,16 +66,8 @@ jobs:
         id: vars
         run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
 
-      - name: Deploy Main
-        uses: peaceiris/actions-gh-pages@v3
-        if: github.ref == 'refs/heads/main'
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
-
       - name: Deploy Branches
         uses: peaceiris/actions-gh-pages@v3
-        if: github.ref != 'refs/heads/main'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
