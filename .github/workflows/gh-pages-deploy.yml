@@ -29,7 +29,9 @@ jobs:
       - name: Install
         run: yarn install --frozen-lockfile
 
-      - run: echo "$TURN_URL_1"
+      - run: |
+          echo "This is a  secret"
+          echo "$SECRET"
 
       - name: Build
         env:
