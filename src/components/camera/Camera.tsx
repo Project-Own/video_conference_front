@@ -1,78 +1,77 @@
 import { Button, Card, CardActions, CardContent } from "@material-ui/core";
-import { useRef, useState } from "react";
-import { useUserMedia } from "../../hooks/useUserMedia";
+import { useEffect, useRef, useState } from "react";
+import { useAudio } from "../../hooks/useAudio";
+import { useVideo } from "../../hooks/useVideo";
 import logo from "../../logo.svg";
 import { Logger } from "../../utils/logger";
 import { Video } from "./CamerStyles";
 const CAPTURE_OPTIONS: MediaStreamConstraints = {
-  audio: true,
-  video: { facingMode: "environment" },
+  audio: {
+    echoCancellation: true,
+    noiseSuppression: true,
+    autoGainControl: false,
+  },
+  video: { facingMode: "environment", width: 450, height: 348 },
 };
 
 const Camera = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
-  const [isWebcamOn, setIsWebcamOn] = useState(false);
+  const [isVideoOn, setIsVideoOn] = useState(false);
+  const [isAudioOn, setIsAudioOn] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 
-  const mediaStream = useUserMedia(CAPTURE_OPTIONS, isWebcamOn);
-  // const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
+  const audioTracks = useAudio(CAPTURE_OPTIONS, isAudioOn);
+  const videoTracks = useVideo(CAPTURE_OPTIONS, isVideoOn);
 
-  // useEffect(() => {
-  //   const enableVideoStream = async () => {
-  //     try {
-  //       const stream = await navigator.mediaDevices.getUserMedia(
-  //         CAPTURE_OPTIONS
-  //       );
-  //       setMediaStream(stream);
-  //     } catch (err) {
-  //       Logger(err);
-  //     }
-  //   };
-  //   const streamCleanup = () => {
-  //     if (!!mediaStream) {
-  //       Logger("INside Cleanup");
-  //       mediaStream.getTracks().forEach((track) => track.stop());
-  //       setMediaStream(null);
-  //       if (videoRef.current && videoRef.current.srcObject) {
-  //         videoRef.current.srcObject = null;
-  //       }
-  //     }
-  //   };
-  //   if (isWebcamOn) {
-  //     enableVideoStream();
-  //   } else {
-  //     Logger("Cleanup");
+  /**
+   * UseEffect prevents flickering caused by rerendering
+   * Toggling of button that causes rerender will caouse
+   * flicker due to change in srcObject.
+   * To prevent this useEffect is used for both audio and video streamss.
+   * */
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.srcObject = videoTracks
+        ? new MediaStream(videoTracks)
+        : null;
+    }
+  }, [videoTracks]);
 
-  //     streamCleanup();
-  //   }
-  // }, [isWebcamOn]);
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.srcObject = audioTracks
+        ? new MediaStream(audioTracks)
+        : null;
+    }
+  }, [audioTracks]);
 
-  if (!mediaStream && videoRef.current && videoRef.current.srcObject) {
-    videoRef.current.srcObject = null;
-  }
-  if (mediaStream && videoRef.current && !videoRef.current.srcObject) {
-    videoRef.current.srcObject = mediaStream;
-  }
-
-  // if (!mediaStream) {
-  //   return (
-  //     <Card>
-  //       <Typography>
-  //         No User Media Found! Trying to Connect to media.
-  //       </Typography>
-  //     </Card>
-  //   );
-  // }
-
+  /**
+   * Handle_*_Toggle Operation toggles the state of specified component
+   * Is_*_Playing state stores the operational status of audio/video.
+   * When audio or video is ready to play, this state is active/true.
+   * */
   const handleVideoToggle = () => {
-    if (!isWebcamOn) {
-      setIsWebcamOn(true);
+    if (!isVideoOn) {
+      setIsVideoOn(true);
       Logger("Webcam on Camera");
     } else {
-      setIsWebcamOn(false);
+      setIsVideoOn(false);
       setIsVideoPlaying(false);
       Logger("Webcam Off Camera");
+    }
+  };
+
+  const handleAudioToggle = () => {
+    if (!isAudioOn) {
+      setIsAudioOn(true);
+      Logger("Audio On");
+    } else {
+      setIsAudioOn(false);
+      setIsAudioPlaying(false);
+      Logger("Audio Off");
     }
   };
 
@@ -86,10 +85,9 @@ const Camera = () => {
       >
         <Video
           ref={videoRef}
-          // hidden={!isWebcamOn}
+          // hidden={!isVideoOn}
           poster={logo}
           onCanPlayThrough={() => {
-            // videoRef.current?.load();
             setIsVideoPlaying(true);
             videoRef.current?.play().catch((e) => {
               Logger(e);
@@ -104,15 +102,32 @@ const Camera = () => {
             width: "auto",
           }}
         />
+        <audio
+          onCanPlayThrough={() => {
+            setIsAudioPlaying(true);
+            audioRef.current?.play().catch((e) => {
+              Logger(e);
+            });
+          }}
+          ref={audioRef}
+        />
       </CardContent>
       <CardActions>
         <Button
-          disabled={!isVideoPlaying && isWebcamOn}
+          disabled={!isVideoPlaying && isVideoOn}
           onClick={() => {
             handleVideoToggle();
           }}
         >
-          {!isWebcamOn ? "Open Webcam" : "Close Webcam"}
+          {!isVideoOn ? "Open Webcam" : "Close Webcam"}
+        </Button>
+        <Button
+          disabled={!isAudioPlaying && isAudioOn}
+          onClick={() => {
+            handleAudioToggle();
+          }}
+        >
+          {!isAudioOn ? "Open Microphone" : "Close Microphone"}
         </Button>
       </CardActions>
     </Card>
