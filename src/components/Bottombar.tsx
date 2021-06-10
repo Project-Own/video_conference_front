@@ -1,6 +1,6 @@
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 // import Paper from "@material-ui/core/Paper";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Grid from "@material-ui/core/Grid";
 
 import Button from "@material-ui/core/Button";
@@ -40,23 +40,23 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const VideoFeed = () => {
-  const [isHost, setisHost] = useState(true);
+  // const [isHost, setisHost] = useState(true);
   const classes = useStyles();
   return (
     <Grid container className={classes.bottom_bar}>
-      {isHost ? (
-        <>
-          <Button className={classes.ar_button}>
-            <Typography className={classes.text}>Start AR</Typography>
-          </Button>
-        </>
+      {/* {isHost ? (
+        <> */}
+      <Button className={classes.ar_button}>
+        <Typography className={classes.text}>Start AR</Typography>
+      </Button>
+      {/* </>
       ) : (
         <>
           <div className={classes.ar_button}>
             <Typography className={classes.text}>Welcome</Typography>
           </div>
         </>
-      )}
+      )} */}
       <ButtonTray />
     </Grid>
   );
