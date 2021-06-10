@@ -2,7 +2,7 @@
   "name": "major-project-frontend",
   "version": "0.1.0",
   "private": false,
-  "homepage": "https://project-own.github.io/video_conference_front/basic-project-structure",
+  "homepage": "https://project-own.github.io/video_conference_front/",
   "dependencies": {
     "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
