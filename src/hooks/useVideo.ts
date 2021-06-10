@@ -36,6 +36,7 @@ export const useVideo = (
       closeVideo();
     }
     return () => closeVideo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVideoOn]);
 
   return videoTracks;

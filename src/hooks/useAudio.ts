@@ -36,6 +36,7 @@ export const useAudio = (
       closeAudio();
     }
     return () => closeAudio();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAudioOn]);
 
   return audioTracks;
