@@ -29,19 +29,19 @@ jobs:
       - name: Install
         run: yarn install --frozen-lockfile
 
-      - run: echo ${{secrets.TURN_URL_1}}
+      - run: echo "$TURN_URL_1"
 
       - name: Build
         env:
-          TURN_URL_1: ${{secrets.TURN_URL_1}}
-          TURN_CREDENTIAL_1: ${{secrets.TURN_CREDENTIAL_1}}
-          TURN_USERNAME_1: ${{secrets.TURN_USERNAME_1}}
-          TURN_URL_2: ${{secrets.TURN_URL_1}}
-          TURN_CREDENTIAL_2: ${{secrets.TURN_CREDENTIAL_2}}
-          TURN_USERNAME_2: ${{secrets.TURN_USERNAME_2}}
-          TURN_URL_3: ${{secrets.TURN_URL_1}}
-          TURN_CREDENTIAL_3: ${{secrets.TURN_CREDENTIAL_3}}
-          TURN_USERNAME_3: ${{secrets.TURN_USERNAME_3}}
+          TURN_URL_1: ${{ secrets.TURN_URL_1 }}
+          TURN_CREDENTIAL_1: ${{ secrets.TURN_CREDENTIAL_1 }}
+          TURN_USERNAME_1: ${{ secrets.TURN_USERNAME_1 }}
+          TURN_URL_2: ${{ secrets.TURN_URL_1 }}
+          TURN_CREDENTIAL_2: ${{ secrets.TURN_CREDENTIAL_2 }}
+          TURN_USERNAME_2: ${{ secrets.TURN_USERNAME_2 }}
+          TURN_URL_3: ${{ secrets.TURN_URL_1 }}
+          TURN_CREDENTIAL_3: ${{ secrets.TURN_CREDENTIAL_3 }}
+          TURN_USERNAME_3: ${{ secrets.TURN_USERNAME_3 }}
         run: yarn build
 
       - name: Upload production-ready build files
@@ -71,4 +71,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
-          destination_dir: ${{steps.vars.outputs.short_ref}}
+          destination_dir: ${{ steps.vars.outputs.short_ref }}
