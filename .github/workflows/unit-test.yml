@@ -33,4 +33,4 @@ jobs:
 
       # 4: run test command
       - name: Run test command
-        run: CI=true npm run test
+        run: CI=true yarn test
