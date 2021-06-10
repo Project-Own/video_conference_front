@@ -56,11 +56,11 @@ const Camera = () => {
   const handleVideoToggle = () => {
     if (!isVideoOn) {
       setIsVideoOn(true);
-      Logger("Webcam on Camera");
+      Logger("Webcam on");
     } else {
       setIsVideoOn(false);
       setIsVideoPlaying(false);
-      Logger("Webcam Off Camera");
+      Logger("Webcam Off");
     }
   };
 
