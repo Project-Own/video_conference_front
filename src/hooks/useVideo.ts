@@ -3,7 +3,6 @@ import {
   closeMediaTracks,
   getAvailableMediaDevices,
   getMediaTracks,
-  handleMediaDeviceChange,
   handleMediaDeviceToggle,
 } from "./../utils/media.utils";
 
@@ -14,35 +13,61 @@ export const useVideo = (requestedMedia: MediaStreamConstraints) => {
   const [isVideoOn, setIsVideoOn] = useState(false);
   const [videoDevices, setVideoDevices] =
     useState<MediaDeviceInfo[] | null>(null);
+  const [activeVideoDevice, setActiveVideoDevice] = useState<string>();
+
+  const DEFAULT_VIDEO_CONSTRAINTS = {
+    video: {},
+  };
 
   const handleVideoToggle = () => {
     handleMediaDeviceToggle("Video", isVideoOn, setIsVideoOn);
   };
-  const handleVideoDeviceChange = () => {
-    handleMediaDeviceChange();
+
+  const startVideoTracks = () => {
+    let mediaTrackConstraint: MediaTrackConstraints | undefined;
+    if (typeof requestedMedia["video"] === "boolean") {
+      mediaTrackConstraint = DEFAULT_VIDEO_CONSTRAINTS.video;
+    } else {
+      mediaTrackConstraint = requestedMedia
+        ? requestedMedia.video
+        : DEFAULT_VIDEO_CONSTRAINTS["video"];
+    }
+
+    if (mediaTrackConstraint) {
+      mediaTrackConstraint.deviceId = activeVideoDevice;
+      getMediaTracks({ video: mediaTrackConstraint }, setVideoTracks);
+    }
   };
+
+  const stopVideoTracks = () => closeMediaTracks(videoTracks, setVideoTracks);
 
   useEffect(() => {
     getAvailableMediaDevices("videoinput", setVideoDevices);
-    if (isVideoOn) {
-      getMediaTracks(
-        {
-          video: requestedMedia.video,
-        },
-        setVideoTracks
-      );
-    } else {
-      closeMediaTracks(videoTracks, setVideoTracks);
+    stopVideoTracks();
+    if (isVideoOn && activeVideoDevice) {
+      startVideoTracks();
     }
-    return () => closeMediaTracks(videoTracks, setVideoTracks);
+    return stopVideoTracks;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isVideoOn]);
+  }, [isVideoOn, activeVideoDevice]);
+
+  useEffect(() => {
+    getAvailableMediaDevices("videoinput", setVideoDevices).then((devices) => {
+      if (devices) {
+        setActiveVideoDevice(devices[0].deviceId);
+      }
+    });
+
+    return stopVideoTracks;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return [
     videoDevices,
     videoTracks,
     isVideoOn,
+    activeVideoDevice,
     handleVideoToggle,
-    handleVideoDeviceChange,
+    setActiveVideoDevice,
   ] as const;
 };

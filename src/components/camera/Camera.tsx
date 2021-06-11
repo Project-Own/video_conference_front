@@ -5,6 +5,7 @@ import {
   CardContent,
   FormControl,
   InputLabel,
+  MenuItem,
   Select,
 } from "@material-ui/core";
 import { useEffect, useRef, useState } from "react";
@@ -13,7 +14,7 @@ import { useVideo } from "../../hooks/useVideo";
 import logo from "../../logo.svg";
 import { Logger } from "../../utils/logger";
 import { Video } from "./CamerStyles";
-const CAPTURE_OPTIONS: MediaStreamConstraints = {
+const CAPTURE_MenuItemS: MediaStreamConstraints = {
   audio: {
     echoCancellation: true,
     noiseSuppression: true,
@@ -33,17 +34,20 @@ const Camera = () => {
     audioDevices,
     audioTracks,
     isAudioOn,
+    activeAudioDevice,
     handleAudioToggle,
-    handleAudioDeviceChange,
-  ] = useAudio(CAPTURE_OPTIONS);
+    setActiveAudioDevice,
+  ] = useAudio(CAPTURE_MenuItemS);
   const [
     videoDevices,
     videoTracks,
     isVideoOn,
+    activeVideoDevice,
     handleVideoToggle,
-    handleVideoDeviceChange,
-  ] = useVideo(CAPTURE_OPTIONS);
+    setActiveVideoDevice,
+  ] = useVideo(CAPTURE_MenuItemS);
 
+  Logger(activeVideoDevice);
   /**
    * UseEffect prevents flickering caused by rerendering
    * Toggling of button that causes rerender will caouse
@@ -137,18 +141,33 @@ const Camera = () => {
             Audio Input Devices
           </InputLabel>
           <Select
-            native
-            onChange={handleAudioDeviceChange}
-            value={audioDevices ? audioDevices[0].deviceId : 0}
+            onChange={({ target }) => {
+              const { value } = target;
+
+              setActiveAudioDevice(value as string);
+            }}
+            renderValue={(value) => {
+              const id = value as string;
+              let device;
+              if (audioDevices) {
+                device = audioDevices.filter(
+                  (device) => device.deviceId === id
+                );
+                if (device.length !== 0) {
+                  return `📸  ${device[0].label} `;
+                }
+              }
+            }}
+            value={activeAudioDevice ? activeAudioDevice : ""}
             inputProps={{
               name: "deviceId",
               id: "audio-input-device",
             }}
           >
             {audioDevices?.map((audioDevice: MediaDeviceInfo) => (
-              <option key={audioDevice.deviceId} value={audioDevice.deviceId}>
+              <MenuItem key={audioDevice.deviceId} value={audioDevice.deviceId}>
                 {audioDevice.label}
-              </option>
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -157,18 +176,35 @@ const Camera = () => {
             Video Input Devices
           </InputLabel>
           <Select
-            native
-            onChange={handleVideoDeviceChange}
-            value={videoDevices ? videoDevices[0].deviceId : 0}
+            onChange={({ target }) => {
+              const { value } = target;
+
+              setActiveVideoDevice(value as string);
+            }}
+            // displayEmpty
+
+            renderValue={(value) => {
+              const id = value as string;
+              let device;
+              if (videoDevices) {
+                device = videoDevices.filter(
+                  (device) => device.deviceId === id
+                );
+                if (device.length !== 0) {
+                  return `📸  ${device[0].label} `;
+                }
+              }
+            }}
+            value={activeVideoDevice ? activeVideoDevice : ""}
             inputProps={{
               name: "deviceId",
               id: "video-input-device",
             }}
           >
             {videoDevices?.map((videoDevice: MediaDeviceInfo) => (
-              <option key={videoDevice.deviceId} value={videoDevice.deviceId}>
+              <MenuItem key={videoDevice.deviceId} value={videoDevice.deviceId}>
                 {videoDevice.label}
-              </option>
+              </MenuItem>
             ))}
           </Select>
         </FormControl>

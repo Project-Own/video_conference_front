@@ -7,13 +7,18 @@ export const getAvailableMediaDevices = async (
   deviceType: MediaDeviceKind,
   setDevices: (devices: MediaDeviceInfo[] | null) => void
 ) => {
-  const devices = await navigator.mediaDevices.enumerateDevices();
+  const devices = await navigator.mediaDevices
+    .enumerateDevices()
+    .catch((err) => Logger(err));
 
-  if (devices) Logger(`enumerateDevices not supported`);
+  if (devices) {
+    const deviceArr = devices.filter(
+      (device: MediaDeviceInfo) => device.kind === deviceType
+    );
 
-  setDevices(
-    devices.filter((device: MediaDeviceInfo) => device.kind === deviceType)
-  );
+    setDevices(deviceArr);
+    return deviceArr;
+  }
 };
 /**
  * Closes Tracks and setTracks state to null
@@ -37,7 +42,6 @@ export const closeMediaTracks = (
  * When audio or video is ready to play, this state is active/true.
  * */
 export type MediaDeviceName = "Audio" | "Video" | "Screen Share";
-
 export const handleMediaDeviceToggle = (
   deviceName: MediaDeviceName,
   isDeviceOn: boolean,
@@ -52,6 +56,9 @@ export const handleMediaDeviceToggle = (
   }
 };
 
+/**
+ *
+ * */
 export const getMediaTracks = async (
   requestedMedia: MediaStreamConstraints,
   setTracks: (tracks: MediaStreamTrack[] | null) => void
@@ -66,4 +73,20 @@ export const getMediaTracks = async (
     Logger(err);
   }
 };
-export const handleMediaDeviceChange = () => {};
+/**
+ *
+ * */
+export const getDisplayMedia = async (
+  requestedMedia: MediaStreamConstraints,
+  setTracks: (tracks: MediaStreamTrack[] | null) => void
+) => {
+  // try {
+  //   navigator.ge;
+  //   const stream = await navigator.mediaDevices.get(requestedMedia);
+  //   const tracks = stream.getTracks();
+  //   if (tracks.length > 0) Logger(`Using tracks device: ${tracks[0].label}`);
+  //   setTracks(tracks);
+  // } catch (err) {
+  //   Logger(err);
+  // }
+};
