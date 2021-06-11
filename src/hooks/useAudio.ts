@@ -1,43 +1,47 @@
 import { useEffect, useState } from "react";
-import { Logger } from "../utils/logger";
+import {
+  closeMediaTracks,
+  getAvailableMediaDevices,
+  getMediaTracks,
+  handleMediaDeviceChange,
+  handleMediaDeviceToggle,
+} from "./../utils/media.utils";
 
-export const useAudio = (
-  requestedMedia: MediaStreamConstraints,
-  isAudioOn: boolean
-): MediaStreamTrack[] | null => {
+export const useAudio = (requestedMedia: MediaStreamConstraints) => {
   const [audioTracks, setAudioTracks] =
     useState<MediaStreamTrack[] | null>(null);
+  const [isAudioOn, setIsAudioOn] = useState(false);
+  const [audioDevices, setAudioDevices] =
+    useState<MediaDeviceInfo[] | null>(null);
 
-  const closeAudio = () => {
-    if (audioTracks) {
-      audioTracks?.forEach((track) => track.stop());
-      setAudioTracks(null);
-    }
+  const handleAudioToggle = () => {
+    handleMediaDeviceToggle("Audio", isAudioOn, setIsAudioOn);
   };
-
-  const getAudio = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: requestedMedia.audio,
-      });
-      const audio = stream.getAudioTracks();
-      if (audio.length > 0) Logger(`Using audio device: ${audio[0].label}`);
-
-      setAudioTracks(audio);
-    } catch (err) {
-      Logger(err);
-    }
+  const handleAudioDeviceChange = () => {
+    handleMediaDeviceChange();
   };
 
   useEffect(() => {
+    getAvailableMediaDevices("audioinput", setAudioDevices);
     if (isAudioOn) {
-      getAudio();
+      getMediaTracks(
+        {
+          audio: requestedMedia.audio,
+        },
+        setAudioTracks
+      );
     } else {
-      closeAudio();
+      closeMediaTracks(audioTracks, setAudioTracks);
     }
-    return () => closeAudio();
+    return () => closeMediaTracks(audioTracks, setAudioTracks);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAudioOn]);
 
-  return audioTracks;
+  return [
+    audioDevices,
+    audioTracks,
+    isAudioOn,
+    handleAudioToggle,
+    handleAudioDeviceChange,
+  ] as const;
 };

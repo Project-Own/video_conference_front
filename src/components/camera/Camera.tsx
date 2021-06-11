@@ -1,4 +1,12 @@
-import { Button, Card, CardActions, CardContent } from "@material-ui/core";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  FormControl,
+  InputLabel,
+  Select,
+} from "@material-ui/core";
 import { useEffect, useRef, useState } from "react";
 import { useAudio } from "../../hooks/useAudio";
 import { useVideo } from "../../hooks/useVideo";
@@ -18,13 +26,23 @@ const Camera = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const [isVideoOn, setIsVideoOn] = useState(false);
-  const [isAudioOn, setIsAudioOn] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 
-  const audioTracks = useAudio(CAPTURE_OPTIONS, isAudioOn);
-  const videoTracks = useVideo(CAPTURE_OPTIONS, isVideoOn);
+  const [
+    audioDevices,
+    audioTracks,
+    isAudioOn,
+    handleAudioToggle,
+    handleAudioDeviceChange,
+  ] = useAudio(CAPTURE_OPTIONS);
+  const [
+    videoDevices,
+    videoTracks,
+    isVideoOn,
+    handleVideoToggle,
+    handleVideoDeviceChange,
+  ] = useVideo(CAPTURE_OPTIONS);
 
   /**
    * UseEffect prevents flickering caused by rerendering
@@ -48,32 +66,17 @@ const Camera = () => {
     }
   }, [audioTracks]);
 
-  /**
-   * Handle_*_Toggle Operation toggles the state of specified component
-   * Is_*_Playing state stores the operational status of audio/video.
-   * When audio or video is ready to play, this state is active/true.
-   * */
-  const handleVideoToggle = () => {
-    if (!isVideoOn) {
-      setIsVideoOn(true);
-      Logger("Webcam on");
-    } else {
-      setIsVideoOn(false);
-      setIsVideoPlaying(false);
-      Logger("Webcam Off");
-    }
-  };
-
-  const handleAudioToggle = () => {
-    if (!isAudioOn) {
-      setIsAudioOn(true);
-      Logger("Audio On");
-    } else {
-      setIsAudioOn(false);
+  useEffect(() => {
+    if (isAudioOn) {
       setIsAudioPlaying(false);
-      Logger("Audio Off");
     }
-  };
+  }, [isAudioOn]);
+
+  useEffect(() => {
+    if (isVideoOn) {
+      setIsVideoPlaying(false);
+    }
+  }, [isVideoOn]);
 
   return (
     <Card>
@@ -129,6 +132,46 @@ const Camera = () => {
         >
           {!isAudioOn ? "Open Microphone" : "Close Microphone"}
         </Button>
+        <FormControl>
+          <InputLabel htmlFor="audio-input-device">
+            Audio Input Devices
+          </InputLabel>
+          <Select
+            native
+            onChange={handleAudioDeviceChange}
+            value={audioDevices ? audioDevices[0].deviceId : 0}
+            inputProps={{
+              name: "deviceId",
+              id: "audio-input-device",
+            }}
+          >
+            {audioDevices?.map((audioDevice: MediaDeviceInfo) => (
+              <option key={audioDevice.deviceId} value={audioDevice.deviceId}>
+                {audioDevice.label}
+              </option>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl>
+          <InputLabel htmlFor="video-input-device">
+            Video Input Devices
+          </InputLabel>
+          <Select
+            native
+            onChange={handleVideoDeviceChange}
+            value={videoDevices ? videoDevices[0].deviceId : 0}
+            inputProps={{
+              name: "deviceId",
+              id: "video-input-device",
+            }}
+          >
+            {videoDevices?.map((videoDevice: MediaDeviceInfo) => (
+              <option key={videoDevice.deviceId} value={videoDevice.deviceId}>
+                {videoDevice.label}
+              </option>
+            ))}
+          </Select>
+        </FormControl>
       </CardActions>
     </Card>
   );

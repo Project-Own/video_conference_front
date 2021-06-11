@@ -1,43 +1,48 @@
 import { useEffect, useState } from "react";
-import { Logger } from "../utils/logger";
+import {
+  closeMediaTracks,
+  getAvailableMediaDevices,
+  getMediaTracks,
+  handleMediaDeviceChange,
+  handleMediaDeviceToggle,
+} from "./../utils/media.utils";
 
-export const useVideo = (
-  requestedMedia: MediaStreamConstraints,
-  isVideoOn: boolean
-): MediaStreamTrack[] | null => {
+export const useVideo = (requestedMedia: MediaStreamConstraints) => {
   const [videoTracks, setVideoTracks] =
     useState<MediaStreamTrack[] | null>(null);
 
-  const closeVideo = () => {
-    if (videoTracks) {
-      videoTracks?.forEach((track) => track.stop());
-      setVideoTracks(null);
-    }
+  const [isVideoOn, setIsVideoOn] = useState(false);
+  const [videoDevices, setVideoDevices] =
+    useState<MediaDeviceInfo[] | null>(null);
+
+  const handleVideoToggle = () => {
+    handleMediaDeviceToggle("Video", isVideoOn, setIsVideoOn);
   };
-
-  const getVideo = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: requestedMedia.video,
-      });
-      const video = stream.getVideoTracks();
-      if (video.length > 0) Logger(`Using video device: ${video[0].label}`);
-
-      setVideoTracks(video);
-    } catch (err) {
-      Logger(err);
-    }
+  const handleVideoDeviceChange = () => {
+    handleMediaDeviceChange();
   };
 
   useEffect(() => {
+    getAvailableMediaDevices("videoinput", setVideoDevices);
     if (isVideoOn) {
-      getVideo();
+      getMediaTracks(
+        {
+          video: requestedMedia.video,
+        },
+        setVideoTracks
+      );
     } else {
-      closeVideo();
+      closeMediaTracks(videoTracks, setVideoTracks);
     }
-    return () => closeVideo();
+    return () => closeMediaTracks(videoTracks, setVideoTracks);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVideoOn]);
 
-  return videoTracks;
+  return [
+    videoDevices,
+    videoTracks,
+    isVideoOn,
+    handleVideoToggle,
+    handleVideoDeviceChange,
+  ] as const;
 };
