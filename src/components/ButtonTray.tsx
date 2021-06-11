@@ -1,20 +1,17 @@
-import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 // import Paper from "@material-ui/core/Paper";
-
+import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-// import Icon from "@material-ui/core/Icon";
-import VideocamOutlinedIcon from "@material-ui/icons/VideocamOutlined";
-// import VideocamOffOutlinedIcon from "@material-ui/icons/VideocamOffOutlined";
-import MicIcon from "@material-ui/icons/Mic";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 // import MicOffIcon from "@material-ui/icons/MicOff";
 import CallEndIcon from "@material-ui/icons/CallEnd";
-import ScreenShareOutlinedIcon from "@material-ui/icons/ScreenShareOutlined";
-// import StopScreenShareOutlinedIcon from "@material-ui/icons/StopScreenShareOutlined";
-import ChatOutlinedIcon from "@material-ui/icons/ChatOutlined";
+// import VideocamOffOutlinedIcon from "@material-ui/icons/VideocamOffOutlined";
+import MicIcon from "@material-ui/icons/Mic";
 import PeopleAltRoundedIcon from "@material-ui/icons/PeopleAltRounded";
+import ScreenShareOutlinedIcon from "@material-ui/icons/ScreenShareOutlined";
 import SettingsIcon from "@material-ui/icons/Settings";
-
-import Button from "@material-ui/core/Button";
+// import Icon from "@material-ui/core/Icon";
+import VideocamOutlinedIcon from "@material-ui/icons/VideocamOutlined";
+import React from "react";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -71,34 +68,37 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const ButtonTray = () => {
   const classes = useStyles();
+  const icons_list_left = [VideocamOutlinedIcon, MicIcon];
+  const icons_list_right = [
+    ScreenShareOutlinedIcon,
+    CallEndIcon,
+    PeopleAltRoundedIcon,
+    SettingsIcon,
+  ];
+
+  // const getFunction = () => {
+  //   //
+  // };
+
+  const getIcon = (iconObj: any) => {
+    const IconComp = iconObj;
+    return (
+      <Button onClick={(e) => console.log(e)} className={classes.buttons}>
+        {<IconComp />}
+      </Button>
+    );
+  };
+
   return (
     <Grid item container style={{ alignItems: "center" }}>
       <Grid container className={classes.button_tray_left}>
-        <Button className={classes.buttons}>
-          <VideocamOutlinedIcon />
-        </Button>
-        <Button className={classes.buttons}>
-          <MicIcon />
-        </Button>
+        {icons_list_left.map((icon) => getIcon(icon))}
       </Grid>
-
       <Button className={classes.end_call}>
         <CallEndIcon />
       </Button>
-
       <Grid container className={classes.button_tray_right}>
-        <Button className={classes.buttons}>
-          <ScreenShareOutlinedIcon />
-        </Button>
-        <Button className={classes.buttons}>
-          <ChatOutlinedIcon />
-        </Button>
-        <Button className={classes.buttons}>
-          <PeopleAltRoundedIcon />
-        </Button>
-        <Button className={classes.buttons}>
-          <SettingsIcon />
-        </Button>
+        {icons_list_right.map((icon) => getIcon(icon))}
       </Grid>
     </Grid>
   );
