@@ -11,7 +11,7 @@ import ScreenShareOutlinedIcon from "@material-ui/icons/ScreenShareOutlined";
 import SettingsIcon from "@material-ui/icons/Settings";
 // import Icon from "@material-ui/core/Icon";
 import VideocamOutlinedIcon from "@material-ui/icons/VideocamOutlined";
-import React from "react";
+import ChatRoundedIcon from "@material-ui/icons/ChatRounded";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -68,22 +68,62 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const ButtonTray = () => {
   const classes = useStyles();
-  const icons_list_left = [VideocamOutlinedIcon, MicIcon];
+
+  const icons_list_left = [
+    {
+      name: "videoIcon",
+      icon: VideocamOutlinedIcon,
+      do: () => {
+        console.log("Vieo clicked");
+      },
+    },
+    {
+      name: "micIcon",
+      icon: MicIcon,
+      do: () => {
+        console.log("mic clicked");
+      },
+    },
+  ];
   const icons_list_right = [
-    ScreenShareOutlinedIcon,
-    CallEndIcon,
-    PeopleAltRoundedIcon,
-    SettingsIcon,
+    {
+      name: "screenShareIcon",
+      icon: ScreenShareOutlinedIcon,
+      do: () => {
+        console.log("sceenshare clicked");
+      },
+    },
+    {
+      name: "chatIcon",
+      icon: ChatRoundedIcon,
+      do: () => {
+        console.log("chat clicked");
+      },
+    },
+    {
+      name: "participantsIcon",
+      icon: PeopleAltRoundedIcon,
+      do: () => {
+        console.log("participant clicked");
+      },
+    },
+    {
+      name: "settingsIcon",
+      icon: SettingsIcon,
+      do: () => {
+        console.log("setting clicked");
+      },
+    },
   ];
 
-  // const getFunction = () => {
-  //   //
-  // };
-
   const getIcon = (iconObj: any) => {
-    const IconComp = iconObj;
+    const IconComp = iconObj.icon;
     return (
-      <Button onClick={(e) => console.log(e)} className={classes.buttons}>
+      <Button
+        key={iconObj.name}
+        onClick={() => iconObj.do()}
+        className={classes.buttons}
+      >
         {<IconComp />}
       </Button>
     );
@@ -94,7 +134,12 @@ const ButtonTray = () => {
       <Grid container className={classes.button_tray_left}>
         {icons_list_left.map((icon) => getIcon(icon))}
       </Grid>
-      <Button className={classes.end_call}>
+      <Button
+        onClick={() => {
+          alert("end call");
+        }}
+        className={classes.end_call}
+      >
         <CallEndIcon />
       </Button>
       <Grid container className={classes.button_tray_right}>
