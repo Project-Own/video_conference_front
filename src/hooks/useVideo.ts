@@ -34,7 +34,10 @@ export const useVideo = (requestedMedia: MediaStreamConstraints) => {
     }
 
     if (mediaTrackConstraint) {
-      mediaTrackConstraint.deviceId = activeVideoDevice;
+      if (activeVideoDevice) {
+        mediaTrackConstraint.deviceId = activeVideoDevice;
+      }
+
       getMediaTracks({ video: mediaTrackConstraint }, setVideoTracks);
     }
   };
