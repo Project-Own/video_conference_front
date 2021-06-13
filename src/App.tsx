@@ -1,7 +1,11 @@
 import loadable from "@loadable/component";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
+
+
 import "./App.css";
+import Camera from "./components/camera/Camera";
 import { Counter } from "./components/counter/Counter";
+
 import { Loading } from "./components/Loading/Loading";
 import { addURLPath } from "./utils/utils";
 
@@ -59,6 +63,8 @@ function App() {
         </Switch>
       </div>
     </Router>
+
+
   );
 }
 
