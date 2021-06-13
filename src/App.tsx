@@ -1,11 +1,8 @@
 import loadable from "@loadable/component";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
-
-
 import "./App.css";
 import Camera from "./components/camera/Camera";
 import { Counter } from "./components/counter/Counter";
-
 import { Loading } from "./components/Loading/Loading";
 import { addURLPath } from "./utils/utils";
 
@@ -32,26 +29,7 @@ function App() {
         </nav>
         <Switch>
           <Route exact path={addURLPath("/")}>
-            {/* <div className="App">
-              <Host />
-              <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                <p>
-                  This is an example page only containing counter have fun!!
-                  Edit <code>src/App.tsx</code> and save to reload.
-                </p>
-                <a
-                  className="App-link"
-                  href="https://reactjs.org"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Learn React
-                </a>
-                <Counter />
-              </header>
-            </div> */}
-            <Counter />
+            <Camera />
           </Route>
           <Route path={addURLPath("/about")}>
             <LoadableHost />
@@ -63,8 +41,6 @@ function App() {
         </Switch>
       </div>
     </Router>
-
-
   );
 }
 
