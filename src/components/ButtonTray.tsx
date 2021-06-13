@@ -1,18 +1,19 @@
 // import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import { useState } from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-// import MicOffIcon from "@material-ui/icons/MicOff";
+import MicOffIcon from "@material-ui/icons/MicOff";
 import CallEndIcon from "@material-ui/icons/CallEnd";
-// import VideocamOffOutlinedIcon from "@material-ui/icons/VideocamOffOutlined";
+import VideocamOffOutlinedIcon from "@material-ui/icons/VideocamOffOutlined";
 import MicIcon from "@material-ui/icons/Mic";
 import PeopleAltRoundedIcon from "@material-ui/icons/PeopleAltRounded";
 import ScreenShareOutlinedIcon from "@material-ui/icons/ScreenShareOutlined";
+import StopScreenShareOutlinedIcon from "@material-ui/icons/StopScreenShareOutlined";
 import SettingsIcon from "@material-ui/icons/Settings";
-// import Icon from "@material-ui/core/Icon";
 import VideocamOutlinedIcon from "@material-ui/icons/VideocamOutlined";
 import ChatRoundedIcon from "@material-ui/icons/ChatRounded";
+import SpeakerNotesOffRoundedIcon from "@material-ui/icons/SpeakerNotesOffRounded";
+import ButtonInfo from "./ButtonInfo";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -76,72 +77,89 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const ButtonTray = () => {
   const classes = useStyles();
-  const [on, seton] = useState(false);
-
+  // const [on, seton] = useState(false);
   const icons_list_left = [
     {
       name: "videoIcon",
-      icon: VideocamOutlinedIcon,
-      do: () => {
-        seton(!on);
+      icon: {
+        active: VideocamOutlinedIcon,
+        passive: VideocamOffOutlinedIcon,
       },
+      handleActiveToggle: () => {},
+      handlePassiveToggle: () => {},
     },
     {
       name: "micIcon",
-      icon: MicIcon,
-      do: () => {
-        console.log("mic clicked");
+      icon: {
+        active: MicIcon,
+        passive: MicOffIcon,
       },
-    },
-  ];
-  const icons_list_right = [
-    {
-      name: "screenShareIcon",
-      icon: ScreenShareOutlinedIcon,
-      do: () => {
-        console.log("sceenshare clicked");
-      },
-    },
-    {
-      name: "chatIcon",
-      icon: ChatRoundedIcon,
-      do: () => {
-        console.log("chat clicked");
-      },
-    },
-    {
-      name: "participantsIcon",
-      icon: PeopleAltRoundedIcon,
-      do: () => {
-        console.log("participant clicked");
-      },
-    },
-    {
-      name: "settingsIcon",
-      icon: SettingsIcon,
-      do: () => {
-        console.log("setting clicked");
-      },
+      handleActiveToggle: () => {},
+      handlePassiveToggle: () => {},
     },
   ];
 
-  const getIcon = (iconObj: any) => {
-    const IconComp = iconObj.icon;
-    return (
-      <Button
-        key={iconObj.name}
-        onClick={() => iconObj.do()}
-        className={classes.buttons}
-      >
-        <IconComp />
-      </Button>
-    );
-  };
+  const icons_list_right = [
+    {
+      name: "screenShareIcon",
+      icon: {
+        active: ScreenShareOutlinedIcon,
+        passive: StopScreenShareOutlinedIcon,
+      },
+      handleActiveToggle: () => {},
+      handlePassiveToggle: () => {},
+    },
+    {
+      name: "chatIcon",
+      icon: {
+        active: ChatRoundedIcon,
+        passive: SpeakerNotesOffRoundedIcon,
+      },
+      handleActiveToggle: () => {},
+      handlePassiveToggle: () => {},
+    },
+    {
+      name: "participantIcon",
+      icon: {
+        active: PeopleAltRoundedIcon,
+        passive: MicOffIcon,
+      },
+      handleActiveToggle: () => {},
+      handlePassiveToggle: () => {},
+    },
+    {
+      name: "settingsIcon",
+      icon: {
+        active: SettingsIcon,
+        passive: MicOffIcon,
+      },
+      handleActiveToggle: () => {},
+      handlePassiveToggle: () => {},
+    },
+  ];
+
+  // const doThis = (index: any) => {
+  //   let tmp = icons_list_left;
+  //   // console.log(tmp);
+  //   // console.log(index);
+  //   tmp[index].isActive = !tmp[index].isActive;
+  //   // tmp[index].isActive = !tmp[index].isActive;
+  //   seticons_list_left(tmp);
+  //   console.log(icons_list_left);
+  // };
 
   return (
     <Grid item container style={{ alignItems: "center" }}>
       <Grid container className={classes.button_tray_left}>
-        {icons_list_left.map((icon) => getIcon(icon))}
+        {icons_list_left.map((icon, index) => (
+          <ButtonInfo
+            key={index}
+            iconActive={icon.icon.active}
+            iconPassive={icon.icon.passive}
+            handleActiveToggle={icon.handleActiveToggle}
+            handlePassiveToggle={icon.handlePassiveToggle}
+          />
+        ))}
       </Grid>
       <Button
         onClick={() => {
@@ -152,7 +170,15 @@ const ButtonTray = () => {
         <CallEndIcon />
       </Button>
       <Grid container className={classes.button_tray_right}>
-        {icons_list_right.map((icon) => getIcon(icon))}
+        {icons_list_right.map((icon, index) => (
+          <ButtonInfo
+            key={index}
+            iconActive={icon.icon.active}
+            iconPassive={icon.icon.passive}
+            handleActiveToggle={icon.handleActiveToggle}
+            handlePassiveToggle={icon.handlePassiveToggle}
+          />
+        ))}
       </Grid>
     </Grid>
   );
