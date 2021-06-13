@@ -3,14 +3,12 @@ import {
   closeMediaTracks,
   getAvailableMediaDevices,
   getMediaTracks,
-  handleMediaDeviceToggle,
-} from "./../utils/media.utils";
+} from "../utils/media.utils";
+import { useTray } from "./useTray";
 
-export const useVideo = (requestedMedia: MediaStreamConstraints) => {
+export const useWebcam = (requestedMedia: MediaStreamConstraints) => {
   const [videoTracks, setVideoTracks] =
     useState<MediaStreamTrack[] | null>(null);
-
-  const [isVideoOn, setIsVideoOn] = useState(false);
   const [videoDevices, setVideoDevices] =
     useState<MediaDeviceInfo[] | null>(null);
   const [activeVideoDevice, setActiveVideoDevice] = useState<string>();
@@ -19,9 +17,7 @@ export const useVideo = (requestedMedia: MediaStreamConstraints) => {
     video: {},
   };
 
-  const handleVideoToggle = () => {
-    handleMediaDeviceToggle("Video", isVideoOn, setIsVideoOn);
-  };
+  const { webcam, toggleWebcam } = useTray();
 
   const startVideoTracks = () => {
     let mediaTrackConstraint: MediaTrackConstraints | undefined;
@@ -39,6 +35,7 @@ export const useVideo = (requestedMedia: MediaStreamConstraints) => {
       getMediaTracks({ video: mediaTrackConstraint }, setVideoTracks);
     }
   };
+  const isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
 
   const stopVideoTracks = () => {
     closeMediaTracks(videoTracks, setVideoTracks);
@@ -46,19 +43,23 @@ export const useVideo = (requestedMedia: MediaStreamConstraints) => {
 
   useEffect(() => {
     stopVideoTracks();
-    if (isVideoOn) {
-      navigator.permissions.query({ name: "camera" }).then((result) => {
-        if (result.state === "denied") {
-          setIsVideoOn(false);
-          alert("Camera Will not function when camera Permission is denied.");
-        } else if (result.state === "granted") {
-          startVideoTracks();
-        }
-      });
+    if (webcam) {
+      if (isFirefox) {
+        startVideoTracks();
+      } else {
+        navigator.permissions.query({ name: "camera" }).then((result) => {
+          if (result.state === "denied") {
+            toggleWebcam();
+            alert("Camera Will not function when camera Permission is denied.");
+          } else if (result.state === "granted") {
+            startVideoTracks();
+          }
+        });
+      }
     }
     return stopVideoTracks;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isVideoOn, activeVideoDevice]);
+  }, [webcam, activeVideoDevice]);
 
   useEffect(() => {
     getAvailableMediaDevices("videoinput", setVideoDevices).then((devices) => {
@@ -72,12 +73,12 @@ export const useVideo = (requestedMedia: MediaStreamConstraints) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return [
+  return {
     videoDevices,
     videoTracks,
-    isVideoOn,
+    webcam,
     activeVideoDevice,
-    handleVideoToggle,
+    toggleWebcam,
     setActiveVideoDevice,
-  ] as const;
+  };
 };

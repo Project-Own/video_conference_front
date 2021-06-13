@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import { useEffect, useRef, useState } from "react";
 import { useAudio } from "../../hooks/useAudio";
-import { useVideo } from "../../hooks/useVideo";
+import { useWebcam } from "../../hooks/useWebcam";
 import logo from "../../logo.svg";
 import { Video } from "./CamerStyles";
 const CAPTURE_MenuItemS: MediaStreamConstraints = {
@@ -34,23 +34,24 @@ const Camera = () => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 
-  const [
+  const {
     audioDevices,
     audioTracks,
-    isAudioOn,
+    microphone,
     activeAudioDevice,
-    handleAudioToggle,
+    toggleMicrophone,
     setActiveAudioDevice,
-  ] = useAudio(CAPTURE_MenuItemS);
+  } = useAudio(CAPTURE_MenuItemS);
 
-  const [
+  const {
     videoDevices,
     videoTracks,
-    isVideoOn,
+    webcam,
     activeVideoDevice,
-    handleVideoToggle,
+
     setActiveVideoDevice,
-  ] = useVideo(CAPTURE_MenuItemS);
+    toggleWebcam,
+  } = useWebcam(CAPTURE_MenuItemS);
 
   /**
    * UseEffect prevents flickering caused by rerendering
@@ -75,16 +76,16 @@ const Camera = () => {
   }, [audioTracks]);
 
   useEffect(() => {
-    if (isAudioOn) {
+    if (microphone) {
       setIsAudioPlaying(false);
     }
-  }, [isAudioOn]);
+  }, [microphone]);
 
   useEffect(() => {
-    if (isVideoOn) {
+    if (webcam) {
       setIsVideoPlaying(false);
     }
-  }, [isVideoOn]);
+  }, [webcam]);
 
   return (
     <Card>
@@ -96,7 +97,7 @@ const Camera = () => {
       >
         <Video
           ref={videoRef}
-          // hidden={!isVideoOn}
+          // hidden={!webcam}
           poster={logo}
           onCanPlayThrough={() => {
             setIsVideoPlaying(true);
@@ -125,20 +126,20 @@ const Camera = () => {
       </CardContent>
       <CardActions>
         <Button
-          disabled={!isVideoPlaying && isVideoOn}
+          disabled={!isVideoPlaying && webcam}
           onClick={() => {
-            handleVideoToggle();
+            toggleWebcam();
           }}
         >
-          {!isVideoOn ? "Open Webcam" : "Close Webcam"}
+          {!webcam ? "Open Webcam" : "Close Webcam"}
         </Button>
         <Button
-          disabled={!isAudioPlaying && isAudioOn}
+          disabled={!isAudioPlaying && microphone}
           onClick={() => {
-            handleAudioToggle();
+            toggleMicrophone();
           }}
         >
-          {!isAudioOn ? "Open Microphone" : "Close Microphone"}
+          {!microphone ? "Open Microphone" : "Close Microphone"}
         </Button>
         <FormControl>
           <InputLabel htmlFor="audio-input-device">

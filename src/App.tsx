@@ -1,8 +1,6 @@
 import loadable from "@loadable/component";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import "./App.css";
-import Camera from "./components/camera/Camera";
-import { Counter } from "./components/counter/Counter";
 import { Loading } from "./components/Loading/Loading";
 import { addURLPath } from "./utils/utils";
 
@@ -10,6 +8,14 @@ const LoadableHost = loadable(() => import("./components/host/Host"), {
   fallback: <Loading />,
 });
 
+const LoadableCamera = loadable(() => import("./components/camera/Camera"), {
+  fallback: <Loading />,
+});
+
+const LoadableCounter = loadable(() => import("./components/counter/Counter"), {
+  resolveComponent: (component) => component.Counter,
+  fallback: <Loading />,
+});
 function App() {
   return (
     <Router>
@@ -29,14 +35,14 @@ function App() {
         </nav>
         <Switch>
           <Route exact path={addURLPath("/")}>
-            <Camera />
+            <LoadableCamera />
           </Route>
           <Route path={addURLPath("/about")}>
             <LoadableHost />
           </Route>
           <Route path={addURLPath("/team")}>
             {/* <div>ello</div> */}
-            <Counter />
+            <LoadableCounter />
           </Route>
         </Switch>
       </div>
