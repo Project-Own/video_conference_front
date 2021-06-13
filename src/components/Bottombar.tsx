@@ -1,6 +1,6 @@
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 // import Paper from "@material-ui/core/Paper";
-// import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import Grid from "@material-ui/core/Grid";
 
 import Button from "@material-ui/core/Button";
@@ -25,6 +25,10 @@ const useStyles = makeStyles((theme: Theme) =>
       background: "#2F4F4F",
       borderRadius: "16px",
       alignItems: "center",
+      "&:hover": {
+        color: "black",
+        background: "#097969",
+      },
     },
     text: {
       fontFamily: "Noto Sans JP",
@@ -40,23 +44,26 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const VideoFeed = () => {
-  // const [isHost, setisHost] = useState(true);
+  const isHost = true;
+  const [ar_text, setar_text] = useState(false);
   const classes = useStyles();
+  const ar_button = () => {
+    setar_text(!ar_text);
+  };
+
   return (
     <Grid container className={classes.bottom_bar}>
-      {/* {isHost ? (
-        <> */}
-      <Button className={classes.ar_button}>
-        <Typography className={classes.text}>Start AR</Typography>
-      </Button>
-      {/* </>
-      ) : (
+      {isHost ? (
         <>
-          <div className={classes.ar_button}>
-            <Typography className={classes.text}>Welcome</Typography>
-          </div>
+          <Button onClick={() => ar_button()} className={classes.ar_button}>
+            <Typography className={classes.text}>
+              {ar_text ? "Start AR" : "Stop AR"}
+            </Typography>
+          </Button>
         </>
-      )} */}
+      ) : (
+        <></>
+      )}
       <ButtonTray />
     </Grid>
   );

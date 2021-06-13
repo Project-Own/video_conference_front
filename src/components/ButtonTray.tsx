@@ -1,6 +1,7 @@
 // import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
+import { useState } from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 // import MicOffIcon from "@material-ui/icons/MicOff";
 import CallEndIcon from "@material-ui/icons/CallEnd";
@@ -24,6 +25,9 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow: "0px 4px 6px 2px rgba(0, 0, 0, 0.30)",
       mixBlendMode: "overlay",
       borderRadius: "14px",
+      "&:hover": {
+        color: "white",
+      },
     },
     button_tray_left: {
       background: "#2F4F4F",
@@ -50,6 +54,10 @@ const useStyles = makeStyles((theme: Theme) =>
       height: "56px",
       left: "732px",
       zIndex: 2,
+      "&:hover": {
+        color: "white",
+        background: "#8b0000",
+      },
     },
     button_tray_right: {
       background: "#2F4F4F",
@@ -68,13 +76,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const ButtonTray = () => {
   const classes = useStyles();
+  const [on, seton] = useState(false);
 
   const icons_list_left = [
     {
       name: "videoIcon",
       icon: VideocamOutlinedIcon,
       do: () => {
-        console.log("Vieo clicked");
+        seton(!on);
       },
     },
     {
@@ -124,7 +133,7 @@ const ButtonTray = () => {
         onClick={() => iconObj.do()}
         className={classes.buttons}
       >
-        {<IconComp />}
+        <IconComp />
       </Button>
     );
   };
