@@ -12,7 +12,6 @@ import { useEffect, useRef, useState } from "react";
 import { useAudio } from "../../hooks/useAudio";
 import { useVideo } from "../../hooks/useVideo";
 import logo from "../../logo.svg";
-import { Logger } from "../../utils/logger";
 import { Video } from "./CamerStyles";
 const CAPTURE_MenuItemS: MediaStreamConstraints = {
   audio: {
@@ -20,7 +19,12 @@ const CAPTURE_MenuItemS: MediaStreamConstraints = {
     noiseSuppression: true,
     autoGainControl: false,
   },
-  video: { facingMode: "environment", width: 450, height: 348 },
+  video: {
+    facingMode: "user",
+    frameRate: { ideal: 10, max: 15 },
+    width: { ideal: 1280 },
+    height: { ideal: 720 },
+  },
 };
 
 const Camera = () => {
@@ -48,7 +52,6 @@ const Camera = () => {
     setActiveVideoDevice,
   ] = useVideo(CAPTURE_MenuItemS);
 
-  Logger(activeVideoDevice);
   /**
    * UseEffect prevents flickering caused by rerendering
    * Toggling of button that causes rerender will caouse
@@ -98,10 +101,10 @@ const Camera = () => {
           onCanPlayThrough={() => {
             setIsVideoPlaying(true);
             videoRef.current?.play().catch((e) => {
-              Logger(e);
+              console.log(e);
             });
           }}
-          onError={() => Logger("Something went wrorn in video")}
+          onError={() => console.log("Something went wrorn in video")}
           autoPlay
           playsInline
           muted
@@ -114,7 +117,7 @@ const Camera = () => {
           onCanPlayThrough={() => {
             setIsAudioPlaying(true);
             audioRef.current?.play().catch((e) => {
-              Logger(e);
+              console.log(e);
             });
           }}
           ref={audioRef}

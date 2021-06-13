@@ -34,21 +34,27 @@ export const useVideo = (requestedMedia: MediaStreamConstraints) => {
     }
 
     if (mediaTrackConstraint) {
-      if (activeVideoDevice) {
-        mediaTrackConstraint.deviceId = activeVideoDevice;
-      }
+      mediaTrackConstraint.deviceId = activeVideoDevice;
 
       getMediaTracks({ video: mediaTrackConstraint }, setVideoTracks);
     }
   };
 
-  const stopVideoTracks = () => closeMediaTracks(videoTracks, setVideoTracks);
+  const stopVideoTracks = () => {
+    closeMediaTracks(videoTracks, setVideoTracks);
+  };
 
   useEffect(() => {
-    getAvailableMediaDevices("videoinput", setVideoDevices);
     stopVideoTracks();
-    if (isVideoOn && activeVideoDevice) {
-      startVideoTracks();
+    if (isVideoOn) {
+      navigator.permissions.query({ name: "camera" }).then((result) => {
+        if (result.state === "denied") {
+          setIsVideoOn(false);
+          alert("Camera Will not function when camera Permission is denied.");
+        } else if (result.state === "granted") {
+          startVideoTracks();
+        }
+      });
     }
     return stopVideoTracks;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -57,7 +63,8 @@ export const useVideo = (requestedMedia: MediaStreamConstraints) => {
   useEffect(() => {
     getAvailableMediaDevices("videoinput", setVideoDevices).then((devices) => {
       if (devices) {
-        setActiveVideoDevice(devices[0].deviceId);
+        if (devices[0].deviceId !== "")
+          setActiveVideoDevice(devices[0].deviceId);
       }
     });
 

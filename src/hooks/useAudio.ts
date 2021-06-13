@@ -47,7 +47,8 @@ export const useAudio = (requestedMedia: MediaStreamConstraints) => {
   useEffect(() => {
     getAvailableMediaDevices("audioinput", setAudioDevices).then((devices) => {
       if (devices) {
-        setActiveAudioDevice(devices[0].deviceId);
+        if (devices[0].deviceId !== "")
+          setActiveAudioDevice(devices[0].deviceId);
       }
     });
 
@@ -56,10 +57,18 @@ export const useAudio = (requestedMedia: MediaStreamConstraints) => {
   }, []);
 
   useEffect(() => {
-    getAvailableMediaDevices("audioinput", setAudioDevices);
     stopAudioTracks();
-    if (isAudioOn && activeAudioDevice) {
-      startAudioTracks();
+    if (isAudioOn) {
+      navigator.permissions.query({ name: "microphone" }).then((result) => {
+        if (result.state === "denied") {
+          alert(
+            "Microphone will not function when microphone Permission is denied."
+          );
+          setIsAudioOn(false);
+        } else if (result.state === "granted") {
+          startAudioTracks();
+        }
+      });
     }
     return stopAudioTracks;
     // eslint-disable-next-line react-hooks/exhaustive-deps
