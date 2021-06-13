@@ -45,7 +45,7 @@ export const useAudio = (requestedMedia: MediaStreamConstraints) => {
   };
 
   useEffect(() => {
-    getAvailableMediaDevices("videoinput", setAudioDevices).then((devices) => {
+    getAvailableMediaDevices("audioinput", setAudioDevices).then((devices) => {
       if (devices) {
         setActiveAudioDevice(devices[0].deviceId);
       }

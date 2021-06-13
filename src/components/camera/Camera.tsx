@@ -38,6 +38,7 @@ const Camera = () => {
     handleAudioToggle,
     setActiveAudioDevice,
   ] = useAudio(CAPTURE_MenuItemS);
+
   const [
     videoDevices,
     videoTracks,
@@ -153,8 +154,9 @@ const Camera = () => {
                 device = audioDevices.filter(
                   (device) => device.deviceId === id
                 );
+
                 if (device.length !== 0) {
-                  return `📸  ${device[0].label} `;
+                  return `🎙  ${device[0].label} `;
                 }
               }
             }}

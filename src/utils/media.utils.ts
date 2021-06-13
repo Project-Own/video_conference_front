@@ -41,7 +41,7 @@ export const closeMediaTracks = (
  * Is_*_Playing state stores the operational status of audio/video.
  * When audio or video is ready to play, this state is active/true.
  * */
-export type MediaDeviceName = "Audio" | "Video" | "Screen Share";
+export type MediaDeviceName = "Audio" | "Video" | "Screen Share" | "Speaker";
 export const handleMediaDeviceToggle = (
   deviceName: MediaDeviceName,
   isDeviceOn: boolean,
