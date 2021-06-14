@@ -1,18 +1,17 @@
-// import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import MicOffIcon from "@material-ui/icons/MicOff";
 import CallEndIcon from "@material-ui/icons/CallEnd";
-import VideocamOffOutlinedIcon from "@material-ui/icons/VideocamOffOutlined";
+import ChatRoundedIcon from "@material-ui/icons/ChatRounded";
 import MicIcon from "@material-ui/icons/Mic";
+import MicOffIcon from "@material-ui/icons/MicOff";
 import PeopleAltRoundedIcon from "@material-ui/icons/PeopleAltRounded";
 import ScreenShareOutlinedIcon from "@material-ui/icons/ScreenShareOutlined";
-import StopScreenShareOutlinedIcon from "@material-ui/icons/StopScreenShareOutlined";
 import SettingsIcon from "@material-ui/icons/Settings";
+import StopScreenShareOutlinedIcon from "@material-ui/icons/StopScreenShareOutlined";
+import VideocamOffOutlinedIcon from "@material-ui/icons/VideocamOffOutlined";
 import VideocamOutlinedIcon from "@material-ui/icons/VideocamOutlined";
-import ChatRoundedIcon from "@material-ui/icons/ChatRounded";
-import SpeakerNotesOffRoundedIcon from "@material-ui/icons/SpeakerNotesOffRounded";
+import { useTray } from "../../hooks/useTray";
 import ButtonInfo from "./ButtonInfo";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -78,6 +77,21 @@ const useStyles = makeStyles((theme: Theme) =>
 const ButtonTray = () => {
   const classes = useStyles();
   // const [on, seton] = useState(false);
+  const {
+    microphone,
+    webcam,
+    screenShare,
+    chat,
+    participant,
+    setting,
+    toggleCall,
+    toggleChat,
+    toggleMicrophone,
+    toggleParticipant,
+    toggleScreenShare,
+    toggleWebcam,
+    toggleSetting,
+  } = useTray();
   const icons_list_left = [
     {
       name: "videoIcon",
@@ -85,8 +99,8 @@ const ButtonTray = () => {
         active: VideocamOutlinedIcon,
         passive: VideocamOffOutlinedIcon,
       },
-      handleActiveToggle: () => {},
-      handlePassiveToggle: () => {},
+      state: webcam,
+      handleToggle: toggleWebcam,
     },
     {
       name: "micIcon",
@@ -94,8 +108,8 @@ const ButtonTray = () => {
         active: MicIcon,
         passive: MicOffIcon,
       },
-      handleActiveToggle: () => {},
-      handlePassiveToggle: () => {},
+      state: microphone,
+      handleToggle: toggleMicrophone,
     },
   ];
 
@@ -106,35 +120,35 @@ const ButtonTray = () => {
         active: ScreenShareOutlinedIcon,
         passive: StopScreenShareOutlinedIcon,
       },
-      handleActiveToggle: () => {},
-      handlePassiveToggle: () => {},
+      state: screenShare,
+      handleToggle: toggleScreenShare,
     },
     {
       name: "chatIcon",
       icon: {
         active: ChatRoundedIcon,
-        passive: SpeakerNotesOffRoundedIcon,
+        passive: ChatRoundedIcon,
       },
-      handleActiveToggle: () => {},
-      handlePassiveToggle: () => {},
+      state: chat,
+      handleToggle: toggleChat,
     },
     {
       name: "participantIcon",
       icon: {
         active: PeopleAltRoundedIcon,
-        passive: MicOffIcon,
+        passive: PeopleAltRoundedIcon,
       },
-      handleActiveToggle: () => {},
-      handlePassiveToggle: () => {},
+      state: participant,
+      handleToggle: toggleParticipant,
     },
     {
       name: "settingsIcon",
       icon: {
         active: SettingsIcon,
-        passive: MicOffIcon,
+        passive: SettingsIcon,
       },
-      handleActiveToggle: () => {},
-      handlePassiveToggle: () => {},
+      state: setting,
+      handleToggle: toggleSetting,
     },
   ];
 
@@ -153,30 +167,25 @@ const ButtonTray = () => {
       <Grid container className={classes.button_tray_left}>
         {icons_list_left.map((icon, index) => (
           <ButtonInfo
-            key={index}
+            iconOfLeft={true}
             iconActive={icon.icon.active}
             iconPassive={icon.icon.passive}
-            handleActiveToggle={icon.handleActiveToggle}
-            handlePassiveToggle={icon.handlePassiveToggle}
+            state={icon.state}
+            handleToggle={icon.handleToggle}
           />
         ))}
       </Grid>
-      <Button
-        onClick={() => {
-          alert("end call");
-        }}
-        className={classes.end_call}
-      >
+      <Button onClick={() => toggleCall()} className={classes.end_call}>
         <CallEndIcon />
       </Button>
       <Grid container className={classes.button_tray_right}>
         {icons_list_right.map((icon, index) => (
           <ButtonInfo
-            key={index}
+            iconOfLeft={false}
             iconActive={icon.icon.active}
             iconPassive={icon.icon.passive}
-            handleActiveToggle={icon.handleActiveToggle}
-            handlePassiveToggle={icon.handlePassiveToggle}
+            state={icon.state}
+            handleToggle={icon.handleToggle}
           />
         ))}
       </Grid>

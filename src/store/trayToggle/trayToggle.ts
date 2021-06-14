@@ -9,6 +9,7 @@ const initialState = {
   chat: false,
   participant: false,
   call: false,
+  setting: false,
 };
 
 export const trayToggleSlice = createSlice({
@@ -33,6 +34,9 @@ export const trayToggleSlice = createSlice({
     toggleWebcam: (state) => {
       state.webcam = !state.webcam;
     },
+    toggleSetting: (state) => {
+      state.setting = !state.setting;
+    },
   },
 });
 
@@ -46,6 +50,7 @@ export const {
   toggleParticipant,
   toggleScreenShare,
   toggleWebcam,
+  toggleSetting,
 } = trayToggleSlice.actions;
 
 /**
