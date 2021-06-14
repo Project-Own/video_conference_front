@@ -20,7 +20,6 @@ const CAPTURE_MenuItemS: MediaStreamConstraints = {
     autoGainControl: false,
   },
   video: {
-    facingMode: "user",
     frameRate: { ideal: 10, max: 15 },
     width: { ideal: 1280 },
     height: { ideal: 720 },
