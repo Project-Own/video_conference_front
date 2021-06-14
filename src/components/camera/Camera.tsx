@@ -10,9 +10,8 @@ import {
 } from "@material-ui/core";
 import { useEffect, useRef, useState } from "react";
 import { useAudio } from "../../hooks/useAudio";
-import { useVideo } from "../../hooks/useVideo";
+import { useWebcam } from "../../hooks/useWebcam";
 import logo from "../../logo.svg";
-import { Logger } from "../../utils/logger";
 import { Video } from "./CamerStyles";
 const CAPTURE_MenuItemS: MediaStreamConstraints = {
   audio: {
@@ -20,7 +19,12 @@ const CAPTURE_MenuItemS: MediaStreamConstraints = {
     noiseSuppression: true,
     autoGainControl: false,
   },
-  video: { facingMode: "environment", width: 450, height: 348 },
+  video: {
+    facingMode: "user",
+    frameRate: { ideal: 10, max: 15 },
+    width: { ideal: 1280 },
+    height: { ideal: 720 },
+  },
 };
 
 const Camera = () => {
@@ -30,24 +34,25 @@ const Camera = () => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 
-  const [
+  const {
     audioDevices,
     audioTracks,
-    isAudioOn,
+    microphone,
     activeAudioDevice,
-    handleAudioToggle,
+    toggleMicrophone,
     setActiveAudioDevice,
-  ] = useAudio(CAPTURE_MenuItemS);
-  const [
+  } = useAudio(CAPTURE_MenuItemS);
+
+  const {
     videoDevices,
     videoTracks,
-    isVideoOn,
+    webcam,
     activeVideoDevice,
-    handleVideoToggle,
-    setActiveVideoDevice,
-  ] = useVideo(CAPTURE_MenuItemS);
 
-  Logger(activeVideoDevice);
+    setActiveVideoDevice,
+    toggleWebcam,
+  } = useWebcam(CAPTURE_MenuItemS);
+
   /**
    * UseEffect prevents flickering caused by rerendering
    * Toggling of button that causes rerender will caouse
@@ -71,16 +76,16 @@ const Camera = () => {
   }, [audioTracks]);
 
   useEffect(() => {
-    if (isAudioOn) {
+    if (microphone) {
       setIsAudioPlaying(false);
     }
-  }, [isAudioOn]);
+  }, [microphone]);
 
   useEffect(() => {
-    if (isVideoOn) {
+    if (webcam) {
       setIsVideoPlaying(false);
     }
-  }, [isVideoOn]);
+  }, [webcam]);
 
   return (
     <Card>
@@ -92,15 +97,15 @@ const Camera = () => {
       >
         <Video
           ref={videoRef}
-          // hidden={!isVideoOn}
+          // hidden={!webcam}
           poster={logo}
           onCanPlayThrough={() => {
             setIsVideoPlaying(true);
             videoRef.current?.play().catch((e) => {
-              Logger(e);
+              console.log(e);
             });
           }}
-          onError={() => Logger("Something went wrorn in video")}
+          onError={() => console.log("Something went wrorn in video")}
           autoPlay
           playsInline
           muted
@@ -113,7 +118,7 @@ const Camera = () => {
           onCanPlayThrough={() => {
             setIsAudioPlaying(true);
             audioRef.current?.play().catch((e) => {
-              Logger(e);
+              console.log(e);
             });
           }}
           ref={audioRef}
@@ -121,20 +126,20 @@ const Camera = () => {
       </CardContent>
       <CardActions>
         <Button
-          disabled={!isVideoPlaying && isVideoOn}
+          disabled={!isVideoPlaying && webcam}
           onClick={() => {
-            handleVideoToggle();
+            toggleWebcam();
           }}
         >
-          {!isVideoOn ? "Open Webcam" : "Close Webcam"}
+          {!webcam ? "Open Webcam" : "Close Webcam"}
         </Button>
         <Button
-          disabled={!isAudioPlaying && isAudioOn}
+          disabled={!isAudioPlaying && microphone}
           onClick={() => {
-            handleAudioToggle();
+            toggleMicrophone();
           }}
         >
-          {!isAudioOn ? "Open Microphone" : "Close Microphone"}
+          {!microphone ? "Open Microphone" : "Close Microphone"}
         </Button>
         <FormControl>
           <InputLabel htmlFor="audio-input-device">
@@ -153,8 +158,9 @@ const Camera = () => {
                 device = audioDevices.filter(
                   (device) => device.deviceId === id
                 );
+
                 if (device.length !== 0) {
-                  return `📸  ${device[0].label} `;
+                  return `🎙  ${device[0].label} `;
                 }
               }
             }}

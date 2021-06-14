@@ -1,4 +1,3 @@
-import { Logger } from "./logger";
 /**
  *
  * Returns Devices available for taking input/output for specified device kind.
@@ -7,9 +6,15 @@ export const getAvailableMediaDevices = async (
   deviceType: MediaDeviceKind,
   setDevices: (devices: MediaDeviceInfo[] | null) => void
 ) => {
+  const tracks = await getMediaTracks({ audio: true, video: true }, () => {
+    // console.log("Opening now");
+  });
+  closeMediaTracks(tracks!, () => {
+    // console.log("closing NOw");
+  });
   const devices = await navigator.mediaDevices
     .enumerateDevices()
-    .catch((err) => Logger(err));
+    .catch((err) => console.log(err));
 
   if (devices) {
     const deviceArr = devices.filter(
@@ -41,7 +46,7 @@ export const closeMediaTracks = (
  * Is_*_Playing state stores the operational status of audio/video.
  * When audio or video is ready to play, this state is active/true.
  * */
-export type MediaDeviceName = "Audio" | "Video" | "Screen Share";
+export type MediaDeviceName = "Audio" | "Video" | "Screen Share" | "Speaker";
 export const handleMediaDeviceToggle = (
   deviceName: MediaDeviceName,
   isDeviceOn: boolean,
@@ -49,10 +54,10 @@ export const handleMediaDeviceToggle = (
 ) => {
   if (!isDeviceOn) {
     setIsDeviceOn(true);
-    Logger(`${deviceName} On`);
+    console.log(`${deviceName} On`);
   } else {
     setIsDeviceOn(false);
-    Logger(`${deviceName} Off`);
+    console.log(`${deviceName} Off`);
   }
 };
 
@@ -64,13 +69,23 @@ export const getMediaTracks = async (
   setTracks: (tracks: MediaStreamTrack[] | null) => void
 ) => {
   try {
-    const stream = await navigator.mediaDevices.getUserMedia(requestedMedia);
-    const tracks = stream.getTracks();
-    if (tracks.length > 0) Logger(`Using tracks device: ${tracks[0].label}`);
-
-    setTracks(tracks);
+    const tracks = await navigator.mediaDevices
+      .getUserMedia(requestedMedia)
+      .catch((e) => {
+        console.log(e);
+      })
+      .then((stream) => {
+        const tracks = stream ? stream.getTracks() : [];
+        if (tracks.length > 0) {
+          setTracks(tracks);
+        } else {
+          console.log("Cannot Use UserMedia");
+        }
+        return tracks;
+      });
+    return tracks;
   } catch (err) {
-    Logger(err);
+    console.log(err);
   }
 };
 /**
@@ -84,9 +99,9 @@ export const getDisplayMedia = async (
   //   navigator.ge;
   //   const stream = await navigator.mediaDevices.get(requestedMedia);
   //   const tracks = stream.getTracks();
-  //   if (tracks.length > 0) Logger(`Using tracks device: ${tracks[0].label}`);
+  //   if (tracks.length > 0) console.log(`Using tracks device: ${tracks[0].label}`);
   //   setTracks(tracks);
   // } catch (err) {
-  //   Logger(err);
+  //   console.log(err);
   // }
 };
