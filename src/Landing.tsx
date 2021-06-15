@@ -50,7 +50,7 @@ const Landing = () => {
 
                     <Grid item xs={2}/>
                     <Grid item xs={4}>
-                        <img src={landingPic}  alt="Landing Image" style={{width:'400px',height:'400px', marginTop:'100px'}}/>
+                        <img src={landingPic}  alt="Landing" style={{width:'400px',height:'400px', marginTop:'100px'}}/>
                     </Grid>
                 </Grid> 
         </div>
