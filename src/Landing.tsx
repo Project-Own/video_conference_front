@@ -12,7 +12,7 @@ const Landing = () => {
             <Header/>   
                 <Grid container>   
                     <Grid item xs={1}/>     
-                    <Grid container direction='column' xs={4}>
+                    <Grid item-container direction='column' xs={4}>
                         <Grid item style={{marginLeft:'150px',marginTop:'100px'}}>
                             <Typography variant='h4'>Virtual Meet</Typography>
                         </Grid>
@@ -50,7 +50,7 @@ const Landing = () => {
 
                     <Grid item xs={2}/>
                     <Grid item xs={4}>
-                        <img src={landingPic}  style={{width:'400px',height:'400px', marginTop:'100px'}}/>
+                        <img src={landingPic}  alt="Landing Image" style={{width:'400px',height:'400px', marginTop:'100px'}}/>
                     </Grid>
                 </Grid> 
         </div>

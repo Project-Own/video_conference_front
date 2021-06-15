@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import { addURLPath } from "../../utils/utils";
 import { Loading } from "../Loading/Loading";
 import loadable from "@loadable/component";
-import Landing from "../../Landing";
+
 
 
 
