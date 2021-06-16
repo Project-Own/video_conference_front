@@ -20,11 +20,15 @@ const LoadableHost = loadable(() => import("../host/Host"), {
 const LoadableLanding = loadable(() => import("src/pages/Landing/Landing"), {
   fallback: <Loading />,
 });
+const LoadableCamera = loadable(() => import("src/components/camera/Camera"), {
+  fallback: <Loading />,
+});
 
 const routes = [
   { path: addURLPath("/"), name: "Home", Component: LoadableLanding },
-  { path: addURLPath("/about"), name: "Home", Component: LoadableHost },
+  { path: addURLPath("/about"), name: "Host", Component: LoadableHost },
   { path: addURLPath("/team"), name: "Home", Component: LoadableHost },
+  { path: addURLPath("/camera"), name: "Camera", Component: LoadableCamera },
 ];
 const Header = () => {
   const nodeRef = useRef(null);
@@ -43,23 +47,13 @@ const Header = () => {
               />
             </Grid>
 
-            <Grid item xs={1}>
-              <Typography variant="h6">
-                <Link to={addURLPath("/team")}>Team</Link>
-              </Typography>
-            </Grid>
-
-            <Grid item xs={1}>
-              <Typography variant="h6">
-                <Link to={addURLPath("/about")}>About</Link>
-              </Typography>
-            </Grid>
-
-            <Grid item xs={1}>
-              <Typography variant="h6">
-                <Link to={addURLPath("/")}>Home</Link>
-              </Typography>
-            </Grid>
+            {routes.map(({ name, path }) => (
+              <Grid item xs={1}>
+                <Typography variant="h6">
+                  <Link to={path}>{name}</Link>
+                </Typography>
+              </Grid>
+            ))}
           </Grid>
         </Toolbar>
 
