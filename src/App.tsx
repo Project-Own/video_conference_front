@@ -1,6 +1,5 @@
 import "./App.css";
-import Landing from "./Landing";
-
+import Landing from './Landing';
 
 //Header stuffs are moved to "./components/header"
 function App() {
