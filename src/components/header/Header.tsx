@@ -1,18 +1,17 @@
-import loadable from "@loadable/component";
+import loadable, { LoadableComponent } from "@loadable/component";
 import Grid from "@material-ui/core/Grid";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import anime from "animejs";
 import { FC, useEffect, useRef } from "react";
-import { BrowserRouter as Router, Link, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import {
   Transition,
   TransitionGroup,
   TransitionStatus,
 } from "react-transition-group";
 import { addURLPath } from "../../utils/utils";
-import Hamburger from "../Hamburger/Hamburger";
 import { Loading } from "../Loading/Loading";
+import NavigationBar from "../NavigationBar/NavigaitionBar";
 
 const LoadableHost = loadable(() => import("../host/Host"), {
   fallback: <Loading />,
@@ -24,11 +23,20 @@ const LoadableCamera = loadable(() => import("src/components/camera/Camera"), {
   fallback: <Loading />,
 });
 
-const routes = [
+export interface RoutePath {
+  path: string;
+  name: string;
+  Component: LoadableComponent<unknown>;
+}
+const routes: RoutePath[] = [
   { path: addURLPath("/"), name: "Home", Component: LoadableLanding },
   { path: addURLPath("/about"), name: "Host", Component: LoadableHost },
   { path: addURLPath("/team"), name: "Home", Component: LoadableHost },
-  { path: addURLPath("/camera"), name: "Camera", Component: LoadableCamera },
+  {
+    path: addURLPath("/camera"),
+    name: "Camera man of the season",
+    Component: LoadableCamera,
+  },
 ];
 const Header = () => {
   const nodeRef = useRef(null);
@@ -36,24 +44,22 @@ const Header = () => {
     <Router>
       <div>
         <Toolbar>
-          <Grid container direction="row-reverse">
-            <Grid item xs={1}>
-              <Hamburger
-                height="24"
-                width="24"
-                stroke="blue"
-                strokeWidth="3"
-                toggle={() => {}}
-              />
-            </Grid>
+          <Grid
+            container
+            direction="row"
+            alignItems="center"
+            justify="flex-end"
+            xs={12}
+          >
+            <NavigationBar routes={routes} />
 
-            {routes.map(({ name, path }) => (
+            {/* {routes.map(({ name, path }) => (
               <Grid item xs={1}>
                 <Typography variant="h6">
                   <Link to={path}>{name}</Link>
                 </Typography>
               </Grid>
-            ))}
+            ))} */}
           </Grid>
         </Toolbar>
 
@@ -98,18 +104,26 @@ const TransitionComponent: FC<{ status: TransitionStatus }> = ({
         if (status === "entering" || status === "entered") {
           return ["-100%", "0%"];
         }
-        // else if (status === "exiting") {
-        //   return ["0%", "100%"];
-        // }
+      },
+      translateY: () => {
+        if (status === "exiting") {
+          return ["0%", "100%"];
+        }
       },
       elasticity: () => {
         if (status === "entering" || status === "entered") {
-          return 300;
+          return 0.1;
+        } else if (status === "exiting") {
+          return 0;
         }
-        // else if (status === "exiting") {
-        //   return 0;
-        // }
         return 0;
+      },
+      opacity: () => {
+        if (status === "entering" || status === "entered") {
+          return [0, 1];
+        } else if (status === "exiting") {
+          return [1, 0];
+        }
       },
       duration: 1000,
     });

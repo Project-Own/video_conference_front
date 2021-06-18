@@ -10,7 +10,8 @@ const Hamburger: FC<SVGProps<SVGSVGElement> & { toggle?: () => void }> = (
   const bottomRef = useRef<SVGPathElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
 
-  const toggle = props.toggle!;
+  let { toggle, ...otherProps } = props;
+
   useEffect(() => {
     const easingIn = "easeInOutElastic(1, .6)";
     const easingOut = "easeOutElastic(1, .6)";
@@ -63,7 +64,7 @@ const Hamburger: FC<SVGProps<SVGSVGElement> & { toggle?: () => void }> = (
       ref={svgRef}
       onClick={() => {
         toggleState(!state);
-        toggle();
+        if (toggle) toggle();
       }}
       onMouseOver={() => {
         anime({
@@ -82,7 +83,7 @@ const Hamburger: FC<SVGProps<SVGSVGElement> & { toggle?: () => void }> = (
         });
       }}
       viewBox="0 0 20 20"
-      {...props}
+      {...otherProps}
     >
       <path ref={topRef} d="M 2 2.5 L 20 2.5 Z"></path>
       <path ref={middleRef} d="M 2 9.423 L 20 9.423 Z"></path>
