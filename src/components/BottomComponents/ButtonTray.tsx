@@ -1,4 +1,5 @@
 import Button from "@material-ui/core/Button";
+import Drawer from "@material-ui/core/Drawer";
 import Grid from "@material-ui/core/Grid";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import CallEndIcon from "@material-ui/icons/CallEnd";
@@ -12,6 +13,8 @@ import StopScreenShareOutlinedIcon from "@material-ui/icons/StopScreenShareOutli
 import VideocamOffOutlinedIcon from "@material-ui/icons/VideocamOffOutlined";
 import VideocamOutlinedIcon from "@material-ui/icons/VideocamOutlined";
 import { useTray } from "../../hooks/useTray";
+import ChatGrid from "../chatGrid";
+import ParticipantGrid from "../participantGrid";
 import ButtonInfo from "./ButtonInfo";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -70,6 +73,10 @@ const useStyles = makeStyles((theme: Theme) =>
       zIndex: 1,
       paddingLeft: "14px",
       justifyContent: "space-around",
+    },
+    drawer: {
+      width: "320px",
+      background: "#A4A4A4",
     },
   })
 );
@@ -167,6 +174,7 @@ const ButtonTray = () => {
       <Grid container className={classes.button_tray_left}>
         {icons_list_left.map((icon, index) => (
           <ButtonInfo
+            key={index}
             iconOfLeft={true}
             iconActive={icon.icon.active}
             iconPassive={icon.icon.passive}
@@ -181,6 +189,7 @@ const ButtonTray = () => {
       <Grid container className={classes.button_tray_right}>
         {icons_list_right.map((icon, index) => (
           <ButtonInfo
+            key={index}
             iconOfLeft={false}
             iconActive={icon.icon.active}
             iconPassive={icon.icon.passive}
@@ -189,6 +198,24 @@ const ButtonTray = () => {
           />
         ))}
       </Grid>
+      <Drawer
+        classes={{ paper: classes.drawer }}
+        anchor="right"
+        open={chat}
+        onClose={toggleChat}
+        transitionDuration={{ enter: 600, exit: 300 }}
+      >
+        <ChatGrid />
+      </Drawer>
+      <Drawer
+        classes={{ paper: classes.drawer }}
+        anchor="right"
+        open={participant}
+        onClose={toggleParticipant}
+        transitionDuration={{ enter: 600, exit: 300 }}
+      >
+        <ParticipantGrid />
+      </Drawer>
     </Grid>
   );
 };

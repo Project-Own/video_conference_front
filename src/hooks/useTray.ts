@@ -6,8 +6,8 @@ import {
   toggleMicrophone,
   toggleParticipant,
   toggleScreenShare,
-  toggleWebcam,
   toggleSetting,
+  toggleWebcam,
 } from "./../store/trayToggle/trayToggle";
 import { useAppDispatch, useAppSelector } from "./redux-hooks";
 

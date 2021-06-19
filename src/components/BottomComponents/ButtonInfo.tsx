@@ -21,7 +21,7 @@ const ButtonInfo = (props: IconInterface) => {
         minWidth: "44px",
         minHeight: "44px",
         maxWidth: "44px",
-        background: state ? "#FFFFFF" : iconOfLeft ? "#8b0000" : "#32CD32",
+        background: state ? "#FFFFFF" : iconOfLeft ? "#8b0000" : "#4CBB17",
         color: state ? "rgb(52,52,52)" : "white",
         boxShadow: "0px 4px 6px 2px rgba(0, 0, 0, 0.30)",
         mixBlendMode: "overlay",
