@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import CloseIcon from "@material-ui/icons/Close";
 import SearchIcon from "@material-ui/icons/Search";
 import React, { useState } from "react";
-import { useTray } from "../hooks/useTray";
+import { useTray } from "../../hooks/useTray";
 import ParticipantList from "./participantList";
 
 const useStyles = makeStyles((theme: Theme) =>

@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const VideoFeed = () => {
+const BottomBar = () => {
   const isHost = true;
   const [ar_text, setar_text] = useState(false);
   const classes = useStyles();
@@ -68,4 +68,4 @@ const VideoFeed = () => {
   );
 };
 
-export default VideoFeed;
+export default BottomBar;

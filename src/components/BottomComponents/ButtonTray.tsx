@@ -13,8 +13,8 @@ import StopScreenShareOutlinedIcon from "@material-ui/icons/StopScreenShareOutli
 import VideocamOffOutlinedIcon from "@material-ui/icons/VideocamOffOutlined";
 import VideocamOutlinedIcon from "@material-ui/icons/VideocamOutlined";
 import { useTray } from "../../hooks/useTray";
-import ChatGrid from "../chatGrid";
-import ParticipantGrid from "../participantGrid";
+import ChatGrid from "../gridview/chatGrid";
+import ParticipantGrid from "../gridview/participantGrid";
 import ButtonInfo from "./ButtonInfo";
 
 const useStyles = makeStyles((theme: Theme) =>

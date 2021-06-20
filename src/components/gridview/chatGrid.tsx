@@ -11,8 +11,8 @@ import CloseIcon from "@material-ui/icons/Close";
 import SendIcon from "@material-ui/icons/Send";
 import React, { useState } from "react";
 import { ThemeProvider } from "styled-components";
-import { useTray } from "../hooks/useTray";
-import theme from "../themes/theme";
+import { useTray } from "../../hooks/useTray";
+import theme from "../../themes/theme";
 import MessageList from "./messageList";
 
 const useStyles = makeStyles((theme: Theme) =>

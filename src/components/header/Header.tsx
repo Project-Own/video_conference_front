@@ -29,7 +29,7 @@ const LoadableCombine = loadable(
   }
 );
 const LoadableGridview = loadable(
-  () => import("src/components/conferenceGridView"),
+  () => import("src/components/gridview/conferenceGridView"),
   {
     fallback: <Loading />,
   }
@@ -63,6 +63,7 @@ const Header = () => {
             direction="row"
             alignItems="center"
             justify="flex-end"
+            xs={12}
           >
             <NavigationBar routes={routes} />
 
