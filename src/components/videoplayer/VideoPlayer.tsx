@@ -47,7 +47,7 @@ const VideoPlayer = () => {
     if (otherVideoRef.current) {
       const stream = context?.otherStreams!;
 
-      console.log(stream);
+      console.log(stream[0]);
       otherVideoRef.current.srcObject = stream[0];
       // ? new MediaStream(videoTracks)
       // : null;

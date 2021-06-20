@@ -50,13 +50,13 @@ const NavigationBar: FC<{ routes: RoutePath[] }> = ({ routes }) => {
       spacing={2}
     >
       {routes.map(({ name, path }) => (
-        <Grid item hidden={hidden}>
+        <Grid item hidden={hidden} key={path}>
           <Typography variant="h6" className="list">
             <Link to={path}>{name}</Link>
           </Typography>
         </Grid>
       ))}
-      <Grid item xs={1} alignContent="center">
+      <Grid item xs={1}>
         <Hamburger
           height="24"
           width="24"
