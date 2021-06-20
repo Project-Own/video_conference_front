@@ -1,9 +1,8 @@
 import { AppBar, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import React from "react";
 import Notifications from "../notification/Notification";
 import Sidebar from "../slidebar/Slidebar";
-import VideoPlayer from "../videoplayer/VideoPlayer";
+import VideoPlayerCollection from "../videoplayer/VideoPlayerCollection";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -41,7 +40,7 @@ const Combine = () => {
           Video Chat
         </Typography>
       </AppBar>
-      <VideoPlayer />
+      <VideoPlayerCollection />
       <Sidebar>
         <Notifications />
       </Sidebar>

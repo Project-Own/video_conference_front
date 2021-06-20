@@ -56,49 +56,21 @@ const ContextProvider: FC = ({ children }) => {
   const [call, setCall] = useState<CallProps>();
   const [me, setMe] = useState("");
 
-  // const myVideo = useRef<HTMLVideoElement>(null);
-  // const userVideo = useRef<HTMLVideoElement>(null);
   const connectionRef = useRef<Peer.Instance>();
-
-  // console.log("myVideo");
-  // console.log(myVideo);
-  // console.log("userVideo");
-  // console.log(userVideo);
-  const {
-    // audioDevices,
-    // microphone,
-    // activeAudioDevice,
-    // setActiveAudioDevice,
-
-    audioTracks,
-    toggleMicrophone,
-  } = useAudio(CAPTURE_MEDIA);
-
-  const {
-    // videoDevices,
-    // webcam,
-    // activeVideoDevice,
-    // setActiveVideoDevice,
-
-    videoTracks,
-    toggleWebcam,
-  } = useWebcam(CAPTURE_MEDIA);
 
   const history = useHistory();
 
+  const { videoTracks, toggleWebcam } = useWebcam(CAPTURE_MEDIA);
+  const { audioTracks, toggleMicrophone } = useAudio(CAPTURE_MEDIA);
+
+  console.log("Hello");
   useEffect(() => {
-    let outputTracks: MediaStreamTrack[] = [];
-    outputTracks = videoTracks
-      ? outputTracks.concat(videoTracks!)
-      : outputTracks;
-    outputTracks = audioTracks
-      ? outputTracks.concat(audioTracks!)
-      : outputTracks;
+    const stream = new MediaStream();
+    if (videoTracks) videoTracks.forEach((track) => stream.addTrack(track));
+    if (audioTracks) audioTracks.forEach((track) => stream.addTrack(track));
 
-    const stream = new MediaStream(outputTracks);
     setStream(stream);
-  }, [audioTracks, videoTracks]);
-
+  }, [videoTracks, audioTracks]);
   useEffect(() => {
     console.log("before");
     // navigator.mediaDevices
@@ -106,16 +78,11 @@ const ContextProvider: FC = ({ children }) => {
     //   .then((currentStream) => {
     //     setStream(currentStream);
     //     console.log("after");
-    //     const s: any = [currentStream];
-    //     const h: any = [currentStream, ...s];
 
-    //     console.log(h);
-    //     console.log(h[0]);
     //     // if (myVideo.current) {
     //     //   myVideo.current.srcObject = currentStream;
     //     // }
     //   });
-
     toggleWebcam();
     toggleMicrophone();
 
@@ -138,8 +105,11 @@ const ContextProvider: FC = ({ children }) => {
 
     peer.on("stream", (currentStream) => {
       console.log("Stream");
-
-      setOtherStreams([...otherStreams!, currentStream]);
+      if (otherStreams) {
+        setOtherStreams([...otherStreams, currentStream]);
+      } else {
+        setOtherStreams([currentStream]);
+      }
       // if (userVideo.current) {
       //   userVideo.current.srcObject = currentStream;
       // }
@@ -163,7 +133,11 @@ const ContextProvider: FC = ({ children }) => {
     });
 
     peer.on("stream", (currentStream) => {
-      setOtherStreams([currentStream]);
+      if (otherStreams) {
+        setOtherStreams([...otherStreams, currentStream]);
+      } else {
+        setOtherStreams([currentStream]);
+      }
 
       // if (userVideo.current) {
       //   userVideo.current.srcObject = currentStream;
