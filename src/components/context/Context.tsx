@@ -1,6 +1,6 @@
 import React, { createContext, FC, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import Peer from "simple-peer";
+import Peer, { SignalData } from "simple-peer";
 import { io } from "socket.io-client";
 import { useAudio } from "src/hooks/useAudio";
 import { useWebcam } from "src/hooks/useWebcam";
@@ -11,14 +11,14 @@ interface CallProps {
   isReceivingCall: boolean;
   from: string;
   name: string;
-  signal: any;
+  signal: SignalData;
 }
-
+/**
+ * Props
+ * */
 interface SocketContextProps {
   call: CallProps | undefined;
   callAccepted: boolean;
-  // myVideo: React.RefObject<HTMLVideoElement>;
-  // userVideo: React.RefObject<HTMLVideoElement>;
   stream: MediaStream | undefined;
   otherStreams: MediaStream[] | undefined;
   name: string;
@@ -30,9 +30,15 @@ interface SocketContextProps {
   answerCall: () => void;
 }
 
+/**
+ * Server Connection
+ * */
 // const socket = io('http://localhost:5000');
 const socket = io("https://video-conference-ar.herokuapp.com/");
 
+/**
+ * CAPTURE_MEDIA settings
+ * */
 const CAPTURE_MEDIA: MediaStreamConstraints = {
   audio: {
     echoCancellation: true,
@@ -46,6 +52,10 @@ const CAPTURE_MEDIA: MediaStreamConstraints = {
   },
 };
 
+/**
+ *
+ * ContextProvider
+ * */
 const ContextProvider: FC = ({ children }) => {
   console.log("how how");
   const [callAccepted, setCallAccepted] = useState(false);
@@ -64,6 +74,11 @@ const ContextProvider: FC = ({ children }) => {
   const { audioTracks, toggleMicrophone } = useAudio(CAPTURE_MEDIA);
 
   console.log("Hello");
+
+  /**
+   *
+   * update video and audio tracks
+   * */
   useEffect(() => {
     const stream = new MediaStream();
     if (videoTracks) videoTracks.forEach((track) => stream.addTrack(track));
@@ -71,18 +86,13 @@ const ContextProvider: FC = ({ children }) => {
 
     setStream(stream);
   }, [videoTracks, audioTracks]);
+  /**
+   *
+   * ComponentDiDMount
+   * */
   useEffect(() => {
     console.log("before");
-    // navigator.mediaDevices
-    //   .getUserMedia({ video: true, audio: true })
-    //   .then((currentStream) => {
-    //     setStream(currentStream);
-    //     console.log("after");
 
-    //     // if (myVideo.current) {
-    //     //   myVideo.current.srcObject = currentStream;
-    //     // }
-    //   });
     toggleWebcam();
     toggleMicrophone();
 
@@ -94,6 +104,10 @@ const ContextProvider: FC = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /**
+   *
+   * Answer Call
+   * */
   const answerCall = () => {
     setCallAccepted(true);
 
@@ -105,21 +119,23 @@ const ContextProvider: FC = ({ children }) => {
 
     peer.on("stream", (currentStream) => {
       console.log("Stream");
+      console.log("HEYYYY");
+
       if (otherStreams) {
         setOtherStreams([...otherStreams, currentStream]);
       } else {
         setOtherStreams([currentStream]);
       }
-      // if (userVideo.current) {
-      //   userVideo.current.srcObject = currentStream;
-      // }
     });
 
-    peer.signal(call?.signal);
+    peer.signal(call?.signal!);
 
     connectionRef.current = peer;
   };
 
+  /**
+   * Call User
+   * */
   const callUser = (id: string) => {
     const peer = new Peer({ initiator: true, trickle: false, stream });
 
@@ -133,18 +149,15 @@ const ContextProvider: FC = ({ children }) => {
     });
 
     peer.on("stream", (currentStream) => {
+      console.log("HEYYYY");
       if (otherStreams) {
         setOtherStreams([...otherStreams, currentStream]);
       } else {
         setOtherStreams([currentStream]);
       }
-
-      // if (userVideo.current) {
-      //   userVideo.current.srcObject = currentStream;
-      // }
     });
 
-    socket.on("callAccepted", (signal) => {
+    socket.on("callAccepted", (signal: SignalData) => {
       setCallAccepted(true);
 
       peer.signal(signal);
@@ -153,11 +166,13 @@ const ContextProvider: FC = ({ children }) => {
     connectionRef.current = peer;
   };
 
+  /**
+   * LeaveCall
+   *
+   * */
   const leaveCall = () => {
     setCallEnded(true);
-
     connectionRef.current?.destroy();
-
     history.go(0);
   };
 

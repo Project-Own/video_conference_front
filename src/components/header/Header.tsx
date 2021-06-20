@@ -10,6 +10,7 @@ import {
   TransitionStatus,
 } from "react-transition-group";
 import { addURLPath } from "../../utils/utils";
+import { ContextProvider } from "../context/Context";
 import { Loading } from "../Loading/Loading";
 import NavigationBar from "../NavigationBar/NavigaitionBar";
 
@@ -56,50 +57,53 @@ const Header = () => {
   const nodeRef = useRef(null);
   return (
     <Router>
-      <div>
-        <Toolbar>
-          <Grid
-            container
-            direction="row"
-            alignItems="center"
-            justify="flex-end"
-          >
-            <NavigationBar routes={routes} />
+      <ContextProvider>
+        {" "}
+        <div>
+          <Toolbar>
+            <Grid
+              container
+              direction="row"
+              alignItems="center"
+              justify="flex-end"
+            >
+              <NavigationBar routes={routes} />
 
-            {/* {routes.map(({ name, path }) => (
+              {/* {routes.map(({ name, path }) => (
               <Grid item xs={1}>
                 <Typography variant="h6">
                   <Link to={path}>{name}</Link>
                 </Typography>
               </Grid>
             ))} */}
-          </Grid>
-        </Toolbar>
+            </Grid>
+          </Toolbar>
 
-        <TransitionGroup>
-          {routes.map(({ path, Component }) => (
-            <Route key={path} exact path={path}>
-              {({ match }) => (
-                <Transition
-                  nodeRef={nodeRef}
-                  in={match != null}
-                  timeout={0}
-                  unmountOnExit
-                  mountOnEnter
-                >
-                  {(status) => {
-                    return (
-                      <TransitionComponent status={status}>
-                        <Component />
-                      </TransitionComponent>
-                    );
-                  }}
-                </Transition>
-              )}
-            </Route>
-          ))}
-        </TransitionGroup>
-      </div>
+          <TransitionGroup>
+            {routes.map(({ path, Component }) => (
+              <Route key={path} exact path={path}>
+                {({ match }) => (
+                  <Transition
+                    nodeRef={nodeRef}
+                    in={match != null}
+                    timeout={0}
+                    unmountOnExit
+                    mountOnEnter
+                  >
+                    {(status) => {
+                      return (
+                        <TransitionComponent status={status}>
+                          <Component />
+                        </TransitionComponent>
+                      );
+                    }}
+                  </Transition>
+                )}
+              </Route>
+            ))}
+          </TransitionGroup>
+        </div>
+      </ContextProvider>
     </Router>
   );
 };
