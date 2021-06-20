@@ -63,7 +63,6 @@ const Header = () => {
             direction="row"
             alignItems="center"
             justify="flex-end"
-            xs={12}
           >
             <NavigationBar routes={routes} />
 

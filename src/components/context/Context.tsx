@@ -2,6 +2,8 @@ import React, { createContext, FC, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import Peer from "simple-peer";
 import { io } from "socket.io-client";
+import { useAudio } from "src/hooks/useAudio";
+import { useWebcam } from "src/hooks/useWebcam";
 
 const SocketContext = createContext<SocketContextProps>(undefined!);
 
@@ -31,6 +33,19 @@ interface SocketContextProps {
 // const socket = io('http://localhost:5000');
 const socket = io("https://video-conference-ar.herokuapp.com/");
 
+const CAPTURE_MEDIA: MediaStreamConstraints = {
+  audio: {
+    echoCancellation: true,
+    noiseSuppression: true,
+    autoGainControl: false,
+  },
+  video: {
+    frameRate: { ideal: 10, max: 15 },
+    width: { ideal: 1280 },
+    height: { ideal: 720 },
+  },
+};
+
 const ContextProvider: FC = ({ children }) => {
   console.log("how how");
   const [callAccepted, setCallAccepted] = useState(false);
@@ -41,33 +56,42 @@ const ContextProvider: FC = ({ children }) => {
   const [call, setCall] = useState<CallProps>();
   const [me, setMe] = useState("");
 
-  // const myVideo = useRef<HTMLVideoElement>(null);
-  // const userVideo = useRef<HTMLVideoElement>(null);
   const connectionRef = useRef<Peer.Instance>();
 
-  // console.log("myVideo");
-  // console.log(myVideo);
-  // console.log("userVideo");
-  // console.log(userVideo);
-
   const history = useHistory();
+
+  const { videoTracks, toggleWebcam } = useWebcam(CAPTURE_MEDIA);
+  const { audioTracks, toggleMicrophone } = useAudio(CAPTURE_MEDIA);
+
+  console.log("Hello");
+  useEffect(() => {
+    const stream = new MediaStream();
+    if (videoTracks) videoTracks.forEach((track) => stream.addTrack(track));
+    if (audioTracks) audioTracks.forEach((track) => stream.addTrack(track));
+
+    setStream(stream);
+  }, [videoTracks, audioTracks]);
   useEffect(() => {
     console.log("before");
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((currentStream) => {
-        setStream(currentStream);
-        console.log("after");
-        // if (myVideo.current) {
-        //   myVideo.current.srcObject = currentStream;
-        // }
-      });
+    // navigator.mediaDevices
+    //   .getUserMedia({ video: true, audio: true })
+    //   .then((currentStream) => {
+    //     setStream(currentStream);
+    //     console.log("after");
+
+    //     // if (myVideo.current) {
+    //     //   myVideo.current.srcObject = currentStream;
+    //     // }
+    //   });
+    toggleWebcam();
+    toggleMicrophone();
 
     socket.on("me", (id) => setMe(id));
 
     socket.on("callUser", ({ from, name: callerName, signal }) => {
       setCall({ isReceivingCall: true, from, name: callerName, signal });
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const answerCall = () => {
@@ -81,8 +105,11 @@ const ContextProvider: FC = ({ children }) => {
 
     peer.on("stream", (currentStream) => {
       console.log("Stream");
-
-      setOtherStreams([currentStream]);
+      if (otherStreams) {
+        setOtherStreams([...otherStreams, currentStream]);
+      } else {
+        setOtherStreams([currentStream]);
+      }
       // if (userVideo.current) {
       //   userVideo.current.srcObject = currentStream;
       // }
@@ -106,7 +133,11 @@ const ContextProvider: FC = ({ children }) => {
     });
 
     peer.on("stream", (currentStream) => {
-      setOtherStreams([currentStream]);
+      if (otherStreams) {
+        setOtherStreams([...otherStreams, currentStream]);
+      } else {
+        setOtherStreams([currentStream]);
+      }
 
       // if (userVideo.current) {
       //   userVideo.current.srcObject = currentStream;
