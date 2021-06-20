@@ -1,6 +1,7 @@
 import { ListItemText, Typography } from "@material-ui/core";
 import Divider from "@material-ui/core/Divider";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import { FC } from "react";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -14,15 +15,22 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const ParticipantList = (props: any) => {
+interface participantInterface {
+  id: number;
+  name: string;
+}
+
+const ParticipantList: FC<{ participants: participantInterface[] }> = ({
+  participants,
+}) => {
   //   const { text, senderId } = props;
   //   console.log(props);
   const classes = useStyles();
-  const { participants } = props;
+  // const { participants } = props;
   //   console.log(participants);
   return (
     <>
-      {participants.map((participant: any, index: number) => {
+      {participants.map((participant: participantInterface, index: number) => {
         return (
           <>
             <ListItemText style={{ margin: "12px" }}>

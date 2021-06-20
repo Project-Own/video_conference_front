@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import CloseIcon from "@material-ui/icons/Close";
 import SearchIcon from "@material-ui/icons/Search";
 import React, { useState } from "react";
-import { useTray } from "../hooks/useTray";
+import { useTray } from "../../hooks/useTray";
 import ParticipantList from "./participantList";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -79,7 +79,7 @@ const ParticipantGrid = () => {
   //   const [name, setname] = useState([{ id: 1, name: "Nirjal Prajapati" }]);
   const [fieldValue, setfieldValue] = useState("");
 
-  const handleSearch = (e: any) => {
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setfieldValue("");
     // console.log(e);
@@ -87,7 +87,9 @@ const ParticipantGrid = () => {
 
   //   setname([...name, { id: 2, name: fieldValue }]);
 
-  const handleChange = (e: any) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
     setfieldValue(e.target.value);
   };
 
@@ -112,7 +114,7 @@ const ParticipantGrid = () => {
             disableUnderline: true,
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton onClick={handleSearch}>
+                <IconButton type="submit">
                   <SearchIcon />
                 </IconButton>
               </InputAdornment>

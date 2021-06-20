@@ -30,7 +30,7 @@ const LoadableCombine = loadable(
   }
 );
 const LoadableGridview = loadable(
-  () => import("src/components/conferenceGridView"),
+  () => import("src/components/gridview/conferenceGridView"),
   {
     fallback: <Loading />,
   }
@@ -58,7 +58,6 @@ const Header = () => {
   return (
     <Router>
       <ContextProvider>
-        {" "}
         <div>
           <Toolbar>
             <Grid
