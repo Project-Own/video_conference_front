@@ -9,9 +9,9 @@ import {
   Select,
 } from "@material-ui/core";
 import { useEffect, useRef, useState } from "react";
+import logo from "src/assests/logo.svg";
 import { useAudio } from "../../hooks/useAudio";
 import { useWebcam } from "../../hooks/useWebcam";
-import logo from "../../logo.svg";
 import { Video } from "./CamerStyles";
 const CAPTURE_MenuItemS: MediaStreamConstraints = {
   audio: {
@@ -20,7 +20,6 @@ const CAPTURE_MenuItemS: MediaStreamConstraints = {
     autoGainControl: false,
   },
   video: {
-    facingMode: "user",
     frameRate: { ideal: 10, max: 15 },
     width: { ideal: 1280 },
     height: { ideal: 720 },
