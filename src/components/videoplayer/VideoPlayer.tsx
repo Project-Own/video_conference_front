@@ -1,5 +1,5 @@
-import { Grid, makeStyles, Paper, Typography } from "@material-ui/core";
-import React, { useContext, useEffect, useRef } from "react";
+import { makeStyles, Paper, Typography } from "@material-ui/core";
+import { FC, useContext, useEffect, useRef } from "react";
 import { SocketContext } from "../context/Context";
 
 const useStyles = makeStyles((theme) => ({
@@ -22,71 +22,30 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const VideoPlayer = () => {
+const VideoPlayer: FC<{ stream: MediaStream }> = ({ stream }) => {
   const context = useContext(SocketContext);
 
   const classes = useStyles();
 
-  // console.log("myVideoVideoPlayer");
-  // console.log(context?.myVideo);
-  // console.log("userVideoVideoPlayer");
-  // console.log(context?.userVideo);
-
-  const myVideoRef = useRef<HTMLVideoElement>(null);
-  const otherVideoRef = useRef<HTMLVideoElement>(null);
-
+  const videoRef = useRef<HTMLVideoElement>(null);
   useEffect(() => {
-    if (myVideoRef.current) {
-      myVideoRef.current.srcObject = context?.stream!;
-      // ? new MediaStream(videoTracks)
-      // : null;
-    }
-  }, [context?.stream]);
+    if (videoRef.current) videoRef.current.srcObject = stream;
+  }, [stream]);
 
-  useEffect(() => {
-    if (otherVideoRef.current) {
-      const stream = context?.otherStreams!;
-
-      console.log(stream);
-      otherVideoRef.current.srcObject = stream[0];
-      // ? new MediaStream(videoTracks)
-      // : null;
-    }
-  }, [context?.otherStreams]);
   return (
-    <Grid container className={classes.gridContainer}>
-      {context?.stream && (
-        <Paper className={classes.paper}>
-          <Grid item xs={12} md={6}>
-            <Typography variant="h5" gutterBottom>
-              {context?.name || "Name"}
-            </Typography>
-            <video
-              playsInline
-              muted
-              ref={myVideoRef}
-              autoPlay
-              className={classes.video}
-            />
-          </Grid>
-        </Paper>
-      )}
-      {context?.callAccepted && !context?.callEnded && (
-        <Paper className={classes.paper}>
-          <Grid item xs={12} md={6}>
-            <Typography variant="h5" gutterBottom>
-              {context?.call?.name || "Name"}
-            </Typography>
-            <video
-              playsInline
-              ref={otherVideoRef}
-              autoPlay
-              className={classes.video}
-            />
-          </Grid>
-        </Paper>
-      )}
-    </Grid>
+    <Paper className={classes.paper}>
+      <Typography variant="h5" gutterBottom>
+        {context?.name || "Name"}
+      </Typography>
+      <video
+        playsInline
+        muted
+        ref={videoRef}
+        autoPlay
+        placeholder="https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngfind.com%2Fmpng%2FhJmwxix_image-placeholder-png-user-profile-placeholder-image-png%2F&psig=AOvVaw0iiVcShtJUBhqjR9tTaNjv&ust=1624288437068000&source=images&cd=vfe&ved=0CAoQjRxqFwoTCNiLmo3ApvECFQAAAAAdAAAAABAI"
+        className={classes.video}
+      />
+    </Paper>
   );
 };
 

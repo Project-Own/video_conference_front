@@ -1,17 +1,17 @@
 import {
   Button,
   Container,
-  Grid,
-  Paper,
+  Grid, IconButton, Paper,
   TextField,
-  Typography,
+  Typography
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Assignment, Phone, PhoneDisabled } from "@material-ui/icons";
+import CancelIcon from '@material-ui/icons/Cancel';
 import React, { useContext, useState } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import landingPic from "src/assests/landingPic.jpg";
 import { SocketContext } from "../context/Context";
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -43,16 +43,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Sidebar = ({ children }) => {
+const Sidebar = ({ children}) => {
   const { me, callAccepted, name, setName, callEnded, leaveCall, callUser } =
     useContext(SocketContext);
   const [idToCall, setIdToCall] = useState("");
   const classes = useStyles();
 
+  const [host, sethost] = useState(true);
+
   return (
     <Container className={classes.container}>
-      <Paper elevation={10} className={classes.paper}>
+      {
+        host? <Paper elevation={10} className={classes.paper}>
         <form className={classes.root} noValidate autoComplete="off">
+          <Grid container direction="row-reverse">
+            <Grid item>
+              <IconButton onClick = {() => {sethost(!host)}}>
+                <CancelIcon/>
+              </IconButton>
+            </Grid>
+          </Grid>
           <Grid container className={classes.gridContainer}>
             <Grid item xs={12} md={6} className={classes.padding}>
               <Typography gutterBottom variant="h6">
@@ -112,7 +122,12 @@ const Sidebar = ({ children }) => {
           </Grid>
         </form>
         {children}
-      </Paper>
+      </Paper> : <img
+            src={landingPic}
+            alt="Landing"
+            style={{ width: "400px", height: "400px", marginTop: "100px" }}
+          />
+      }
     </Container>
   );
 };

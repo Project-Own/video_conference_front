@@ -1,7 +1,17 @@
 import { Button, Grid, Typography } from "@material-ui/core";
+import { useState } from "react";
 import landingPic from "src/assests/landingPic.jpg";
+import Combine from "src/components/Combine/combine";
+
+
+
+
+
+
 
 const Landing = () => {
+
+  const [host, sethost] = useState(false);
   return (
     <div>
       <Grid container>
@@ -36,6 +46,7 @@ const Landing = () => {
               <Button
                 variant="contained"
                 style={{ backgroundColor: "#F1F7B3" }}
+                onClick = {() => {sethost(!host)}}
               >
                 Join Meeting
               </Button>
@@ -45,6 +56,7 @@ const Landing = () => {
               <Button
                 variant="contained"
                 style={{ backgroundColor: "#CBF8BB" }}
+                onClick = {() => {sethost(!host)}}
               >
                 Host Meeting
               </Button>
@@ -54,11 +66,13 @@ const Landing = () => {
 
         <Grid item xs={2} />
         <Grid item xs={4}>
-          <img
+          {
+            host? <Combine/> : <img
             src={landingPic}
             alt="Landing"
             style={{ width: "400px", height: "400px", marginTop: "100px" }}
           />
+          }
         </Grid>
       </Grid>
     </div>
