@@ -28,6 +28,12 @@ const LoadableCombine = loadable(
     fallback: <Loading />,
   }
 );
+const LoadableGridview = loadable(
+  () => import("src/components/conferenceGridView"),
+  {
+    fallback: <Loading />,
+  }
+);
 
 export interface RoutePath {
   path: string;
@@ -39,6 +45,7 @@ const routes: RoutePath[] = [
   { path: addURLPath("/about"), name: "Combine", Component: LoadableCombine },
 
   { path: addURLPath("/team"), name: "Host", Component: LoadableHost },
+  { path: addURLPath("/grid"), name: "GRid", Component: LoadableGridview },
   {
     path: addURLPath("/camera"),
     name: "Camera man of the season",
