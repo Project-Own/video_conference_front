@@ -22,6 +22,12 @@ const LoadableLanding = loadable(() => import("src/pages/Landing/Landing"), {
 const LoadableCamera = loadable(() => import("src/components/camera/Camera"), {
   fallback: <Loading />,
 });
+const LoadableCombine = loadable(
+  () => import("src/components/Combine/combine"),
+  {
+    fallback: <Loading />,
+  }
+);
 
 export interface RoutePath {
   path: string;
@@ -30,7 +36,8 @@ export interface RoutePath {
 }
 const routes: RoutePath[] = [
   { path: addURLPath("/"), name: "Home", Component: LoadableLanding },
-  { path: addURLPath("/about"), name: "Host", Component: LoadableHost },
+  { path: addURLPath("/about"), name: "Home", Component: LoadableCombine },
+
   { path: addURLPath("/team"), name: "Home", Component: LoadableHost },
   {
     path: addURLPath("/camera"),
