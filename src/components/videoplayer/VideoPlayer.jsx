@@ -30,6 +30,11 @@ const VideoPlayer = () => {
   console.log(context);
   const classes = useStyles();
 
+  console.log("UserVideo");
+  console.log("UserVideo");
+  console.log("UserVideo");
+  console.log("UserVideo");
+  console.log(context.userVideo);
   return (
     <Grid container className={classes.gridContainer}>
       {stream && (
