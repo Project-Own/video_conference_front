@@ -33,7 +33,7 @@ export const useAudio = (requestedMedia: MediaStreamConstraints) => {
       mediaTrackConstraint = DEFAULT_AUDIO_CONSTRAINTS.audio;
     } else {
       mediaTrackConstraint = requestedMedia
-        ? requestedMedia.audio
+        ? { ...DEFAULT_AUDIO_CONSTRAINTS["audio"], ...requestedMedia.audio }
         : DEFAULT_AUDIO_CONSTRAINTS["audio"];
     }
 

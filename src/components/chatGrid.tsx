@@ -10,7 +10,9 @@ import Typography from "@material-ui/core/Typography";
 import CloseIcon from "@material-ui/icons/Close";
 import SendIcon from "@material-ui/icons/Send";
 import React, { useState } from "react";
+import { ThemeProvider } from "styled-components";
 import { useTray } from "../hooks/useTray";
+import theme from "../themes/theme";
 import MessageList from "./messageList";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -45,6 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
       overflow: "auto",
       overflowWrap: "anywhere",
       flexDirection: "column-reverse",
+
       // flexFlow: "column wrap",
     },
     textField: {
@@ -97,12 +100,13 @@ const ChatGrid = () => {
           <CloseIcon />
         </IconButton>
       </Grid>
-
-      <Grid container className={classes.chatBox}>
-        <List>
-          <MessageList messages={message} />
-        </List>
-      </Grid>
+      <ThemeProvider theme={theme}>
+        <Grid container className={classes.chatBox}>
+          <List>
+            <MessageList messages={message} />
+          </List>
+        </Grid>
+      </ThemeProvider>
 
       <form noValidate autoComplete="off" onSubmit={handleSubmit}>
         <Divider variant="fullWidth" />

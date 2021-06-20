@@ -2,9 +2,9 @@ import { render } from "@testing-library/react";
 // import { screem } from "@testing-library/react";
 import React from "react";
 import { Provider } from "react-redux";
-import { rootReducer as reducers } from "../src/store/reducers";
+import { store } from "src/store/configureStore";
+import { rootReducer as reducers } from "../../store/reducers";
 import App from "./App";
-import { store } from "./store/configureStore";
 
 test("reducers", () => {
   let state;
@@ -45,6 +45,4 @@ test("renders learn react link", () => {
       <App />
     </Provider>
   );
-  // const linkElement = screen.getByText(/home/i);
-  // expect(linkElement).toBeInTheDocument();
 });
