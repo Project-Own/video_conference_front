@@ -78,7 +78,7 @@ const ChatGrid = () => {
   ]);
   const [fieldValue, setfieldValue] = useState("");
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setfieldValue("");
     // console.log(e);
@@ -88,7 +88,9 @@ const ChatGrid = () => {
     }
   };
 
-  const handleChange = (e: any) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
     setfieldValue(e.target.value);
   };
 
@@ -101,6 +103,7 @@ const ChatGrid = () => {
         </IconButton>
       </Grid>
       <ThemeProvider theme={theme}>
+        a
         <Grid container className={classes.chatBox}>
           <List>
             <MessageList messages={message} />
@@ -122,10 +125,7 @@ const ChatGrid = () => {
             disableUnderline: true,
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton
-                  className={classes.closeButton}
-                  onClick={handleSubmit}
-                >
+                <IconButton className={classes.closeButton} type="submit">
                   <SendIcon />
                 </IconButton>
               </InputAdornment>
