@@ -1,4 +1,5 @@
 import React, { createContext, FC, useEffect, useRef, useState } from "react";
+import { useHistory } from "react-router";
 import Peer from "simple-peer";
 import { io } from "socket.io-client";
 
@@ -49,6 +50,7 @@ const ContextProvider: FC = ({ children }) => {
   // console.log("userVideo");
   // console.log(userVideo);
 
+  const history = useHistory();
   useEffect(() => {
     console.log("before");
     navigator.mediaDevices
@@ -125,7 +127,7 @@ const ContextProvider: FC = ({ children }) => {
 
     connectionRef.current?.destroy();
 
-    window.location.reload();
+    history.go(0);
   };
 
   return (
