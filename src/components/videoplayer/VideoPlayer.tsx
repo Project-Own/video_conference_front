@@ -1,5 +1,5 @@
 import { Grid, makeStyles, Paper, Typography } from "@material-ui/core";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { SocketContext } from "../context/Context";
 
 const useStyles = makeStyles((theme) => ({
@@ -27,6 +27,32 @@ const VideoPlayer = () => {
 
   const classes = useStyles();
 
+  // console.log("myVideoVideoPlayer");
+  // console.log(context?.myVideo);
+  // console.log("userVideoVideoPlayer");
+  // console.log(context?.userVideo);
+
+  const myVideoRef = useRef<HTMLVideoElement>(null);
+  const otherVideoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (myVideoRef.current) {
+      myVideoRef.current.srcObject = context?.stream!;
+      // ? new MediaStream(videoTracks)
+      // : null;
+    }
+  }, [context?.stream]);
+
+  useEffect(() => {
+    if (otherVideoRef.current) {
+      const stream = context?.otherStreams!;
+
+      console.log(stream);
+      otherVideoRef.current.srcObject = stream[0];
+      // ? new MediaStream(videoTracks)
+      // : null;
+    }
+  }, [context?.otherStreams]);
   return (
     <Grid container className={classes.gridContainer}>
       {context?.stream && (
@@ -38,7 +64,7 @@ const VideoPlayer = () => {
             <video
               playsInline
               muted
-              ref={context?.myVideo}
+              ref={myVideoRef}
               autoPlay
               className={classes.video}
             />
@@ -53,7 +79,7 @@ const VideoPlayer = () => {
             </Typography>
             <video
               playsInline
-              ref={context?.userVideo}
+              ref={otherVideoRef}
               autoPlay
               className={classes.video}
             />

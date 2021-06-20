@@ -14,9 +14,10 @@ interface CallProps {
 interface SocketContextProps {
   call: CallProps | undefined;
   callAccepted: boolean;
-  myVideo: React.RefObject<HTMLVideoElement>;
-  userVideo: React.RefObject<HTMLVideoElement>;
+  // myVideo: React.RefObject<HTMLVideoElement>;
+  // userVideo: React.RefObject<HTMLVideoElement>;
   stream: MediaStream | undefined;
+  otherStreams: MediaStream[] | undefined;
   name: string;
   setName: React.Dispatch<React.SetStateAction<string>>;
   callEnded: boolean;
@@ -34,13 +35,19 @@ const ContextProvider: FC = ({ children }) => {
   const [callAccepted, setCallAccepted] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
   const [stream, setStream] = useState<MediaStream>();
+  const [otherStreams, setOtherStreams] = useState<MediaStream[]>();
   const [name, setName] = useState("");
   const [call, setCall] = useState<CallProps>();
   const [me, setMe] = useState("");
 
-  const myVideo = useRef<HTMLVideoElement>(null);
-  const userVideo = useRef<HTMLVideoElement>(null);
+  // const myVideo = useRef<HTMLVideoElement>(null);
+  // const userVideo = useRef<HTMLVideoElement>(null);
   const connectionRef = useRef<Peer.Instance>();
+
+  // console.log("myVideo");
+  // console.log(myVideo);
+  // console.log("userVideo");
+  // console.log(userVideo);
 
   useEffect(() => {
     console.log("before");
@@ -49,9 +56,9 @@ const ContextProvider: FC = ({ children }) => {
       .then((currentStream) => {
         setStream(currentStream);
         console.log("after");
-        if (myVideo.current) {
-          myVideo.current.srcObject = currentStream;
-        }
+        // if (myVideo.current) {
+        //   myVideo.current.srcObject = currentStream;
+        // }
       });
 
     socket.on("me", (id) => setMe(id));
@@ -73,9 +80,10 @@ const ContextProvider: FC = ({ children }) => {
     peer.on("stream", (currentStream) => {
       console.log("Stream");
 
-      if (userVideo.current) {
-        userVideo.current.srcObject = currentStream;
-      }
+      setOtherStreams([currentStream]);
+      // if (userVideo.current) {
+      //   userVideo.current.srcObject = currentStream;
+      // }
     });
 
     peer.signal(call?.signal);
@@ -96,9 +104,11 @@ const ContextProvider: FC = ({ children }) => {
     });
 
     peer.on("stream", (currentStream) => {
-      if (userVideo.current) {
-        userVideo.current.srcObject = currentStream;
-      }
+      setOtherStreams([currentStream]);
+
+      // if (userVideo.current) {
+      //   userVideo.current.srcObject = currentStream;
+      // }
     });
 
     socket.on("callAccepted", (signal) => {
@@ -123,9 +133,10 @@ const ContextProvider: FC = ({ children }) => {
       value={{
         call,
         callAccepted,
-        myVideo,
-        userVideo,
+        // myVideo,
+        // userVideo,
         stream,
+        otherStreams,
         name,
         setName,
         callEnded,
