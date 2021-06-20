@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useCounter } from "../../hooks/useCounter";
 import styles from "./Counter.module.css";
 
-export function Counter() {
+function Counter() {
   const {
     count,
     decrement,
@@ -63,3 +63,5 @@ export function Counter() {
     </div>
   );
 }
+
+export default Counter;

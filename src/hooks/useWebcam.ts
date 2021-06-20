@@ -14,7 +14,11 @@ export const useWebcam = (requestedMedia: MediaStreamConstraints) => {
   const [activeVideoDevice, setActiveVideoDevice] = useState<string>();
 
   const DEFAULT_VIDEO_CONSTRAINTS = {
-    video: {},
+    video: {
+      frameRate: { ideal: 10, max: 15 },
+      width: { ideal: 1280 },
+      height: { ideal: 720 },
+    },
   };
 
   const { webcam, toggleWebcam } = useTray();
@@ -25,7 +29,7 @@ export const useWebcam = (requestedMedia: MediaStreamConstraints) => {
       mediaTrackConstraint = DEFAULT_VIDEO_CONSTRAINTS.video;
     } else {
       mediaTrackConstraint = requestedMedia
-        ? requestedMedia.video
+        ? { ...DEFAULT_VIDEO_CONSTRAINTS["video"], ...requestedMedia.video }
         : DEFAULT_VIDEO_CONSTRAINTS["video"];
     }
 

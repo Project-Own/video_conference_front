@@ -79,10 +79,7 @@ export default function Host() {
 
           <Button
             type="submit"
-            halfWidth
-            alignItems="center"
             variant="contained"
-            color="#FFFCBD"
             style={{ color: them.palette.primary.dark, borderRadius: 50 }}
             className={classes.submit}
           >
