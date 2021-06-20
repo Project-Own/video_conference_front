@@ -36,9 +36,9 @@ export interface RoutePath {
 }
 const routes: RoutePath[] = [
   { path: addURLPath("/"), name: "Home", Component: LoadableLanding },
-  { path: addURLPath("/about"), name: "Home", Component: LoadableCombine },
+  { path: addURLPath("/about"), name: "Combine", Component: LoadableCombine },
 
-  { path: addURLPath("/team"), name: "Home", Component: LoadableHost },
+  { path: addURLPath("/team"), name: "Host", Component: LoadableHost },
   {
     path: addURLPath("/camera"),
     name: "Camera man of the season",
