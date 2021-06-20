@@ -1,10 +1,14 @@
+import loadable from "@loadable/component";
+import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import "./App.css";
+
 import Landing from "./Landing";
 
 
-//Header stuffs are moved to "./components/header"
+
 function App() {
   return (
+
    <div>
      <Landing/>
    </div>
