@@ -1,9 +1,8 @@
-import React from "react";
-import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 // import Paper from "@material-ui/core/Paper";
-
 import Grid from "@material-ui/core/Grid";
-import Bottombar from "./Bottombar";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import React from "react";
+import Bottombar from "./BottomComponents/Bottombar";
 import VideoFeed from "./VideoFeed";
 
 const useStyles = makeStyles((theme: Theme) =>
