@@ -11,6 +11,7 @@ import {
   TransitionStatus,
 } from "react-transition-group";
 import { addURLPath } from "../../utils/utils";
+import { ContextProvider } from "../context/Context";
 import Hamburger from "../Hamburger/Hamburger";
 import { Loading } from "../Loading/Loading";
 
@@ -20,10 +21,18 @@ const LoadableHost = loadable(() => import("../host/Host"), {
 const LoadableLanding = loadable(() => import("src/pages/Landing/Landing"), {
   fallback: <Loading />,
 });
+const LoadableCombine = loadable(
+  () => import("src/components/Combine/combine"),
+  {
+    fallback: <Loading />,
+  }
+);
 
 const routes = [
   { path: addURLPath("/"), name: "Home", Component: LoadableLanding },
-  { path: addURLPath("/about"), name: "Home", Component: LoadableHost },
+  <ContextProvider>
+    {{ path: addURLPath("/about"), name: "Home", Component: LoadableCombine }}
+  </ContextProvider>,
   { path: addURLPath("/team"), name: "Home", Component: LoadableHost },
 ];
 const Header = () => {
