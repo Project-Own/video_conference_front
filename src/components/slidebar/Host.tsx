@@ -1,13 +1,14 @@
 import {
   Button,
   Container,
-  Grid, Paper,
+  Grid,
+  Paper,
   TextField,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Assignment } from "@material-ui/icons";
-import React, { useContext } from "react";
+import React, { FC, useContext } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { SocketContext } from "../context/Context";
 const useStyles = makeStyles((theme) => ({
@@ -41,16 +42,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Host: FC<{}> = ({ children}) => {
-  const { me, name, setName,} =
-    useContext(SocketContext);
+const Host: FC = ({ children }) => {
+  const { me, name, setName } = useContext(SocketContext);
 
   const classes = useStyles();
 
-
   return (
     <Container className={classes.container}>
-      
       <Paper elevation={10} className={classes.paper}>
         <form className={classes.root} noValidate autoComplete="off">
           <Grid container className={classes.gridContainer}>
@@ -65,13 +63,16 @@ const Host: FC<{}> = ({ children}) => {
                 fullWidth
               />
               <Button
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  className={classes.margin}
-                >Host</Button>
-              <CopyToClipboard text={me} className={classes.margin}>
+                variant="contained"
+                color="primary"
+                fullWidth
+                className={classes.margin}
+              >
+                Host
+              </Button>
+              <CopyToClipboard text={me}>
                 <Button
+                  className={classes.margin}
                   variant="contained"
                   color="primary"
                   fullWidth
@@ -84,7 +85,7 @@ const Host: FC<{}> = ({ children}) => {
           </Grid>
         </form>
         {children}
-      </Paper> 
+      </Paper>
     </Container>
   );
 };

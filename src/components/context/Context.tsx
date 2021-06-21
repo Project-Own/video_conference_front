@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { createContext, FC, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import Peer, { SignalData } from "simple-peer";
@@ -230,6 +231,7 @@ const ContextProvider: FC = ({ children }) => {
     const onTrackFunction = (event: RTCTrackEvent) => {
       setOtherStreams((streams) => [...streams, event.streams[0]]);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [creator, roomName]);
 
   console.log(creator);
