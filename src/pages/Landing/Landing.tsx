@@ -1,20 +1,17 @@
 import { Button, Grid, Typography } from "@material-ui/core";
 import { useState } from "react";
-import landingPic from "src/assests/landingPic.jpg";
-import Combine from "src/components/Combine/combine";
-
-
-
+import Host from "src/components/slidebar/Host";
+import Join from "src/components/slidebar/Join";
 
 
 
 
 const Landing = () => {
 
-  const [host, sethost] = useState(false);
+  const [host, setHost] = useState(true);
   return (
     <div>
-      <Grid container>
+      <Grid container direction = "row">
         <Grid item xs={1} />
         <Grid item container direction="column" xs={4}>
           <Grid item style={{ marginLeft: "150px", marginTop: "100px" }}>
@@ -46,7 +43,7 @@ const Landing = () => {
               <Button
                 variant="contained"
                 style={{ backgroundColor: "#F1F7B3" }}
-                onClick = {() => {sethost(!host)}}
+                onClick = {() => {setHost(false)}}
               >
                 Join Meeting
               </Button>
@@ -56,7 +53,7 @@ const Landing = () => {
               <Button
                 variant="contained"
                 style={{ backgroundColor: "#CBF8BB" }}
-                onClick = {() => {sethost(!host)}}
+                onClick = {() => {setHost(true)}}
               >
                 Host Meeting
               </Button>
@@ -64,14 +61,10 @@ const Landing = () => {
           </Grid>
         </Grid>
 
-        <Grid item xs={2} />
+        <Grid item xs={1} />
         <Grid item xs={4}>
           {
-            host? <Combine/> : <img
-            src={landingPic}
-            alt="Landing"
-            style={{ width: "400px", height: "400px", marginTop: "100px" }}
-          />
+            host? <Host/> : <Join/> 
           }
         </Grid>
       </Grid>

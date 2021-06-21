@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 import Notifications from "../notification/Notification";
-import Sidebar from "../slidebar/Slidebar";
+import Sidebar from "../slidebar/Host";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {

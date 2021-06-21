@@ -5,4 +5,5 @@ export const FeatureKey = {
   COUNTER: "COUNTER",
   TODO: "TODO",
   TRAY_TOGGLE: "TRAY_TOGGLE",
+  HOST: "HOST",
 } as const;
