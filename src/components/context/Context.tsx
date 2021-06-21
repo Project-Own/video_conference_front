@@ -7,6 +7,17 @@ import { useWebcam } from "src/hooks/useWebcam";
 
 const SocketContext = createContext<SocketContextProps>(undefined!);
 
+export enum SocketEvent {
+  created = "created",
+  joined = "joined",
+  join = "join",
+  full = "full",
+  ready = "ready",
+  candidate = "candidate",
+  offer = "offer",
+  answer = "answer",
+}
+
 interface CallProps {
   isReceivingCall: boolean;
   from: string;
@@ -23,6 +34,11 @@ interface SocketContextProps {
   otherStreams: MediaStream[] | undefined;
   name: string;
   setName: React.Dispatch<React.SetStateAction<string>>;
+
+  roomName: string;
+  setRoomName: React.Dispatch<React.SetStateAction<string>>;
+
+  joinRoom: () => void;
   callEnded: boolean;
   me: string;
   callUser: (id: string) => void;
@@ -33,8 +49,8 @@ interface SocketContextProps {
 /**
  * Server Connection
  * */
-// const socket = io('http://localhost:5000');
-const socket = io("https://video-conference-ar.herokuapp.com/");
+const socket = io("http://localhost:5000");
+// const socket = io("https://video-conference-ar.herokuapp.com/");
 
 /**
  * CAPTURE_MEDIA settings
@@ -52,17 +68,26 @@ const CAPTURE_MEDIA: MediaStreamConstraints = {
   },
 };
 
+let iceServers = {
+  iceServers: [
+    { urls: "stun:stun.services.mozilla.com" },
+    { urls: "stun:stun.l.google.com:19302" },
+  ],
+};
+
 /**
  *
  * ContextProvider
  * */
 const ContextProvider: FC = ({ children }) => {
-  console.log("how how");
   const [callAccepted, setCallAccepted] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
   const [stream, setStream] = useState<MediaStream>();
-  const [otherStreams, setOtherStreams] = useState<MediaStream[]>();
+  const [otherStreams, setOtherStreams] = useState<MediaStream[]>([]);
   const [name, setName] = useState("");
+  const [roomName, setRoomName] = useState("");
+  const [creator, setCreator] = useState(false);
+  const [joined, setJoined] = useState(false);
   const [call, setCall] = useState<CallProps>();
   const [me, setMe] = useState("");
 
@@ -73,8 +98,7 @@ const ContextProvider: FC = ({ children }) => {
   const { videoTracks, toggleWebcam } = useWebcam(CAPTURE_MEDIA);
   const { audioTracks, toggleMicrophone } = useAudio(CAPTURE_MEDIA);
 
-  console.log("Hello");
-
+  const rtcPeerConnection = useRef<RTCPeerConnection>();
   /**
    *
    * update video and audio tracks
@@ -91,19 +115,153 @@ const ContextProvider: FC = ({ children }) => {
    * ComponentDiDMount
    * */
   useEffect(() => {
-    console.log("before");
+    // console.log("before");
 
     toggleWebcam();
     toggleMicrophone();
 
-    socket.on("me", (id) => setMe(id));
+    /**
+     *Triggered on receiving an ice candidate from the peer.
+     * */
+    socket.on(SocketEvent.candidate, (candidate: RTCIceCandidate) => {
+      console.log(SocketEvent.candidate);
 
-    socket.on("callUser", ({ from, name: callerName, signal }) => {
-      setCall({ isReceivingCall: true, from, name: callerName, signal });
+      const iceCandidate = new RTCIceCandidate(candidate);
+      rtcPeerConnection.current?.addIceCandidate(iceCandidate);
     });
+
+    /**
+     * Room Created
+     * Triggered when a room is succesfully created.
+     * */
+    socket.on(SocketEvent.created, () => {
+      console.log(SocketEvent.created);
+
+      // socket.emit("answer", "s");
+      setCreator(true);
+    });
+
+    /**
+     * Room Full
+     * Triggered when a room is full (meaning has 2 people).
+     * */
+    socket.on(SocketEvent.full, () => {
+      alert("Room is full, Cannot join");
+    });
+
+    /**
+     *  Triggered on receiving an answer from the person who joined the room.
+     * */
+    socket.on(SocketEvent.answer, (answer) => {
+      console.log(SocketEvent.answer);
+
+      rtcPeerConnection.current?.setRemoteDescription(answer);
+    });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    /**
+     * Triggered when a peer has joined the room and ready to communicat
+     * */
+    if (roomName !== "") {
+      if (creator) {
+        socket.on(SocketEvent.ready, () => {
+          console.log(SocketEvent.ready);
+          console.log(roomName);
+          console.log(creator);
+
+          rtcPeerConnection.current = new RTCPeerConnection(iceServers);
+          rtcPeerConnection.current.onicecandidate = onIceCandidateFunction;
+          rtcPeerConnection.current.ontrack = onTrackFunction;
+          rtcPeerConnection.current.addTrack(stream?.getTracks()[0]!, stream!);
+          rtcPeerConnection.current.addTrack(stream?.getTracks()[1]!, stream!);
+
+          rtcPeerConnection.current
+            .createOffer()
+            .then(async (offer) => {
+              await rtcPeerConnection.current?.setLocalDescription(offer);
+              console.log(SocketEvent.offer);
+              socket.emit(SocketEvent.offer, offer, roomName);
+            })
+            .catch((error) => console.log(error));
+        });
+      } else {
+        /**
+         *  Triggered on receiving an offer from the person who created the room.
+         * */
+        socket.on(SocketEvent.offer, (offer) => {
+          console.log(SocketEvent.offer);
+          console.log(roomName);
+          console.log(creator);
+          rtcPeerConnection.current = new RTCPeerConnection(iceServers);
+          rtcPeerConnection.current.onicecandidate = onIceCandidateFunction;
+          rtcPeerConnection.current.ontrack = onTrackFunction;
+          rtcPeerConnection.current.addTrack(stream?.getTracks()[0]!, stream!);
+          rtcPeerConnection.current.addTrack(stream?.getTracks()[1]!, stream!);
+
+          rtcPeerConnection.current.setRemoteDescription(offer);
+          rtcPeerConnection.current
+            .createAnswer()
+            .then((answer) => {
+              rtcPeerConnection.current?.setLocalDescription(answer);
+              console.log(SocketEvent.answer);
+              socket.emit(SocketEvent.answer, answer, roomName);
+            })
+            .catch((error) => console.log(error));
+        });
+      }
+    }
+
+    /**
+     *
+     * */
+    const onIceCandidateFunction = (event: RTCPeerConnectionIceEvent) => {
+      console.log(SocketEvent.candidate);
+      if (event.candidate) {
+        socket.emit(SocketEvent.candidate, event.candidate, roomName);
+      }
+    };
+
+    /**
+     *
+     * */
+    const onTrackFunction = (event: RTCTrackEvent) => {
+      setOtherStreams((streams) => [...streams, event.streams[0]]);
+    };
+  }, [creator, roomName]);
+
+  console.log(creator);
+
+  const joinRoom = () => {
+    /**
+     *
+     * Join Room
+     * */
+
+    if (roomName !== "") {
+      // console.log(`answer: ${SocketEvent.answer}`);
+      socket.emit(SocketEvent.join, roomName);
+      // socket.emit(SocketEvent.answer, roomName);
+      /**
+       *Room Joined
+       * Triggered when a room is succesfully joined.
+       * */
+      socket.on(SocketEvent.joined, () => {
+        setCreator(false);
+
+        console.log(SocketEvent.joined);
+        console.log(roomName);
+
+        socket.emit(SocketEvent.ready, roomName);
+        setJoined(true);
+      });
+    } else {
+      console.log("NONON");
+      alert("Cannot have empty roomname");
+    }
+  };
   /**
    *
    * Answer Call
@@ -187,6 +345,9 @@ const ContextProvider: FC = ({ children }) => {
         otherStreams,
         name,
         setName,
+        roomName,
+        setRoomName,
+        joinRoom,
         callEnded,
         me,
         callUser,

@@ -20,9 +20,12 @@ const LoadableHost = loadable(() => import("../host/Host"), {
 const LoadableLanding = loadable(() => import("src/pages/Landing/Landing"), {
   fallback: <Loading />,
 });
-const LoadableCamera = loadable(() => import("src/components/camera/Camera"), {
-  fallback: <Loading />,
-});
+const LoadableCamera = loadable(
+  () => import("src/components/videoplayer/VideoPlayerCollection"),
+  {
+    fallback: <Loading />,
+  }
+);
 const LoadableCombine = loadable(
   () => import("src/components/Combine/combine"),
   {
@@ -48,8 +51,8 @@ const routes: RoutePath[] = [
   { path: addURLPath("/team"), name: "Host", Component: LoadableHost },
   { path: addURLPath("/grid"), name: "GRid", Component: LoadableGridview },
   {
-    path: addURLPath("/camera"),
-    name: "Camera man of the season",
+    path: addURLPath("/test"),
+    name: "Test",
     Component: LoadableCamera,
   },
 ];
