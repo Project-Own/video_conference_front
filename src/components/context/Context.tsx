@@ -50,8 +50,8 @@ interface SocketContextProps {
 /**
  * Server Connection
  * */
-const socket = io("http://localhost:5000");
-// const socket = io("https://video-conference-ar.herokuapp.com/");
+// const socket = io("http://localhost:5000");
+const socket = io("https://video-conference-ar.herokuapp.com/");
 
 /**
  * CAPTURE_MEDIA settings
