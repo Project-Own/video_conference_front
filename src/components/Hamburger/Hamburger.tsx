@@ -1,3 +1,4 @@
+import { IconButton } from "@material-ui/core";
 import anime from "animejs";
 import { FC, SVGProps, useEffect, useRef, useState } from "react";
 
@@ -59,14 +60,12 @@ const Hamburger: FC<SVGProps<SVGSVGElement> & { toggle?: () => void }> = (
     }
   }, [state]);
   return (
-    <svg
-      cursor="pointer"
-      ref={svgRef}
+    <IconButton
       onClick={() => {
         toggleState(!state);
         if (toggle) toggle();
       }}
-      onMouseOver={() => {
+      onMouseEnter={() => {
         anime({
           targets: svgRef.current,
           scale: 1.3,
@@ -77,18 +76,18 @@ const Hamburger: FC<SVGProps<SVGSVGElement> & { toggle?: () => void }> = (
       onMouseLeave={() => {
         anime({
           targets: svgRef.current,
-          scale: 1,
+          scale: 1.2,
           duration: 100,
           easing: "spring",
         });
       }}
-      viewBox="0 0 20 20"
-      {...otherProps}
     >
-      <path ref={topRef} d="M 2 2.5 L 20 2.5 Z"></path>
-      <path ref={middleRef} d="M 2 9.423 L 20 9.423 Z"></path>
-      <path ref={bottomRef} d="M 2 16.346 L 20 16.346 Z"></path>
-    </svg>
+      <svg ref={svgRef} viewBox="0 0 20 20" {...otherProps}>
+        <path ref={topRef} d="M 2 2.5 L 20 2.5 Z"></path>
+        <path ref={middleRef} d="M 2 9.423 L 20 9.423 Z"></path>
+        <path ref={bottomRef} d="M 2 16.346 L 20 16.346 Z"></path>
+      </svg>
+    </IconButton>
   );
 };
 Hamburger.defaultProps = {

@@ -6,7 +6,7 @@ import {
 } from "./../utils/media.utils";
 import { useTray } from "./useTray";
 
-export const useAudio = (requestedMedia: MediaStreamConstraints) => {
+export const useAudio = () => {
   const [audioTracks, setAudioTracks] =
     useState<MediaStreamTrack[] | null>(null);
   const [audioDevices, setAudioDevices] =
@@ -29,13 +29,7 @@ export const useAudio = (requestedMedia: MediaStreamConstraints) => {
 
   const startAudioTracks = () => {
     let mediaTrackConstraint: MediaTrackConstraints | undefined;
-    if (typeof requestedMedia["audio"] === "boolean") {
-      mediaTrackConstraint = DEFAULT_AUDIO_CONSTRAINTS.audio;
-    } else {
-      mediaTrackConstraint = requestedMedia
-        ? { ...DEFAULT_AUDIO_CONSTRAINTS["audio"], ...requestedMedia.audio }
-        : DEFAULT_AUDIO_CONSTRAINTS["audio"];
-    }
+    mediaTrackConstraint = DEFAULT_AUDIO_CONSTRAINTS.audio;
 
     if (mediaTrackConstraint) {
       mediaTrackConstraint.deviceId = activeAudioDevice;

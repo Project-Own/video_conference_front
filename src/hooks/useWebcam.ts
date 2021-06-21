@@ -6,7 +6,7 @@ import {
 } from "../utils/media.utils";
 import { useTray } from "./useTray";
 
-export const useWebcam = (requestedMedia: MediaStreamConstraints) => {
+export const useWebcam = () => {
   const [videoTracks, setVideoTracks] =
     useState<MediaStreamTrack[] | null>(null);
   const [videoDevices, setVideoDevices] =
@@ -25,13 +25,7 @@ export const useWebcam = (requestedMedia: MediaStreamConstraints) => {
 
   const startVideoTracks = () => {
     let mediaTrackConstraint: MediaTrackConstraints | undefined;
-    if (typeof requestedMedia["video"] === "boolean") {
-      mediaTrackConstraint = DEFAULT_VIDEO_CONSTRAINTS.video;
-    } else {
-      mediaTrackConstraint = requestedMedia
-        ? { ...DEFAULT_VIDEO_CONSTRAINTS["video"], ...requestedMedia.video }
-        : DEFAULT_VIDEO_CONSTRAINTS["video"];
-    }
+    mediaTrackConstraint = DEFAULT_VIDEO_CONSTRAINTS.video;
 
     if (mediaTrackConstraint) {
       mediaTrackConstraint.deviceId = activeVideoDevice;

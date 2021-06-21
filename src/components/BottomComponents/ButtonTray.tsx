@@ -12,7 +12,9 @@ import SettingsIcon from "@material-ui/icons/Settings";
 import StopScreenShareOutlinedIcon from "@material-ui/icons/StopScreenShareOutlined";
 import VideocamOffOutlinedIcon from "@material-ui/icons/VideocamOffOutlined";
 import VideocamOutlinedIcon from "@material-ui/icons/VideocamOutlined";
+import { useContext } from "react";
 import { useTray } from "../../hooks/useTray";
+import { SocketContext } from "../context/Context";
 import ChatGrid from "../gridview/chatGrid";
 import ParticipantGrid from "../gridview/participantGrid";
 import ButtonInfo from "./ButtonInfo";
@@ -91,7 +93,6 @@ const ButtonTray = () => {
     chat,
     participant,
     setting,
-    toggleCall,
     toggleChat,
     toggleMicrophone,
     toggleParticipant,
@@ -159,6 +160,8 @@ const ButtonTray = () => {
     },
   ];
 
+  const context = useContext(SocketContext);
+
   // const doThis = (index: any) => {
   //   let tmp = icons_list_left;
   //   // console.log(tmp);
@@ -183,7 +186,7 @@ const ButtonTray = () => {
           />
         ))}
       </Grid>
-      <Button onClick={() => toggleCall()} className={classes.end_call}>
+      <Button onClick={() => context.leaveCall()} className={classes.end_call}>
         <CallEndIcon />
       </Button>
       <Grid container className={classes.button_tray_right}>
