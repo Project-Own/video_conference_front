@@ -110,17 +110,17 @@ const ContextProvider: FC = ({ children }) => {
     videoTracks?.forEach((track) => stream.addTrack(track));
     audioTracks?.forEach((track) => stream.addTrack(track));
 
-    console.log("VIDEOAUDIOUSEEFFECT");
-    console.log(stream);
-    console.log(stream?.getTracks()[0]);
-    console.log(stream?.getTracks()[1]);
+    // console.log("VIDEOAUDIOUSEEFFECT");
+    // console.log(stream);
+    // console.log(stream?.getTracks()[0]);
+    // console.log(stream?.getTracks()[1]);
     setStream(stream);
   }, [videoTracks, audioTracks]);
 
-  console.log("VIDEOAUDIO");
-  console.log(stream);
-  console.log(stream?.getTracks()[0]);
-  console.log(stream?.getTracks()[1]);
+  // console.log("VIDEOAUDIO");
+  // console.log(stream);
+  // console.log(stream?.getTracks()[0]);
+  // console.log(stream?.getTracks()[1]);
 
   /**
    *
@@ -196,10 +196,8 @@ const ContextProvider: FC = ({ children }) => {
           //   rtcPeerConnection.current.addTrack(stream.getTracks()[0], stream);
           //   rtcPeerConnection.current.addTrack(stream.getTracks()[1], stream);
           // }
-          if (videoTracks)
-            rtcPeerConnection.current.addTrack(videoTracks[0], stream!);
-          if (audioTracks)
-            rtcPeerConnection.current.addTrack(audioTracks[0], stream!);
+          if (videoTracks) rtcPeerConnection.current.addTrack(videoTracks[0]);
+          if (audioTracks) rtcPeerConnection.current.addTrack(audioTracks[0]);
 
           rtcPeerConnection.current
             .createOffer()
@@ -232,10 +230,9 @@ const ContextProvider: FC = ({ children }) => {
           //   rtcPeerConnection.current.addTrack(stream.getTracks()[0], stream);
           //   rtcPeerConnection.current.addTrack(stream.getTracks()[1], stream);
           // }
-          if (videoTracks)
-            rtcPeerConnection.current.addTrack(videoTracks[0], stream!);
-          if (audioTracks)
-            rtcPeerConnection.current.addTrack(audioTracks[0], stream!);
+
+          if (videoTracks) rtcPeerConnection.current.addTrack(videoTracks[0]);
+          if (audioTracks) rtcPeerConnection.current.addTrack(audioTracks[0]);
 
           rtcPeerConnection.current.setRemoteDescription(offer);
           rtcPeerConnection.current
@@ -271,7 +268,7 @@ const ContextProvider: FC = ({ children }) => {
       setOtherStreams((streams) => [...streams, event.streams[0]]);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [creator, roomName, stream]);
+  }, [creator, roomName]);
 
   console.log(creator);
 

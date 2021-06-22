@@ -22,15 +22,20 @@ const ConferenceGridLayout = () => {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
-      <Grid item container xs={12} className={classes.main_grid}>
+    <Grid container direction="row" alignItems="center" justify="center">
+      <Grid
+        item
+        container
+        xs={2}
+        // className={classes.main_grid}
+      >
         <VideoFeed />
       </Grid>
 
-      <Grid item xs={12}>
+      <Grid item container>
         <Bottombar />
       </Grid>
-    </div>
+    </Grid>
   );
 };
 

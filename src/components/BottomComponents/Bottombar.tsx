@@ -10,17 +10,19 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     bottom_bar: {
       background: "#EDEDEDd",
-      height: "12vh",
+      // height: "12vh",
+      bottom: 0,
       overflow: "auto",
-      position: "relative",
+      position: "fixed",
       alignItems: "center",
+      padding: theme.spacing(2),
     },
 
     ar_button: {
       width: "160px",
       height: "54px",
-      position: "absolute",
-      left: "80px",
+      // position: "absolute",
+      // left: "80px",
       background: "#2F4F4F",
       borderRadius: "16px",
       alignItems: "center",
@@ -51,19 +53,26 @@ const BottomBar = () => {
   };
 
   return (
-    <Grid container className={classes.bottom_bar}>
+    <Grid
+      container
+      item
+      xs={12}
+      direction="row"
+      className={classes.bottom_bar}
+      spacing={2}
+    >
       {isHost ? (
-        <>
+        <Grid item xs={2}>
           <Button onClick={() => ar_button()} className={classes.ar_button}>
             <Typography className={classes.text}>
               {ar_text ? "Start AR" : "Stop AR"}
             </Typography>
           </Button>
-        </>
-      ) : (
-        <></>
-      )}
-      <ButtonTray />
+        </Grid>
+      ) : null}
+      <Grid item container xs={10}>
+        <ButtonTray />
+      </Grid>
     </Grid>
   );
 };
