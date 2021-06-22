@@ -9,16 +9,16 @@ const Landing = () => {
     <Grid
       container
       direction="row"
-      style={{ width: "100%", height: "100%" }}
-      spacing={2}
+      style={{ width: "100%", height: "100%", padding: 32 }}
+      spacing={4}
       justify="center"
       alignItems="center"
     >
-      <Grid item xs={1} />
+      <Grid item md={1} />
       <Grid
         item
         container
-        xs={5}
+        md={5}
         direction="row"
         alignItems="center"
         justify="center"
@@ -76,12 +76,12 @@ const Landing = () => {
           container
           direction="row"
           spacing={4}
-          xs={12}
+          md={12}
           style={{ marginTop: "25px" }}
         >
           <Grid
             item
-            xs={6}
+            md={6}
             //  style={{ marginLeft: "85px" }}
           >
             <Button
@@ -95,7 +95,7 @@ const Landing = () => {
             </Button>
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid item md={6}>
             <Button
               variant="contained"
               style={{ backgroundColor: "#CBF8BB" }}
@@ -108,12 +108,12 @@ const Landing = () => {
           </Grid>
         </Grid>
       </Grid>
-      <Grid item xs={1} />
+      <Grid item md={1} />
 
-      <Grid item xs={4}>
+      <Grid item md={4}>
         {host ? <Host /> : <Join />}
       </Grid>
-      <Grid item xs={1} />
+      <Grid item md={1} />
     </Grid>
   );
 };

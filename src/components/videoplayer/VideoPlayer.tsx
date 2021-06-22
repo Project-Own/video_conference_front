@@ -1,13 +1,13 @@
-import { makeStyles, Paper, Typography } from "@material-ui/core";
+import { makeStyles, Paper } from "@material-ui/core";
 import { FC, useContext, useEffect, useRef } from "react";
 import { SocketContext } from "../context/Context";
 
 const useStyles = makeStyles((theme) => ({
   video: {
     width: "100%",
-    [theme.breakpoints.down("xs")]: {
-      width: "300px",
-    },
+    // [theme.breakpoints.down("xs")]: {
+    //   width: "300px",
+    // },
   },
   gridContainer: {
     justifyContent: "center",
@@ -34,9 +34,6 @@ const VideoPlayer: FC<{ stream: MediaStream }> = ({ stream }) => {
 
   return (
     <Paper className={classes.paper}>
-      <Typography variant="h5" gutterBottom>
-        {context?.name || "Name"}
-      </Typography>
       <video
         playsInline
         muted

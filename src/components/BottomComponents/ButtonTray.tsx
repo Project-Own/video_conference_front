@@ -35,13 +35,13 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     button_tray_left: {
-      background: "#2F4F4F",
-      borderRadius: "16px 0px 0px 16px",
+      // background: "#2F4F4F",
+      // borderRadius: "16px 0px 0px 16px",
       // width: "140px",
       // position: "absolute",
       // height: "56px",
       // left: "605px",
-      alignItems: "center",
+      // alignItems: "center",
       zIndex: 1,
 
       // paddingRight: "14px",
@@ -66,13 +66,13 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     button_tray_right: {
-      background: "#2F4F4F",
-      borderRadius: "0px 16px 16px 0px",
+      // background: "#2F4F4F",
+      // borderRadius: "0px 16px 16px 0px",
       // width: "280px",
       // position: "absolute",
       // height: "56px",
       // left: "791px",
-      alignItems: "center",
+      // alignItems: "center",
       zIndex: 1,
       // paddingLeft: "14px",
       // justifyContent: "space-around",
@@ -176,24 +176,34 @@ const ButtonTray = () => {
   return (
     <Grid
       xs={12}
+      md={7}
+      lg={5}
+      xl={4}
       item
+      style={{
+        background: "#2F4F4F",
+
+        borderRadius: "16px 16px 16px 16px",
+      }}
       container
       direction="row"
       alignItems="center"
       justify="center"
       spacing={2}
     >
-      <Grid item xs={2} />
       <Grid
         item
-        xs={2}
+        xs={4}
+        md={4}
         container
         className={classes.button_tray_left}
         direction="row"
         spacing={2}
+        alignItems="center"
+        justify="space-around"
       >
         {icons_list_left.map((icon, index) => (
-          <Grid item xs={6} key={index}>
+          <Grid item key={index}>
             <ButtonInfo
               key={index}
               iconOfLeft={true}
@@ -208,7 +218,8 @@ const ButtonTray = () => {
 
       <Grid
         item
-        xs={1}
+        xs={2}
+        md={2}
         style={{
           background: "#2F4F4F",
         }}
@@ -224,13 +235,16 @@ const ButtonTray = () => {
       <Grid
         item
         container
-        xs={4}
+        xs={6}
+        md={6}
         className={classes.button_tray_right}
         direction="row"
         spacing={2}
+        alignItems="center"
+        justify="space-around"
       >
         {icons_list_right.map((icon, index) => (
-          <Grid item xs={3} key={index}>
+          <Grid item key={index}>
             <ButtonInfo
               key={index}
               iconOfLeft={false}
@@ -243,7 +257,6 @@ const ButtonTray = () => {
         ))}
       </Grid>
 
-      <Grid item xs={3} />
       <Drawer
         classes={{ paper: classes.drawer }}
         anchor="right"

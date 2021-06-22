@@ -36,28 +36,38 @@ const Conference = () => {
   }, []);
   return (
     <Grid
+      item
       container
-      direction="row"
-      style={{ width: "100%", height: "100%" }}
+      xs={12}
+      direction="column"
       alignItems="center"
       justify="center"
     >
-      {stream && (
-        <Grid item xs={4}>
-          <p>Room Name: {id}</p>
-          <VideoPlayer stream={stream!} />
-        </Grid>
-      )}
-
-      {otherStreams?.map((otherStream) => {
-        console.log("Other Stream");
-        console.log(otherStream);
-        return (
-          <Grid item xs={4}>
-            <VideoPlayer stream={otherStream} key={otherStream.id} />
+      <Grid
+        item
+        container
+        xs={12}
+        direction="row"
+        alignItems="center"
+        justify="center"
+      >
+        {stream && (
+          <Grid item xs={12} md={6} lg={4}>
+            <p>Room Name: {id}</p>
+            <VideoPlayer stream={stream!} />
           </Grid>
-        );
-      })}
+        )}
+
+        {otherStreams?.map((otherStream) => {
+          console.log("Other Stream");
+          console.log(otherStream);
+          return (
+            <Grid item xs={12} md={6} lg={4}>
+              <VideoPlayer stream={otherStream} key={otherStream.id} />
+            </Grid>
+          );
+        })}
+      </Grid>
 
       <BottomBar />
     </Grid>

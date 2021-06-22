@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) =>
       overflow: "auto",
       position: "fixed",
       alignItems: "center",
-      padding: theme.spacing(2),
+      // padding: theme.spacing(2),
     },
 
     ar_button: {
@@ -60,9 +60,11 @@ const BottomBar = () => {
       direction="row"
       className={classes.bottom_bar}
       spacing={2}
+      justify="center"
+      alignItems="center"
     >
       {isHost ? (
-        <Grid item xs={2}>
+        <Grid item md={2}>
           <Button onClick={() => ar_button()} className={classes.ar_button}>
             <Typography className={classes.text}>
               {ar_text ? "Start AR" : "Stop AR"}
@@ -70,9 +72,7 @@ const BottomBar = () => {
           </Button>
         </Grid>
       ) : null}
-      <Grid item container xs={10}>
-        <ButtonTray />
-      </Grid>
+      <ButtonTray />
     </Grid>
   );
 };
