@@ -1,14 +1,8 @@
 import "./App.css";
-import Landing from "./Landing";
+import RouterHandler from "./pages/Router/Router";
 
-
-//Header stuffs are moved to "./components/header"
 function App() {
-  return (
-   <div>
-     <Landing/>
-   </div>
-  );
+  return <RouterHandler />;
 }
 
 export default App;
