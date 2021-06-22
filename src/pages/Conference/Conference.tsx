@@ -1,7 +1,6 @@
 // import Paper from "@material-ui/core/Paper";
 import { Grid } from "@material-ui/core";
 import { useContext, useEffect } from "react";
-import { useParams } from "react-router";
 import BottomBar from "src/components/BottomComponents/Bottombar";
 import { SocketContext } from "src/components/context/Context";
 import VideoPlayer from "src/components/videoplayer/VideoPlayer";
@@ -25,7 +24,7 @@ const Conference = () => {
   const context = useContext(SocketContext);
   const { stream, otherStreams } = context!;
 
-  const { id } = useParams<{ id: string }>();
+  // const { id } = useParams<{ id: string }>();
 
   const { toggleWebcam, toggleMicrophone } = useTray();
 
@@ -53,8 +52,7 @@ const Conference = () => {
       >
         {stream && (
           <Grid item xs={12} md={6} lg={4}>
-            <p>Room Name: {id}</p>
-            <VideoPlayer stream={stream!} />
+            <VideoPlayer stream={stream!} muted={true} />
           </Grid>
         )}
 
@@ -63,7 +61,11 @@ const Conference = () => {
           console.log(otherStream);
           return (
             <Grid item xs={12} md={6} lg={4}>
-              <VideoPlayer stream={otherStream} key={otherStream.id} />
+              <VideoPlayer
+                stream={otherStream}
+                key={otherStream.id}
+                muted={false}
+              />
             </Grid>
           );
         })}

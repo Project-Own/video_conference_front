@@ -24,7 +24,7 @@ const VideoFeed = () => {
   } = context;
 
   // const classes = useStyles();
-  return <>{stream && <VideoPlayer stream={stream!} />}</>;
+  return <>{stream && <VideoPlayer stream={stream!} muted={true} />}</>;
 };
 
 export default VideoFeed;

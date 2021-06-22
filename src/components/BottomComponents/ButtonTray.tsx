@@ -17,6 +17,7 @@ import { useTray } from "../../hooks/useTray";
 import { SocketContext } from "../context/Context";
 import ChatGrid from "../gridview/chatGrid";
 import ParticipantGrid from "../gridview/participantGrid";
+import SettingsGrid from "../gridview/SettingsGrid";
 import ButtonInfo from "./ButtonInfo";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -182,14 +183,13 @@ const ButtonTray = () => {
       item
       style={{
         background: "#2F4F4F",
-
+        padding: 2,
         borderRadius: "16px 16px 16px 16px",
       }}
       container
       direction="row"
       alignItems="center"
       justify="center"
-      spacing={2}
     >
       <Grid
         item
@@ -198,7 +198,7 @@ const ButtonTray = () => {
         container
         className={classes.button_tray_left}
         direction="row"
-        spacing={2}
+        // spacing={2}
         alignItems="center"
         justify="space-around"
       >
@@ -218,11 +218,14 @@ const ButtonTray = () => {
 
       <Grid
         item
+        container
         xs={2}
-        md={2}
+        md={1}
+        // lg={1}
         style={{
           background: "#2F4F4F",
         }}
+        justify="center"
       >
         <IconButton
           onClick={() => context.leaveCall()}
@@ -239,7 +242,7 @@ const ButtonTray = () => {
         md={6}
         className={classes.button_tray_right}
         direction="row"
-        spacing={2}
+        // spacing={2}
         alignItems="center"
         justify="space-around"
       >
@@ -274,6 +277,15 @@ const ButtonTray = () => {
         transitionDuration={{ enter: 600, exit: 300 }}
       >
         <ParticipantGrid />
+      </Drawer>
+      <Drawer
+        classes={{ paper: classes.drawer }}
+        anchor="right"
+        open={setting}
+        onClose={toggleSetting}
+        transitionDuration={{ enter: 600, exit: 300 }}
+      >
+        <SettingsGrid />
       </Drawer>
     </Grid>
   );

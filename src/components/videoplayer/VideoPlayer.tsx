@@ -1,6 +1,5 @@
 import { makeStyles, Paper } from "@material-ui/core";
-import { FC, useContext, useEffect, useRef } from "react";
-import { SocketContext } from "../context/Context";
+import { FC, useEffect, useRef } from "react";
 
 const useStyles = makeStyles((theme) => ({
   video: {
@@ -22,9 +21,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const VideoPlayer: FC<{ stream: MediaStream }> = ({ stream }) => {
-  const context = useContext(SocketContext);
-
+const VideoPlayer: FC<{ stream: MediaStream; muted: boolean }> = ({
+  stream,
+  muted,
+}) => {
   const classes = useStyles();
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -36,7 +36,7 @@ const VideoPlayer: FC<{ stream: MediaStream }> = ({ stream }) => {
     <Paper className={classes.paper}>
       <video
         playsInline
-        muted
+        muted={muted}
         ref={videoRef}
         autoPlay
         onCanPlay={() => {

@@ -11,11 +11,11 @@ const useStyles = makeStyles((theme: Theme) =>
     bottom_bar: {
       background: "#EDEDEDd",
       // height: "12vh",
-      bottom: 0,
-      overflow: "auto",
+      bottom: 20,
+      // overflow: "auto",
       position: "fixed",
       alignItems: "center",
-      // padding: theme.spacing(2),
+      padding: theme.spacing(2),
     },
 
     ar_button: {
@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
       // left: "80px",
       background: "#2F4F4F",
       borderRadius: "16px",
+
       alignItems: "center",
       "&:hover": {
         color: "black",
@@ -59,7 +60,7 @@ const BottomBar = () => {
       xs={12}
       direction="row"
       className={classes.bottom_bar}
-      spacing={2}
+      spacing={4}
       justify="center"
       alignItems="center"
     >
