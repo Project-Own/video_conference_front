@@ -50,7 +50,15 @@ const Host: FC = ({ children }) => {
   return (
     <Container className={classes.container}>
       <Paper elevation={10} className={classes.paper}>
-        <form className={classes.root} noValidate autoComplete="off">
+        <form
+          className={classes.root}
+          noValidate
+          autoComplete="off"
+          onSubmit={(e) => {
+            e.preventDefault();
+            joinRoom();
+          }}
+        >
           <Grid container className={classes.gridContainer}>
             <Grid item xs={12} className={classes.padding}>
               <Typography gutterBottom variant="h5">
@@ -66,8 +74,8 @@ const Host: FC = ({ children }) => {
                 variant="contained"
                 color="primary"
                 fullWidth
+                type="submit"
                 className={classes.margin}
-                onClick={() => joinRoom()}
               >
                 Host
               </Button>
