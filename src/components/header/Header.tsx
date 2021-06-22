@@ -57,6 +57,7 @@ const routes: RoutePath[] = [
   },
 ];
 const Header = () => {
+  // const [showNavbar, setshowNavbar] = useState(fle)
   const nodeRef = useRef(null);
   return (
     <Router>

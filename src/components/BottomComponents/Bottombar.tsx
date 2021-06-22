@@ -8,18 +8,10 @@ import ButtonTray from "./ButtonTray";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    bottom_bar: {
-      background: "#EDEDEDd",
-      height: "12vh",
-      overflow: "auto",
-      position: "relative",
-      alignItems: "center",
-    },
-
     ar_button: {
-      width: "160px",
+      width: "100%",
       height: "54px",
-      position: "absolute",
+      // position: "absolute",
       left: "80px",
       background: "#2F4F4F",
       borderRadius: "16px",
@@ -39,6 +31,18 @@ const useStyles = makeStyles((theme: Theme) =>
 
       color: "#A4A4A4",
     },
+    bottom_bar: {
+      // background: "#EDEDEDd",
+      background: "green",
+      height: "80px",
+      overflow: "auto",
+      // position: "absolute",
+      // bottom: "-90px",
+      // left: 0,
+      // bottom: "80px",
+      // marginTop: "0px",
+      alignItems: "center",
+    },
   })
 );
 
@@ -51,18 +55,19 @@ const BottomBar = () => {
   };
 
   return (
-    <Grid container className={classes.bottom_bar}>
-      {isHost ? (
-        <>
+    // <Grid container className={classes.bottom_bar}>
+
+    <Grid container direction="column" className={classes.bottom_bar}>
+      <Grid xs={2} style={{ background: "white" }}>
+        {isHost && (
           <Button onClick={() => ar_button()} className={classes.ar_button}>
             <Typography className={classes.text}>
               {ar_text ? "Start AR" : "Stop AR"}
             </Typography>
           </Button>
-        </>
-      ) : (
-        <></>
-      )}
+        )}
+      </Grid>
+
       <ButtonTray />
     </Grid>
   );

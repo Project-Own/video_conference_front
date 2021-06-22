@@ -35,15 +35,15 @@ const useStyles = makeStyles((theme: Theme) =>
     button_tray_left: {
       background: "#2F4F4F",
       borderRadius: "16px 0px 0px 16px",
-      width: "140px",
-      position: "absolute",
+      // width: "100%",
+      // position: "absolute",
       height: "56px",
-      left: "605px",
+      left: "600px",
       alignItems: "center",
       zIndex: 1,
 
       paddingRight: "14px",
-      justifyContent: "space-around",
+      justifyContent: "flex-end",
     },
     end_call: {
       maxheight: "72px",
@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme: Theme) =>
       background: "#2F4F4F",
       borderRadius: "0px 16px 16px 0px",
       width: "280px",
-      position: "absolute",
+      // position: "absolute",
       height: "56px",
       left: "791px",
       alignItems: "center",
@@ -170,8 +170,9 @@ const ButtonTray = () => {
   // };
 
   return (
-    <Grid item container style={{ alignItems: "center" }}>
-      <Grid container className={classes.button_tray_left}>
+    // <Grid item container style={{ alignItems: "center" }}>
+    <Grid container justify="center">
+      <Grid item container className={classes.button_tray_left} xs={4}>
         {icons_list_left.map((icon, index) => (
           <ButtonInfo
             key={index}
@@ -183,10 +184,12 @@ const ButtonTray = () => {
           />
         ))}
       </Grid>
-      <Button onClick={() => toggleCall()} className={classes.end_call}>
-        <CallEndIcon />
-      </Button>
-      <Grid container className={classes.button_tray_right}>
+      <Grid item container xs={1} style={{ background: "red" }}>
+        <Button onClick={() => toggleCall()} className={classes.end_call}>
+          <CallEndIcon />
+        </Button>
+      </Grid>
+      <Grid item container className={classes.button_tray_right} xs={5}>
         {icons_list_right.map((icon, index) => (
           <ButtonInfo
             key={index}
