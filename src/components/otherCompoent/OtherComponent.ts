@@ -1,1 +1,3 @@
-export const OtherComponent = () => {};
+export const OtherComponent = () => {
+  return;
+};
