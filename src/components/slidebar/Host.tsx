@@ -23,8 +23,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   container: {
-    width: "550px",
-    margin: "65px 0",
+    // width: "550px",
+    // margin: "65px 0",
     padding: 0,
     [theme.breakpoints.down("xs")]: {
       width: "80%",
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Host: FC = ({ children }) => {
-  const { me, name, setName } = useContext(SocketContext);
+  const { roomName, setRoomName, joinRoom } = useContext(SocketContext);
 
   const classes = useStyles();
 
@@ -58,8 +58,8 @@ const Host: FC = ({ children }) => {
               </Typography>
               <TextField
                 label="Room Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={roomName}
+                onChange={(e) => setRoomName(e.target.value)}
                 fullWidth
               />
               <Button
@@ -67,10 +67,11 @@ const Host: FC = ({ children }) => {
                 color="primary"
                 fullWidth
                 className={classes.margin}
+                onClick={() => joinRoom()}
               >
                 Host
               </Button>
-              <CopyToClipboard text={me}>
+              <CopyToClipboard text={roomName}>
                 <Button
                   className={classes.margin}
                   variant="contained"

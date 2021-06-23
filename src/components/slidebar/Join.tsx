@@ -21,8 +21,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   container: {
-    width: "550px",
-    margin: "35px 0",
+    // width: "550px",
+    // margin: "35px 0",
     padding: 0,
     [theme.breakpoints.down("xs")]: {
       width: "80%",
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Join: FC = ({ children }) => {
-  const { name, setName } = useContext(SocketContext);
+  const { roomName, setRoomName, joinRoom } = useContext(SocketContext);
 
   const classes = useStyles();
 
@@ -56,8 +56,8 @@ const Join: FC = ({ children }) => {
               </Typography>
               <TextField
                 label="Room Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={roomName}
+                onChange={(e) => setRoomName(e.target.value)}
                 fullWidth
               />
               <Button
@@ -65,6 +65,7 @@ const Join: FC = ({ children }) => {
                 color="primary"
                 fullWidth
                 className={classes.margin}
+                onClick={() => joinRoom()}
               >
                 Join
               </Button>

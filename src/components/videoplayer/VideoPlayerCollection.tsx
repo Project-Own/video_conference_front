@@ -5,15 +5,7 @@ import VideoPlayer from "./VideoPlayer";
 
 const VideoPlayerCollection = () => {
   const context = useContext(SocketContext);
-  const {
-    // name, callAccepted, callEnded,
-    joinRoom,
-    roomName,
-    setRoomName,
-    stream,
-    otherStreams,
-    //  , call
-  } = context;
+  const { joinRoom, roomName, setRoomName, stream, otherStreams } = context;
   return (
     <>
       <label title="Room Name">Room N</label>

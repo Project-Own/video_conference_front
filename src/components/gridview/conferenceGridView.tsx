@@ -2,7 +2,7 @@
 import Grid from "@material-ui/core/Grid";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React, { useContext } from "react";
-import BottomBar from "../BottomComponents/Bottombar";
+import BottomBar from "../../components/BottomComponents/Bottombar";
 import { SocketContext } from "../context/Context";
 import VideoFeed from "./VideoFeed";
 
@@ -36,12 +36,19 @@ const ConferenceGridLayout = () => {
     //  , call
   } = context;
   return (
-    <Grid container direction="column" className={classes.root}>
-      <Grid item container xs={12} className={classes.main_grid}>
+    <Grid container direction="row" alignItems="center" justify="center">
+      <Grid
+        item
+        container
+        xs={2}
+        // className={classes.main_grid}
+      >
         <VideoFeed />
       </Grid>
 
-      <BottomBar />
+      <Grid item container>
+        <BottomBar />
+      </Grid>
     </Grid>
   );
 };

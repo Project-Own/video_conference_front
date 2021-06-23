@@ -5,8 +5,6 @@ import { SocketContext } from "../context/Context";
 const useStyles = makeStyles((theme) => ({
   video: {
     width: "100%",
-    height: "100%",
-    // objectFit: "fill",
     [theme.breakpoints.down("xs")]: {
       width: "100",
       height: "100%",

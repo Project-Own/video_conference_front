@@ -2,8 +2,8 @@ import { Grid, Typography } from "@material-ui/core";
 import anime from "animejs";
 import { FC, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Hamburger from "../Hamburger/Hamburger";
-import { RoutePath } from "../header/Header";
+import { RoutePath } from "src/pages/Router/Router";
+import Hamburger from "src/components/Hamburger/Hamburger";
 
 const NavigationBar: FC<{ routes: RoutePath[] }> = ({ routes }) => {
   const [list, setList] = useState(false);

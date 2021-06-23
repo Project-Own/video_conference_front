@@ -40,7 +40,7 @@ const Camera = () => {
     activeAudioDevice,
     toggleMicrophone,
     setActiveAudioDevice,
-  } = useAudio(CAPTURE_MenuItemS);
+  } = useAudio();
 
   const {
     videoDevices,
@@ -50,7 +50,7 @@ const Camera = () => {
 
     setActiveVideoDevice,
     toggleWebcam,
-  } = useWebcam(CAPTURE_MenuItemS);
+  } = useWebcam();
 
   /**
    * UseEffect prevents flickering caused by rerendering

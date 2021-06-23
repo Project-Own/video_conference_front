@@ -1,13 +1,9 @@
-import Header from "src/components/header/Header";
+import RouterPath from "../Router/Router";
 import "./App.css";
 
 //Header stuffs are moved to "./components/header"
 function App() {
-  return (
-    <div>
-      <Header />
-    </div>
-  );
+  return <RouterPath />;
 }
 
 export default App;

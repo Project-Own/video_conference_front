@@ -5,6 +5,7 @@ import Peer, { SignalData } from "simple-peer";
 import { io } from "socket.io-client";
 import { useAudio } from "src/hooks/useAudio";
 import { useWebcam } from "src/hooks/useWebcam";
+import { addURLPath } from "src/utils/utils";
 
 const SocketContext = createContext<SocketContextProps>(undefined!);
 
@@ -96,8 +97,8 @@ const ContextProvider: FC = ({ children }) => {
 
   const history = useHistory();
 
-  const { videoTracks, toggleWebcam } = useWebcam(CAPTURE_MEDIA);
-  const { audioTracks, toggleMicrophone } = useAudio(CAPTURE_MEDIA);
+  const { videoTracks } = useWebcam();
+  const { audioTracks } = useAudio();
 
   const rtcPeerConnection = useRef<RTCPeerConnection>();
   /**
@@ -106,11 +107,21 @@ const ContextProvider: FC = ({ children }) => {
    * */
   useEffect(() => {
     const stream = new MediaStream();
-    if (videoTracks) videoTracks.forEach((track) => stream.addTrack(track));
-    if (audioTracks) audioTracks.forEach((track) => stream.addTrack(track));
+    videoTracks?.forEach((track) => stream.addTrack(track));
+    audioTracks?.forEach((track) => stream.addTrack(track));
 
+    // console.log("VIDEOAUDIOUSEEFFECT");
+    // console.log(stream);
+    // console.log(stream?.getTracks()[0]);
+    // console.log(stream?.getTracks()[1]);
     setStream(stream);
   }, [videoTracks, audioTracks]);
+
+  // console.log("VIDEOAUDIO");
+  // console.log(stream);
+  // console.log(stream?.getTracks()[0]);
+  // console.log(stream?.getTracks()[1]);
+
   /**
    *
    * ComponentDiDMount
@@ -118,8 +129,8 @@ const ContextProvider: FC = ({ children }) => {
   useEffect(() => {
     // console.log("before");
 
-    toggleWebcam();
-    toggleMicrophone();
+    // toggleWebcam();
+    // toggleMicrophone();
 
     /**
      *Triggered on receiving an ice candidate from the peer.
@@ -176,13 +187,22 @@ const ContextProvider: FC = ({ children }) => {
           rtcPeerConnection.current = new RTCPeerConnection(iceServers);
           rtcPeerConnection.current.onicecandidate = onIceCandidateFunction;
           rtcPeerConnection.current.ontrack = onTrackFunction;
-          rtcPeerConnection.current.addTrack(stream?.getTracks()[0]!, stream!);
-          rtcPeerConnection.current.addTrack(stream?.getTracks()[1]!, stream!);
+          // if (stream) {
+          //   console.log("CHECKSTREAM");
+          //   console.log(stream);
+          //   console.log(stream.getTracks()[0]);
+          //   console.log(stream.getTracks()[1]);
+
+          //   rtcPeerConnection.current.addTrack(stream.getTracks()[0], stream);
+          //   rtcPeerConnection.current.addTrack(stream.getTracks()[1], stream);
+          // }
+          if (videoTracks) rtcPeerConnection.current.addTrack(videoTracks[0]);
+          if (audioTracks) rtcPeerConnection.current.addTrack(audioTracks[0]);
 
           rtcPeerConnection.current
             .createOffer()
-            .then(async (offer) => {
-              await rtcPeerConnection.current?.setLocalDescription(offer);
+            .then((offer) => {
+              rtcPeerConnection.current?.setLocalDescription(offer);
               console.log(SocketEvent.offer);
               socket.emit(SocketEvent.offer, offer, roomName);
             })
@@ -199,8 +219,20 @@ const ContextProvider: FC = ({ children }) => {
           rtcPeerConnection.current = new RTCPeerConnection(iceServers);
           rtcPeerConnection.current.onicecandidate = onIceCandidateFunction;
           rtcPeerConnection.current.ontrack = onTrackFunction;
-          rtcPeerConnection.current.addTrack(stream?.getTracks()[0]!, stream!);
-          rtcPeerConnection.current.addTrack(stream?.getTracks()[1]!, stream!);
+          // if (stream) {
+          //   console.log("CHECKSTREAM");
+
+          //   console.log(stream);
+
+          //   console.log(stream.getTracks()[0]);
+          //   console.log(stream.getTracks()[1]);
+
+          //   rtcPeerConnection.current.addTrack(stream.getTracks()[0], stream);
+          //   rtcPeerConnection.current.addTrack(stream.getTracks()[1], stream);
+          // }
+
+          if (videoTracks) rtcPeerConnection.current.addTrack(videoTracks[0]);
+          if (audioTracks) rtcPeerConnection.current.addTrack(audioTracks[0]);
 
           rtcPeerConnection.current.setRemoteDescription(offer);
           rtcPeerConnection.current
@@ -229,6 +261,10 @@ const ContextProvider: FC = ({ children }) => {
      *
      * */
     const onTrackFunction = (event: RTCTrackEvent) => {
+      console.log("Streams");
+      console.log(event);
+      console.log(event.streams[0]);
+
       setOtherStreams((streams) => [...streams, event.streams[0]]);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -236,6 +272,9 @@ const ContextProvider: FC = ({ children }) => {
 
   console.log(creator);
 
+  /**
+   * JOIN ROOM
+   * */
   const joinRoom = () => {
     /**
      *
@@ -243,11 +282,13 @@ const ContextProvider: FC = ({ children }) => {
      * */
 
     if (roomName !== "") {
+      history.push(addURLPath(`/room/${roomName}`));
       // console.log(`answer: ${SocketEvent.answer}`);
       socket.emit(SocketEvent.join, roomName);
       // socket.emit(SocketEvent.answer, roomName);
       /**
-       *Room Joined
+       *Room Joined          rtcPeerConnection.current.addTrack(stream?.getTracks()[0]!, stream!);
+
        * Triggered when a room is succesfully joined.
        * */
       socket.on(SocketEvent.joined, () => {
@@ -270,6 +311,10 @@ const ContextProvider: FC = ({ children }) => {
    * */
   const answerCall = () => {
     setCallAccepted(true);
+
+    const stream = new MediaStream();
+    if (videoTracks) videoTracks.forEach((track) => stream.addTrack(track));
+    if (audioTracks) audioTracks.forEach((track) => stream.addTrack(track));
 
     const peer = new Peer({ initiator: false, trickle: false, stream });
 
@@ -297,6 +342,10 @@ const ContextProvider: FC = ({ children }) => {
    * Call User
    * */
   const callUser = (id: string) => {
+    const stream = new MediaStream();
+    if (videoTracks) videoTracks.forEach((track) => stream.addTrack(track));
+    if (audioTracks) audioTracks.forEach((track) => stream.addTrack(track));
+
     const peer = new Peer({ initiator: true, trickle: false, stream });
 
     peer.on("signal", (data) => {
@@ -333,7 +382,9 @@ const ContextProvider: FC = ({ children }) => {
   const leaveCall = () => {
     setCallEnded(true);
     connectionRef.current?.destroy();
-    history.go(0);
+
+    socket.close();
+    history.goBack();
   };
 
   return (
