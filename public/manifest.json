@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Virtual Meet",
+  "name": "Virtual Meeting with AR and Gesture based control",
   "icons": [
     {
       "src": "favicon.ico",
