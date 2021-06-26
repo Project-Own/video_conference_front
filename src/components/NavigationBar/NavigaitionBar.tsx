@@ -2,8 +2,8 @@ import { Grid, Typography } from "@material-ui/core";
 import anime from "animejs";
 import { FC, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { RoutePath } from "src/pages/Router/Router";
 import Hamburger from "src/components/Hamburger/Hamburger";
+import { RoutePath } from "src/pages/Router/Router";
 
 const NavigationBar: FC<{ routes: RoutePath[] }> = ({ routes }) => {
   const [list, setList] = useState(false);
@@ -44,6 +44,7 @@ const NavigationBar: FC<{ routes: RoutePath[] }> = ({ routes }) => {
     <Grid
       container
       item
+      xs={12}
       direction="row"
       alignItems="center"
       justify="flex-end"

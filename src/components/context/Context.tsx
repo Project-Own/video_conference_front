@@ -54,22 +54,6 @@ interface SocketContextProps {
 // const socket = io("http://localhost:5000");
 const socket = io("https://video-conference-ar.herokuapp.com/");
 
-/**
- * CAPTURE_MEDIA settings
- * */
-const CAPTURE_MEDIA: MediaStreamConstraints = {
-  audio: {
-    echoCancellation: true,
-    noiseSuppression: true,
-    autoGainControl: false,
-  },
-  video: {
-    frameRate: { ideal: 10, max: 15 },
-    width: { ideal: 1280 },
-    height: { ideal: 720 },
-  },
-};
-
 let iceServers = {
   iceServers: [
     { urls: "stun:stun.services.mozilla.com" },
@@ -97,25 +81,36 @@ const ContextProvider: FC = ({ children }) => {
 
   const history = useHistory();
 
-  const { videoTracks } = useWebcam();
-  const { audioTracks } = useAudio();
+  const { videoTracks, toggleWebcam } = useWebcam();
+  const { audioTracks, toggleMicrophone } = useAudio();
 
   const rtcPeerConnection = useRef<RTCPeerConnection>();
+
+  useEffect(() => {
+    navigator.mediaDevices
+      .getUserMedia({
+        video: true,
+        audio: true,
+      })
+      .then((stream) => {
+        setStream(stream);
+      });
+  }, []);
   /**
    *
    * update video and audio tracks
    * */
-  useEffect(() => {
-    const stream = new MediaStream();
-    videoTracks?.forEach((track) => stream.addTrack(track));
-    audioTracks?.forEach((track) => stream.addTrack(track));
+  // useEffect(() => {
+  //   const stream = new MediaStream();
+  //   videoTracks?.forEach((track) => stream.addTrack(track));
+  //   audioTracks?.forEach((track) => stream.addTrack(track));
 
-    // console.log("VIDEOAUDIOUSEEFFECT");
-    // console.log(stream);
-    // console.log(stream?.getTracks()[0]);
-    // console.log(stream?.getTracks()[1]);
-    setStream(stream);
-  }, [videoTracks, audioTracks]);
+  //   // console.log("VIDEOAUDIOUSEEFFECT");
+  //   // console.log(stream);
+  //   // console.log(stream?.getTracks()[0]);
+  //   // console.log(stream?.getTracks()[1]);
+  //   setStream(stream);
+  // }, [videoTracks, audioTracks]);
 
   // console.log("VIDEOAUDIO");
   // console.log(stream);
@@ -181,23 +176,26 @@ const ContextProvider: FC = ({ children }) => {
       if (creator) {
         socket.on(SocketEvent.ready, () => {
           console.log(SocketEvent.ready);
-          console.log(roomName);
-          console.log(creator);
+          // console.log(roomName);
+          // console.log(creator);
 
           rtcPeerConnection.current = new RTCPeerConnection(iceServers);
           rtcPeerConnection.current.onicecandidate = onIceCandidateFunction;
           rtcPeerConnection.current.ontrack = onTrackFunction;
-          // if (stream) {
-          //   console.log("CHECKSTREAM");
-          //   console.log(stream);
-          //   console.log(stream.getTracks()[0]);
-          //   console.log(stream.getTracks()[1]);
+          if (stream) {
+            console.log("CHECKSTREAM");
+            console.log(stream);
+            console.log(stream.getTracks()[0]);
+            console.log(stream.getTracks()[1]);
 
-          //   rtcPeerConnection.current.addTrack(stream.getTracks()[0], stream);
-          //   rtcPeerConnection.current.addTrack(stream.getTracks()[1], stream);
-          // }
-          if (videoTracks) rtcPeerConnection.current.addTrack(videoTracks[0]);
-          if (audioTracks) rtcPeerConnection.current.addTrack(audioTracks[0]);
+            rtcPeerConnection.current.addTrack(stream.getTracks()[0], stream);
+            rtcPeerConnection.current.addTrack(stream.getTracks()[1], stream);
+          }
+          // console.log("________CHECKSTREAM______");
+
+          // console.log(videoTracks);
+          // if (videoTracks) rtcPeerConnection.current.addTrack(videoTracks[0]);
+          // if (audioTracks) rtcPeerConnection.current.addTrack(audioTracks[0]);
 
           rtcPeerConnection.current
             .createOffer()
@@ -219,20 +217,21 @@ const ContextProvider: FC = ({ children }) => {
           rtcPeerConnection.current = new RTCPeerConnection(iceServers);
           rtcPeerConnection.current.onicecandidate = onIceCandidateFunction;
           rtcPeerConnection.current.ontrack = onTrackFunction;
-          // if (stream) {
-          //   console.log("CHECKSTREAM");
+          if (stream) {
+            console.log("CHECKSTREAM");
 
-          //   console.log(stream);
+            console.log(stream);
 
-          //   console.log(stream.getTracks()[0]);
-          //   console.log(stream.getTracks()[1]);
+            console.log(stream.getTracks()[0]);
+            console.log(stream.getTracks()[1]);
 
-          //   rtcPeerConnection.current.addTrack(stream.getTracks()[0], stream);
-          //   rtcPeerConnection.current.addTrack(stream.getTracks()[1], stream);
-          // }
+            rtcPeerConnection.current.addTrack(stream.getTracks()[0], stream);
+            rtcPeerConnection.current.addTrack(stream.getTracks()[1], stream);
+          }
+          console.log("________CHECKSTREAM______");
 
-          if (videoTracks) rtcPeerConnection.current.addTrack(videoTracks[0]);
-          if (audioTracks) rtcPeerConnection.current.addTrack(audioTracks[0]);
+          // if (videoTracks) rtcPeerConnection.current.addTrack(videoTracks[0]);
+          // if (audioTracks) rtcPeerConnection.current.addTrack(audioTracks[0]);
 
           rtcPeerConnection.current.setRemoteDescription(offer);
           rtcPeerConnection.current
@@ -265,12 +264,11 @@ const ContextProvider: FC = ({ children }) => {
       console.log(event);
       console.log(event.streams[0]);
 
-      setOtherStreams((streams) => [...streams, event.streams[0]]);
+      setOtherStreams([...event.streams]);
+      // setOtherStreams((streams) => [...streams, event.streams[0]]);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [creator, roomName]);
-
-  console.log(creator);
+  }, [creator, roomName, stream]);
 
   /**
    * JOIN ROOM
@@ -382,6 +380,9 @@ const ContextProvider: FC = ({ children }) => {
   const leaveCall = () => {
     setCallEnded(true);
     connectionRef.current?.destroy();
+
+    toggleWebcam();
+    toggleMicrophone();
 
     socket.close();
     history.goBack();

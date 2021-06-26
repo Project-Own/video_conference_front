@@ -17,11 +17,17 @@ const VideoPlayerCollection = () => {
       />
       <p>{roomName}</p>
       <Button onClick={() => joinRoom()}>Set Room</Button>
-      {stream && <VideoPlayer stream={stream!} />}
+      {stream && <VideoPlayer stream={stream!} muted={true} />}
       {otherStreams?.map((otherStream) => {
         console.log("Other Stream");
         console.log(otherStream);
-        return <VideoPlayer stream={otherStream} key={otherStream.id} />;
+        return (
+          <VideoPlayer
+            stream={otherStream}
+            key={otherStream.id}
+            muted={false}
+          />
+        );
       })}
     </>
   );

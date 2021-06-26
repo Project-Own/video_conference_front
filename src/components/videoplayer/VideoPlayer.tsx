@@ -1,14 +1,12 @@
-import { makeStyles } from "@material-ui/core";
-import { FC, useContext, useEffect, useRef } from "react";
-import { SocketContext } from "../context/Context";
+import { makeStyles, Paper } from "@material-ui/core";
+import { FC, useEffect, useRef } from "react";
 
 const useStyles = makeStyles((theme) => ({
   video: {
     width: "100%",
-    [theme.breakpoints.down("xs")]: {
-      width: "100",
-      height: "100%",
-    },
+    // [theme.breakpoints.down("xs")]: {
+    //   width: "300px",
+    // },
   },
   gridContainer: {
     justifyContent: "center",
@@ -23,9 +21,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const VideoPlayer: FC<{ stream: MediaStream }> = ({ stream }) => {
-  const context = useContext(SocketContext);
-
+const VideoPlayer: FC<{ stream: MediaStream; muted: boolean }> = ({
+  stream,
+  muted,
+}) => {
   const classes = useStyles();
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -34,23 +33,19 @@ const VideoPlayer: FC<{ stream: MediaStream }> = ({ stream }) => {
   }, [stream]);
 
   return (
-    // <Paper className={classes.paper}>
-    //   <Typography variant="h5" gutterBottom>
-    //     {context?.name || "Name"}
-    //   </Typography>
-    <video
-      playsInline
-      // muted
-
-      ref={videoRef}
-      autoPlay
-      onCanPlay={() => {
-        videoRef.current?.play();
-      }}
-      placeholder="https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngfind.com%2Fmpng%2FhJmwxix_image-placeholder-png-user-profile-placeholder-image-png%2F&psig=AOvVaw0iiVcShtJUBhqjR9tTaNjv&ust=1624288437068000&source=images&cd=vfe&ved=0CAoQjRxqFwoTCNiLmo3ApvECFQAAAAAdAAAAABAI"
-      className={classes.video}
-    />
-    // </Paper>
+    <Paper className={classes.paper}>
+      <video
+        playsInline
+        muted={muted}
+        ref={videoRef}
+        autoPlay
+        onCanPlay={() => {
+          videoRef.current?.play();
+        }}
+        placeholder="https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngfind.com%2Fmpng%2FhJmwxix_image-placeholder-png-user-profile-placeholder-image-png%2F&psig=AOvVaw0iiVcShtJUBhqjR9tTaNjv&ust=1624288437068000&source=images&cd=vfe&ved=0CAoQjRxqFwoTCNiLmo3ApvECFQAAAAAdAAAAABAI"
+        className={classes.video}
+      />
+    </Paper>
   );
 };
 

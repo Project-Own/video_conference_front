@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const VideoFeed = () => {
-  const classes = useStyles();
+  // const classes = useStyles();
   const context = useContext(SocketContext);
   const {
     // name, callAccepted, callEnded,
@@ -26,11 +26,7 @@ const VideoFeed = () => {
   } = context;
 
   // const classes = useStyles();
-  return (
-    <div className={classes.video_feed}>
-      {stream && <VideoPlayer stream={stream!} />}
-    </div>
-  );
+  return <>{stream && <VideoPlayer stream={stream!} muted={true} />}</>;
 };
 
 export default VideoFeed;

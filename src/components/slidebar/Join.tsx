@@ -48,7 +48,15 @@ const Join: FC = ({ children }) => {
   return (
     <Container className={classes.container}>
       <Paper elevation={10} className={classes.paper}>
-        <form className={classes.root} noValidate autoComplete="off">
+        <form
+          className={classes.root}
+          noValidate
+          autoComplete="off"
+          onSubmit={(e) => {
+            e.preventDefault();
+            joinRoom();
+          }}
+        >
           <Grid container className={classes.gridContainer}>
             <Grid item xs={12} className={classes.padding}>
               <Typography gutterBottom variant="h5">
@@ -65,7 +73,7 @@ const Join: FC = ({ children }) => {
                 color="primary"
                 fullWidth
                 className={classes.margin}
-                onClick={() => joinRoom()}
+                type="submit"
               >
                 Join
               </Button>
