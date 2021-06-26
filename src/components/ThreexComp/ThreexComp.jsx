@@ -1,3 +1,4 @@
+/* eslint-disable no-redeclare */
 import {
   ArMarkerControls,
   ArToolkitContext,
@@ -89,6 +90,7 @@ export default class ThreexComp extends React.Component {
     var markerGroup = new THREE.Group();
     scene.add(markerGroup);
 
+    // eslint-disable-next-line no-unused-vars
     var markerControls = new ArMarkerControls(arToolkitContext, markerGroup, {
       type: "pattern",
       patternUrl: ArToolkitContext.baseURL + "data/patt.hiro",
