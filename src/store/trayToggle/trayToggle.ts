@@ -10,6 +10,7 @@ const initialState = {
   participant: false,
   call: false,
   setting: false,
+  setAr: true,
 };
 
 export const trayToggleSlice = createSlice({
@@ -37,6 +38,9 @@ export const trayToggleSlice = createSlice({
     toggleSetting: (state) => {
       state.setting = !state.setting;
     },
+    toggleAr: (state) => {
+      state.setAr = !state.setAr;
+    },
   },
 });
 
@@ -51,6 +55,7 @@ export const {
   toggleScreenShare,
   toggleWebcam,
   toggleSetting,
+  toggleAr,
 } = trayToggleSlice.actions;
 
 /**

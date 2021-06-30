@@ -1,18 +1,20 @@
-/* eslint-disable no-redeclare */
 import {
   ArMarkerControls,
   ArToolkitContext,
   ArToolkitProfile,
   ArToolkitSource,
-} from "@ar-js-org/ar.js/three.js/build/ar-threex";
-import React from "react";
+} from "arjs/three.js/build/ar-threex.js";
+import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-export default class ThreexComp extends React.Component {
-  componentDidMount() {
+const ThreexComp = () => {
+  const canvasRef = useRef();
+  useEffect(() => {
     ArToolkitContext.baseURL = "./";
     // init renderer
+
     var renderer = new THREE.WebGLRenderer({
+      canvas: canvasRef.current,
       // antialias	: true,
       alpha: true,
     });
@@ -90,7 +92,6 @@ export default class ThreexComp extends React.Component {
     var markerGroup = new THREE.Group();
     scene.add(markerGroup);
 
-    // eslint-disable-next-line no-unused-vars
     var markerControls = new ArMarkerControls(arToolkitContext, markerGroup, {
       type: "pattern",
       patternUrl: ArToolkitContext.baseURL + "data/patt.hiro",
@@ -148,16 +149,22 @@ export default class ThreexComp extends React.Component {
         onRenderFct(deltaMsec / 1000, nowMsec / 1000);
       });
     });
-  }
+  }, []);
 
-  render() {
-    return (
-      <div
-        style={{ width: "800px", height: "800px" }}
-        ref={(mount) => {
-          this.mount = mount;
-        }}
-      />
-    );
-  }
-}
+  //   const canvas1 = <HTMLCanvasElement>document.getElementById("c1")
+  // const arStream = canvas.captureStream();
+
+  return (
+    <canvas
+      id="c1"
+      class="c"
+      style={{ width: "800px", height: "800px" }}
+      // ref={(mount) => {
+      //   this.mount = mount;
+      // }}
+      ref={canvasRef}
+    ></canvas>
+  );
+};
+
+export default ThreexComp;

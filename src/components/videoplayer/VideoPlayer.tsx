@@ -1,5 +1,6 @@
 import { makeStyles, Paper } from "@material-ui/core";
 import { FC, useEffect, useRef } from "react";
+// import  ThreexComp  from "../ThreexComp/ThreexComp";
 
 const useStyles = makeStyles((theme) => ({
   video: {
@@ -26,6 +27,9 @@ const VideoPlayer: FC<{ stream: MediaStream; muted: boolean }> = ({
   muted,
 }) => {
   const classes = useStyles();
+  // console.log(ThreexComp);
+  // const { arStream } = ThreexComp();
+  // console.log(arStream);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   useEffect(() => {

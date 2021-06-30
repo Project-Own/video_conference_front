@@ -2,8 +2,7 @@ import { Typography } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-// import Paper from "@material-ui/core/Paper";
-import { useState } from "react";
+import { useTray } from "../../hooks/useTray";
 import ButtonTray from "./ButtonTray";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -58,12 +57,13 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const BottomBar = () => {
+  const { setAr, toggleAr } = useTray();
   const isHost = true;
-  const [ar_text, setar_text] = useState(false);
+  // const [ar_text, setar_text] = useState(false);
   const classes = useStyles();
-  const ar_button = () => {
-    setar_text(!ar_text);
-  };
+  // const ar_button = () => {
+  //   setar_text(!ar_text);
+  // };
 
   return (
     <Grid
@@ -78,9 +78,9 @@ const BottomBar = () => {
     >
       {isHost ? (
         <Grid item md={2}>
-          <Button onClick={() => ar_button()} className={classes.ar_button}>
+          <Button onClick={toggleAr} className={classes.ar_button}>
             <Typography className={classes.text}>
-              {ar_text ? "Start AR" : "Stop AR"}
+              {setAr ? "Start AR" : "Stop AR"}
             </Typography>
           </Button>
         </Grid>
