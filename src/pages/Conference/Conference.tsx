@@ -3,6 +3,7 @@ import { Grid } from "@material-ui/core";
 import { useContext, useEffect } from "react";
 import BottomBar from "src/components/BottomComponents/Bottombar";
 import { SocketContext } from "src/components/context/Context";
+import ThreexComp from "src/components/ThreexComp/ThreexComp";
 import VideoPlayer from "src/components/videoplayer/VideoPlayer";
 import { useTray } from "src/hooks/useTray";
 
@@ -21,8 +22,9 @@ import { useTray } from "src/hooks/useTray";
 
 const Conference = () => {
   // const classes = useStyles();
+  const { setAr } = useTray();
   const context = useContext(SocketContext);
-  const { stream, otherStreams } = context!;
+  const { stream, otherStreams, arStream } = context!;
 
   // const { id } = useParams<{ id: string }>();
 
@@ -50,10 +52,15 @@ const Conference = () => {
         alignItems="center"
         justify="center"
       >
-        {stream && (
-          <Grid item xs={12} md={6} lg={4}>
-            <VideoPlayer stream={stream!} muted={true} />
-          </Grid>
+        {/* <ThreexComp /> */}
+        {setAr ? (
+          stream && (
+            <Grid item xs={12} md={6} lg={4}>
+              <VideoPlayer stream={stream!} muted={true} />
+            </Grid>
+          )
+        ) : (
+          <ThreexComp />
         )}
 
         {otherStreams?.map((otherStream) => {

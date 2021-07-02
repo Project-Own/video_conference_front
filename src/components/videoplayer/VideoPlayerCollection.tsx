@@ -5,7 +5,10 @@ import VideoPlayer from "./VideoPlayer";
 
 const VideoPlayerCollection = () => {
   const context = useContext(SocketContext);
-  const { joinRoom, roomName, setRoomName, stream, otherStreams } = context;
+  const { joinRoom, roomName, setRoomName, stream, otherStreams, arStream } =
+    context;
+  console.log("geda");
+  // console.log(roomName);
   return (
     <>
       <label title="Room Name">Room N</label>
@@ -17,7 +20,10 @@ const VideoPlayerCollection = () => {
       />
       <p>{roomName}</p>
       <Button onClick={() => joinRoom()}>Set Room</Button>
+
       {stream && <VideoPlayer stream={stream!} muted={true} />}
+      {/* {arStream && <VideoPlayer stream={arStream!} muted={true} />} */}
+
       {otherStreams?.map((otherStream) => {
         console.log("Other Stream");
         console.log(otherStream);

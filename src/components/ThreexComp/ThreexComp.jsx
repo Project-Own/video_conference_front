@@ -3,12 +3,16 @@ import {
   ArToolkitContext,
   ArToolkitProfile,
   ArToolkitSource,
-} from "arjs/three.js/build/ar-threex.js";
-import React, { useEffect, useRef } from "react";
+} from "@ar-js-org/ar.js/three.js/build/ar-threex.js";
+import React, { useContext, useEffect, useRef } from "react";
+import { SocketContext } from "src/components/context/Context";
 import * as THREE from "three";
+import { addURLPath } from "./../../utils/utils";
 
 const ThreexComp = () => {
   const canvasRef = useRef();
+  // const [arStream, setarStream] = useState();
+  const { setarStream } = useContext(SocketContext);
   useEffect(() => {
     ArToolkitContext.baseURL = "./";
     // init renderer
@@ -68,7 +72,7 @@ const ThreexComp = () => {
 
     // create atToolkitContext
     var arToolkitContext = new ArToolkitContext({
-      cameraParametersUrl: ArToolkitContext.baseURL + "data/camera_para.dat",
+      cameraParametersUrl: addURLPath("/data/camera_para.dat"),
       detectionMode: "mono",
     });
 
@@ -94,7 +98,7 @@ const ThreexComp = () => {
 
     var markerControls = new ArMarkerControls(arToolkitContext, markerGroup, {
       type: "pattern",
-      patternUrl: ArToolkitContext.baseURL + "data/patt.hiro",
+      patternUrl: addURLPath("/data/patt.hiro"),
     });
 
     //////////////////////////////////////////////////////////////////////////////////
@@ -134,6 +138,8 @@ const ThreexComp = () => {
     onRenderFcts.push(function () {
       renderer.render(scene, camera);
     });
+    const stream = canvasRef.current.captureStream();
+    setarStream(stream);
 
     // run the rendering loop
     var lastTimeMsec = null;
@@ -152,12 +158,11 @@ const ThreexComp = () => {
   }, []);
 
   //   const canvas1 = <HTMLCanvasElement>document.getElementById("c1")
-  // const arStream = canvas.captureStream();
-
+  // console.log(arStream);
   return (
     <canvas
       id="c1"
-      class="c"
+      className="c"
       style={{ width: "800px", height: "800px" }}
       // ref={(mount) => {
       //   this.mount = mount;
