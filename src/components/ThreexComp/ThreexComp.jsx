@@ -1,19 +1,24 @@
-/* eslint-disable no-redeclare */
 import {
   ArMarkerControls,
   ArToolkitContext,
   ArToolkitProfile,
   ArToolkitSource,
-} from "@ar-js-org/ar.js/three.js/build/ar-threex";
-import React from "react";
-import { addURLPath } from "src/utils/utils";
+} from "@ar-js-org/ar.js/three.js/build/ar-threex.js";
+import React, { useContext, useEffect, useRef } from "react";
+import { SocketContext } from "src/components/context/Context";
 import * as THREE from "three";
+import { addURLPath } from "./../../utils/utils";
 
-export default class ThreexComp extends React.Component {
-  componentDidMount() {
+const ThreexComp = () => {
+  const canvasRef = useRef();
+  // const [arStream, setarStream] = useState();
+  const { setarStream } = useContext(SocketContext);
+  useEffect(() => {
     ArToolkitContext.baseURL = "./";
     // init renderer
+
     var renderer = new THREE.WebGLRenderer({
+      canvas: canvasRef.current,
       // antialias	: true,
       // canvas: this.mount,
       alpha: true,
@@ -72,7 +77,6 @@ export default class ThreexComp extends React.Component {
     // create atToolkitContext
     var arToolkitContext = new ArToolkitContext({
       cameraParametersUrl: addURLPath("/data/camera_para.dat"),
-      // ArToolkitContext.baseURL + "data/camera_para.dat",
       detectionMode: "mono",
     });
 
@@ -96,7 +100,6 @@ export default class ThreexComp extends React.Component {
     var markerGroup = new THREE.Group();
     scene.add(markerGroup);
 
-    // eslint-disable-next-line no-unused-vars
     var markerControls = new ArMarkerControls(arToolkitContext, markerGroup, {
       type: "pattern",
       patternUrl: addURLPath("/data/patt.hiro"),
@@ -139,6 +142,8 @@ export default class ThreexComp extends React.Component {
     onRenderFcts.push(function () {
       renderer.render(scene, camera);
     });
+    const stream = canvasRef.current.captureStream();
+    setarStream(stream);
 
     // run the rendering loop
     var lastTimeMsec = null;
@@ -154,16 +159,21 @@ export default class ThreexComp extends React.Component {
         onRenderFct(deltaMsec / 1000, nowMsec / 1000);
       });
     });
-  }
+  }, []);
 
-  render() {
-    return (
-      <canvas
-        style={{ width: "800px", height: "800px" }}
-        ref={(mount) => {
-          this.mount = mount;
-        }}
-      />
-    );
-  }
-}
+  //   const canvas1 = <HTMLCanvasElement>document.getElementById("c1")
+  // console.log(arStream);
+  return (
+    <canvas
+      id="c1"
+      className="c"
+      style={{ width: "800px", height: "800px" }}
+      // ref={(mount) => {
+      //   this.mount = mount;
+      // }}
+      ref={canvasRef}
+    ></canvas>
+  );
+};
+
+export default ThreexComp;

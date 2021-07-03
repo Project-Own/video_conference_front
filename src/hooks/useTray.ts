@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import {
   selectTrayState,
+  toggleAr,
   toggleCall,
   toggleChat,
   toggleMicrophone,
@@ -19,6 +20,7 @@ type TrayOperators = {
   participant: boolean;
   call: boolean;
   setting: boolean;
+  setAr: boolean;
 
   toggleCall: () => void;
   toggleChat: () => void;
@@ -27,6 +29,7 @@ type TrayOperators = {
   toggleScreenShare: () => void;
   toggleWebcam: () => void;
   toggleSetting: () => void;
+  toggleAr: () => void;
 };
 
 export const useTray = (): Readonly<TrayOperators> => {
@@ -41,6 +44,7 @@ export const useTray = (): Readonly<TrayOperators> => {
     participant: trayState.participant,
     call: trayState.call,
     setting: trayState.setting,
+    setAr: trayState.setAr,
     toggleCall: useCallback(() => dispatch(toggleCall()), [dispatch]),
     toggleChat: useCallback(() => dispatch(toggleChat()), [dispatch]),
     toggleMicrophone: useCallback(
@@ -57,5 +61,6 @@ export const useTray = (): Readonly<TrayOperators> => {
     ),
     toggleWebcam: useCallback(() => dispatch(toggleWebcam()), [dispatch]),
     toggleSetting: useCallback(() => dispatch(toggleSetting()), [dispatch]),
+    toggleAr: useCallback(() => dispatch(toggleAr()), [dispatch]),
   };
 };

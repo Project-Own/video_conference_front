@@ -33,10 +33,13 @@ interface SocketContextProps {
   call: CallProps | undefined;
   callAccepted: boolean;
   stream: MediaStream | undefined;
+  arStream: MediaStream | undefined;
+  // setStream: React.Dispatch<React.SetStateAction<MediaStream | undefined>>;
+  setarStream: React.Dispatch<React.SetStateAction<MediaStream | undefined>>;
+
   otherStreams: MediaStream[] | undefined;
   name: string;
   setName: React.Dispatch<React.SetStateAction<string>>;
-
   roomName: string;
   setRoomName: React.Dispatch<React.SetStateAction<string>>;
 
@@ -76,6 +79,7 @@ const ContextProvider: FC = ({ children }) => {
   const [joined, setJoined] = useState(false);
   const [call, setCall] = useState<CallProps>();
   const [me, setMe] = useState("");
+  const [arStream, setarStream] = useState<MediaStream>();
 
   const connectionRef = useRef<Peer.Instance>();
 
@@ -175,9 +179,10 @@ const ContextProvider: FC = ({ children }) => {
     if (roomName !== "") {
       if (creator) {
         socket.on(SocketEvent.ready, () => {
+          console.log("geda");
           console.log(SocketEvent.ready);
-          // console.log(roomName);
-          // console.log(creator);
+          console.log(roomName);
+          console.log(creator);
 
           rtcPeerConnection.current = new RTCPeerConnection(iceServers);
           rtcPeerConnection.current.onicecandidate = onIceCandidateFunction;
@@ -395,6 +400,8 @@ const ContextProvider: FC = ({ children }) => {
         callAccepted,
         // myVideo,
         // userVideo,
+        arStream,
+        setarStream,
         stream,
         otherStreams,
         name,
