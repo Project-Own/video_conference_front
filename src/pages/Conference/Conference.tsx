@@ -5,7 +5,7 @@ import BottomBar from "src/components/BottomComponents/Bottombar";
 import ThreexComp from "src/components/ThreexComp/ThreexComp";
 import VideoPlayer from "src/components/videoplayer/VideoPlayer";
 import { useTray } from "src/hooks/useTray";
-import { SocketContext } from "src/pages/context/Context";
+import { SocketContext } from "src/pages/Context/Context";
 
 // const useStyles = makeStyles((theme: Theme) =>
 //   createStyles({
@@ -24,7 +24,7 @@ const Conference = () => {
   // const classes = useStyles();
   const { setAr } = useTray();
   const context = useContext(SocketContext);
-  const { stream, otherStreams, arStream } = context!;
+  const { stream, otherStreams } = context!;
 
   // const { id } = useParams<{ id: string }>();
 

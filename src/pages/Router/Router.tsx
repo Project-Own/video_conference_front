@@ -8,7 +8,7 @@ import {
   TransitionGroup,
   TransitionStatus,
 } from "react-transition-group";
-import { ContextProvider } from "src/pages/context/Context";
+import { ContextProvider } from "src/pages/Context/Context";
 import { Loading } from "src/components/Loading/Loading";
 import NavigationBar from "src/components/NavigationBar/NavigaitionBar";
 import { addURLPath } from "src/utils/utils";

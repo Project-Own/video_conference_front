@@ -1,6 +1,6 @@
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { useContext } from "react";
-import { SocketContext } from "../../pages/context/Context";
+import { SocketContext } from "src/pages/Context/Context";
 import VideoPlayer from "../videoplayer/VideoPlayer";
 
 const useStyles = makeStyles((theme: Theme) =>

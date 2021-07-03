@@ -2,8 +2,8 @@
 import Grid from "@material-ui/core/Grid";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React, { useContext } from "react";
-import BottomBar from "../../components/BottomComponents/Bottombar";
-import { SocketContext } from "../context/Context";
+import BottomBar from "src/components/BottomComponents/Bottombar";
+import { SocketContext } from "src/pages/Context/Context";
 import VideoFeed from "./VideoFeed";
 
 const useStyles = makeStyles((theme: Theme) =>

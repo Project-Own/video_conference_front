@@ -1,3 +1,4 @@
+/* eslint-disable no-redeclare */
 import {
   ArMarkerControls,
   ArToolkitContext,
@@ -5,9 +6,9 @@ import {
   ArToolkitSource,
 } from "@ar-js-org/ar.js/three.js/build/ar-threex.js";
 import React, { useContext, useEffect, useRef } from "react";
-import { SocketContext } from "src/components/context/Context";
+import { SocketContext } from "src/pages/Context/Context";
+import { addURLPath } from "src/utils/utils";
 import * as THREE from "three";
-import { addURLPath } from "./../../utils/utils";
 
 const ThreexComp = () => {
   const canvasRef = useRef();
@@ -100,6 +101,7 @@ const ThreexComp = () => {
     var markerGroup = new THREE.Group();
     scene.add(markerGroup);
 
+    // eslint-disable-next-line no-unused-vars
     var markerControls = new ArMarkerControls(arToolkitContext, markerGroup, {
       type: "pattern",
       patternUrl: addURLPath("/data/patt.hiro"),
@@ -159,6 +161,7 @@ const ThreexComp = () => {
         onRenderFct(deltaMsec / 1000, nowMsec / 1000);
       });
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   //   const canvas1 = <HTMLCanvasElement>document.getElementById("c1")
