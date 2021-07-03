@@ -6,6 +6,7 @@ import {
   ArToolkitSource,
 } from "@ar-js-org/ar.js/three.js/build/ar-threex";
 import React from "react";
+import { addURLPath } from "src/utils/utils";
 import * as THREE from "three";
 
 export default class ThreexComp extends React.Component {
@@ -14,6 +15,7 @@ export default class ThreexComp extends React.Component {
     // init renderer
     var renderer = new THREE.WebGLRenderer({
       // antialias	: true,
+      // canvas: this.mount,
       alpha: true,
     });
     renderer.setClearColor(new THREE.Color("lightgrey"), 0);
@@ -52,6 +54,7 @@ export default class ThreexComp extends React.Component {
     window.addEventListener("resize", function () {
       onResize();
     });
+
     function onResize() {
       arToolkitSource.onResizeElement();
       arToolkitSource.copyElementSizeTo(renderer.domElement);
@@ -64,9 +67,12 @@ export default class ThreexComp extends React.Component {
     //          initialize arToolkitContext
     ////////////////////////////////////////////////////////////////////////////////
 
+    console.log(addURLPath("/data/camera_para.dat"));
+
     // create atToolkitContext
     var arToolkitContext = new ArToolkitContext({
-      cameraParametersUrl: ArToolkitContext.baseURL + "data/camera_para.dat",
+      cameraParametersUrl: addURLPath("/data/camera_para.dat"),
+      // ArToolkitContext.baseURL + "data/camera_para.dat",
       detectionMode: "mono",
     });
 
@@ -93,7 +99,7 @@ export default class ThreexComp extends React.Component {
     // eslint-disable-next-line no-unused-vars
     var markerControls = new ArMarkerControls(arToolkitContext, markerGroup, {
       type: "pattern",
-      patternUrl: ArToolkitContext.baseURL + "data/patt.hiro",
+      patternUrl: addURLPath("/data/patt.hiro"),
     });
 
     //////////////////////////////////////////////////////////////////////////////////
@@ -152,7 +158,7 @@ export default class ThreexComp extends React.Component {
 
   render() {
     return (
-      <div
+      <canvas
         style={{ width: "800px", height: "800px" }}
         ref={(mount) => {
           this.mount = mount;

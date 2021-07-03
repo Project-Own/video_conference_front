@@ -1,6 +1,6 @@
 import { Button } from "@material-ui/core";
 import React, { useContext } from "react";
-import { SocketContext } from "../context/Context";
+import { SocketContext } from "../../pages/context/Context";
 
 const Notification = () => {
   const { answerCall, call, callAccepted } = useContext(SocketContext);

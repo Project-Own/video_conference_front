@@ -2,7 +2,8 @@
 import { Grid } from "@material-ui/core";
 import { useContext, useEffect } from "react";
 import BottomBar from "src/components/BottomComponents/Bottombar";
-import { SocketContext } from "src/components/context/Context";
+import { SocketContext } from "src/pages/context/Context";
+import ThreexComp from "src/components/ThreexComp/ThreexComp";
 import VideoPlayer from "src/components/videoplayer/VideoPlayer";
 import { useTray } from "src/hooks/useTray";
 
@@ -55,6 +56,7 @@ const Conference = () => {
             <VideoPlayer stream={stream!} muted={true} />
           </Grid>
         )}
+        <ThreexComp />
 
         {otherStreams?.map((otherStream) => {
           console.log("Other Stream");

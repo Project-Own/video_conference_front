@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { SocketContext } from "../context/Context";
+import { SocketContext } from "../../pages/context/Context";
 import VideoPlayer from "../videoplayer/VideoPlayer";
 
 // const useStyles = makeStyles((theme: Theme) =>

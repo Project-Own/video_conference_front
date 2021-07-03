@@ -14,7 +14,7 @@ import VideocamOffOutlinedIcon from "@material-ui/icons/VideocamOffOutlined";
 import VideocamOutlinedIcon from "@material-ui/icons/VideocamOutlined";
 import { useContext } from "react";
 import { useTray } from "../../hooks/useTray";
-import { SocketContext } from "../context/Context";
+import { SocketContext } from "../../pages/context/Context";
 import ChatGrid from "../gridview/chatGrid";
 import ParticipantGrid from "../gridview/participantGrid";
 import SettingsGrid from "../gridview/SettingsGrid";
