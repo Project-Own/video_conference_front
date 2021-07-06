@@ -1,5 +1,6 @@
 import {
   ArMarkerControls,
+  ArSmoothedControls,
   ArToolkitContext,
   ArToolkitProfile,
 } from "@ar-js-org/ar.js/three.js/build/ar-threex.js";
@@ -22,24 +23,43 @@ export class Scene {
   onRenderFcts: RenderFunction["callback"][] = [];
 
   arToolkitProfile: typeof ArToolkitProfile;
-  // arToolkitSource: typeof ArToolkitSource;
   arToolkitContext: typeof ArToolkitContext;
   arMarkerControls: typeof ArMarkerControls;
 
+  smoothedControls: typeof ArSmoothedControls;
+
+  markerGroup: THREE.Group;
+  sceneGroup: THREE.Group;
+
   constructor(canvasRef: HTMLCanvasElement, videoRef: HTMLVideoElement) {
     this.renderer = this.setRenderer(canvasRef);
+    const context = canvasRef.getContext("2d");
+
     this.camera = this.setCamera();
 
     this.scene = this.setScene();
-    // this.setLights();
+
+    this.markerGroup = new THREE.Group();
+
+    this.smoothedControls = new ArSmoothedControls(this.markerGroup, {
+      lerpPosition: 0.8,
+      lerpQuaternion: 0.8,
+      lerpScale: 1,
+      // minVisibleDelay: 1,
+      // minUnvisibleDelay: 1,
+    });
+
+    this.sceneGroup = new THREE.Group();
+
+    this.markerGroup.add(this.sceneGroup);
+
+    this.setLights();
 
     // this.orbitControls = this.setOrbitControls();
 
     // this.loadModel();
 
     this.setAr(videoRef);
-
-    // this.setObjects();
 
     /**
      * Window Listener
@@ -53,8 +73,6 @@ export class Scene {
     // };
 
     // window.addEventListener("resize", onWindowResize, false);
-
-    // this.animate();
   }
   setAr = (videoRef: HTMLVideoElement) => {
     // // handle resize
@@ -94,6 +112,8 @@ export class Scene {
 
       try {
         this.arToolkitContext.update(videoRef);
+
+        this.smoothedControls.update(this.markerGroup);
       } catch (error) {
         // console.log(error);
       }
@@ -103,48 +123,21 @@ export class Scene {
     //          Create a ArMarkerControls
     ////////////////////////////////////////////////////////////////////////////////
 
-    var markerGroup = new THREE.Group();
-    this.scene.add(markerGroup);
+    this.scene.add(this.markerGroup);
 
     this.arMarkerControls = new ArMarkerControls(
       this.arToolkitContext,
-      markerGroup,
+      this.markerGroup,
       {
         type: "pattern",
         patternUrl: addURLPath("/data/patt.hiro"),
       }
     );
 
-    //////////////////////////////////////////////////////////////////////////////////
-    //		add an object in the scene
-    //////////////////////////////////////////////////////////////////////////////////
-
-    var markerScene = new THREE.Scene();
-    markerGroup.add(markerScene);
-
-    var axesHelper = new THREE.AxesHelper();
-    markerScene.add(axesHelper);
-
-    // add a torus knot
-    var geometry = new THREE.BoxGeometry(1, 1, 1);
-    var material = new THREE.MeshNormalMaterial({
-      transparent: true,
-      opacity: 0.5,
-      side: THREE.DoubleSide,
-    });
-    var mesh = new THREE.Mesh(geometry, material);
-    mesh.position.y = geometry.parameters.height / 2;
-    markerScene.add(mesh);
-
-    var torusGeometry = new THREE.TorusKnotGeometry(0.3, 0.1, 64, 16);
-    var material2 = new THREE.MeshNormalMaterial();
-    var mesh2 = new THREE.Mesh(torusGeometry, material2);
-    mesh2.position.y = 0.5;
-    markerScene.add(mesh2);
-
-    this.onRenderFcts.push((delta = 0) => {
-      mesh.rotation.x += delta * Math.PI;
-    });
+    /**
+     * Set Object
+     * */
+    this.setObjects();
 
     //////////////////////////////////////////////////////////////////////////////////
     //		render the whole thing on the page
@@ -210,16 +203,11 @@ export class Scene {
       antialias: true,
     });
     renderer.setClearColor(new THREE.Color("lightgrey"), 0);
-    // renderer.setPixelRatio(2);
-    // renderer.setSize(window.innerWidth, window.innerHeight);
-    // renderer.domElement.style.position = "absolute";
-    // renderer.domElement.style.top = "0px";
-    // renderer.domElement.style.left = "0px";
-    renderer.physicallyCorrectLights = true;
+    // renderer.physicallyCorrectLights = true;
     renderer.shadowMap.enabled = true;
     renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
 
-    // document.body.appendChild(renderer.domElement);
     return renderer;
   };
 
@@ -251,64 +239,130 @@ export class Scene {
     requestAnimationFrame(animate);
   };
   setLights = () => {
-    const ambientLight = new THREE.AmbientLight();
-    // light.position.set(5, 5, 5);
-    this.scene.add(ambientLight);
+    const ambientLight = new THREE.AmbientLight(0x666666);
+    this.sceneGroup.add(ambientLight);
 
-    const spotLight = new THREE.PointLight("green");
-    spotLight.position.set(0, 1, 0.5);
-    this.scene.add(spotLight);
+    const pointLight = new THREE.PointLight("green", 1, 100);
+    pointLight.position.set(0, 4, 0); //default; light shining from top
+    pointLight.castShadow = true;
+    this.sceneGroup.add(pointLight);
 
-    const spotLightHelper = new THREE.PointLightHelper(spotLight);
-    this.scene.add(spotLightHelper);
+    // const pointLightHelper = new THREE.PointLightHelper(pointLight);
+    // this.sceneGroup.add(pointLightHelper);
 
-    var directionalLight = new THREE.DirectionalLight("red", 3);
-    directionalLight.position.set(1, 1, 1);
-    this.scene.add(directionalLight);
+    // var directionalLight = new THREE.DirectionalLight("red", 3);
+    // directionalLight.position.set(1, 1, 1);
+    // this.sceneGroup.add(directionalLight);
 
-    var directionalLightHelper = new THREE.DirectionalLightHelper(
-      directionalLight
+    // var directionalLightHelper = new THREE.DirectionalLightHelper(
+    //   directionalLight
+    // );
+    // this.sceneGroup.add(directionalLightHelper);
+
+    const lightSphere = new THREE.Mesh(
+      new THREE.SphereGeometry(0.1),
+      new THREE.MeshBasicMaterial({
+        color: "blue",
+        transparent: true,
+        opacity: 0.8,
+      })
     );
-    this.scene.add(directionalLightHelper);
+    lightSphere.position.copy(pointLight.position);
+    this.sceneGroup.add(lightSphere);
   };
 
   setObjects = () => {
     const objects: THREE.Object3D[] = [];
 
-    const planeGeometry: THREE.PlaneGeometry = new THREE.PlaneGeometry(100, 20);
-    const plane: THREE.Mesh = new THREE.Mesh(
-      planeGeometry,
-      new THREE.MeshPhongMaterial()
-    );
-    plane.rotateX(-Math.PI / 2);
-    plane.position.y = -1;
-    plane.receiveShadow = true;
-    this.scene.add(plane);
-    objects.push(plane);
+    /**
+     * Floor
+     * To Catch Shadow
+     * */
+    const floorGeometry: THREE.PlaneGeometry = new THREE.PlaneGeometry(20, 20);
+    const floorMaterial: THREE.ShadowMaterial = new THREE.ShadowMaterial();
+    floorMaterial.opacity = 0.3;
+    const floorMesh: THREE.Mesh = new THREE.Mesh(floorGeometry, floorMaterial);
+    floorMesh.rotateX(-Math.PI / 2);
+    floorMesh.position.y = -1;
+    floorMesh.receiveShadow = true;
 
-    const geometry: THREE.BoxGeometry = new THREE.BoxGeometry();
-    //const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000, transparent: true })
-    //const cube: THREE.Mesh = new THREE.Mesh(geometry, material)
-    //scene.add(cube)
+    this.sceneGroup.add(floorMesh);
 
-    const material: THREE.MeshPhongMaterial[] = [
-      new THREE.MeshPhongMaterial({ color: 0xff0000, transparent: true }),
-      new THREE.MeshPhongMaterial({ color: 0x00ff00, transparent: true }),
-      new THREE.MeshPhongMaterial({ color: 0x0000ff, transparent: true }),
-    ];
+    objects.push(floorMesh);
 
-    const cubes: THREE.Mesh[] = [
-      new THREE.Mesh(geometry, material[0]),
-      new THREE.Mesh(geometry, material[1]),
-      new THREE.Mesh(geometry, material[2]),
-    ];
-    cubes[0].position.x = -2;
-    cubes[1].position.x = 0;
-    cubes[2].position.x = 2;
-    cubes.forEach((c) => this.scene.add(c));
-    objects.concat(cubes);
+    /**
+     *
+     * ADD AR Object
+     * */
 
-    this.setControls(cubes);
+    //////////////////////////////////////////////////////////////////////////////////
+    //		add an object in the scene
+    //////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Geometry
+     * */
+    // add a torus knot
+    // var geometry = new THREE.BoxGeometry(1, 1, 1);
+    // var material = new THREE.MeshNormalMaterial({
+    //   transparent: true,
+    //   opacity: 0.5,
+    //   side: THREE.DoubleSide,
+    // });
+    // var mesh = new THREE.Mesh(geometry, material);
+    // mesh.position.y = geometry.parameters.height / 2;
+    // mesh.castShadow = true;
+    // mesh.receiveShadow = true;
+
+    // this.sceneGroup.add(mesh);
+
+    /**
+     * Geometry
+     * */
+    var torusGeometry = new THREE.TorusKnotGeometry(0.3, 0.1, 64, 16);
+    var material2 = new THREE.MeshNormalMaterial();
+    var mesh2 = new THREE.Mesh(torusGeometry, material2);
+    mesh2.position.y = 0.5;
+    mesh2.castShadow = true;
+    mesh2.receiveShadow = true;
+
+    this.sceneGroup.add(mesh2);
+
+    /**
+     * Animation
+     * */
+    this.onRenderFcts.push((delta = 0) => {
+      mesh2.rotation.x += delta * Math.PI;
+    });
+
+    // /**
+    //  *
+    //  *CUBES
+    //  * */
+
+    // const geometry: THREE.BoxGeometry = new THREE.BoxGeometry();
+    // //const material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000, transparent: true })
+    // //const cube: THREE.Mesh = new THREE.Mesh(geometry, material)
+    // //scene.add(cube)
+
+    // const material: THREE.MeshPhongMaterial[] = [
+    //   new THREE.MeshPhongMaterial({ color: 0xff0000, transparent: true }),
+    //   new THREE.MeshPhongMaterial({ color: 0x00ff00, transparent: true }),
+    //   new THREE.MeshPhongMaterial({ color: 0x0000ff, transparent: true }),
+    // ];
+
+    // const cubes: THREE.Mesh[] = [
+    //   new THREE.Mesh(geometry, material[0]),
+    //   new THREE.Mesh(geometry, material[1]),
+    //   new THREE.Mesh(geometry, material[2]),
+    // ];
+    // cubes[0].position.x = -2;
+    // cubes[1].position.x = 0;
+    // cubes[2].position.x = 2;
+    // cubes.forEach((c) => this.scene.add(c));
+    // objects.concat(cubes);
+
+    // this.setControls(cubes);
 
     return objects;
   };
@@ -372,6 +426,8 @@ const ModelLoader = () => {
   useEffect(() => {
     const scene = new Scene(canvasRef.current!, videoRef.current!);
     scene.animate();
+
+    // drawToCanvas();
     // document.body.appendChild(renderer.domElement);
   }, []);
 
@@ -380,12 +436,16 @@ const ModelLoader = () => {
       const srcObject = videoTracks ? new MediaStream(videoTracks) : null;
 
       videoRef.current.srcObject = srcObject;
-
-      // const url = URL.createObjectURL();
     }
   }, [videoTracks]);
   return (
-    <div style={{ position: "relative", height: "200px", width: "200px" }}>
+    <div
+      style={{
+        position: "relative",
+        // height: "500px",
+        width: "100%",
+      }}
+    >
       <button onClick={toggleWebcam}>Toggle Webcam</button>
       <p>Sahas</p>
 
@@ -405,12 +465,19 @@ const ModelLoader = () => {
           width: "inherit",
           height: "inherit",
           objectFit: "cover",
+          transform: `scaleX(-1)`,
           position: "absolute",
         }}
       ></video>
       <canvas
         ref={canvasRef}
-        style={{ width: "inherit", height: "inherit", position: "absolute" }}
+        style={{
+          width: "inherit",
+          height: "inherit",
+          position: "absolute",
+
+          transform: `scaleX(-1)`,
+        }}
       ></canvas>
     </div>
   );

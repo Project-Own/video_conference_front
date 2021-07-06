@@ -1,6 +1,5 @@
 import { makeStyles, Paper } from "@material-ui/core";
 import { FC, useEffect, useRef } from "react";
-
 const useStyles = makeStyles((theme) => ({
   video: {
     width: "100%",
@@ -45,8 +44,7 @@ const VideoPlayer: FC<{ stream: MediaStream; muted: boolean }> = ({
         placeholder="https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngfind.com%2Fmpng%2FhJmwxix_image-placeholder-png-user-profile-placeholder-image-png%2F&psig=AOvVaw0iiVcShtJUBhqjR9tTaNjv&ust=1624288437068000&source=images&cd=vfe&ved=0CAoQjRxqFwoTCNiLmo3ApvECFQAAAAAdAAAAABAI"
         className={classes.video}
       />
-      {/* afsdf
-      <ThreexComp /> */}
+      {/* <ThreexComp /> */}
     </Paper>
   );
 };
