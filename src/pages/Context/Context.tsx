@@ -90,16 +90,16 @@ const ContextProvider: FC = ({ children }) => {
 
   const rtcPeerConnection = useRef<RTCPeerConnection>();
 
-  useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia({
-        video: true,
-        audio: true,
-      })
-      .then((stream) => {
-        setStream(stream);
-      });
-  }, []);
+  // useEffect(() => {
+  //   navigator.mediaDevices
+  //     .getUserMedia({
+  //       video: true,
+  //       audio: true,
+  //     })
+  //     .then((stream) => {
+  //       setStream(stream);
+  //     });
+  // }, []);
   /**
    *
    * update video and audio tracks

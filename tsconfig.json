@@ -17,5 +17,6 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src"]
+  "include": ["src", "decs.d.ts"],
+  "exclude": ["node_modules", "**/node_modules/*", "build"]
 }
