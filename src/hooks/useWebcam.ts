@@ -16,7 +16,7 @@ export const useWebcam = () => {
   const DEFAULT_VIDEO_CONSTRAINTS = {
     video: {
       frameRate: { ideal: 10, max: 15 },
-      width: { ideal: 1280 },
+      width: { ideal: 720 },
       height: { ideal: 720 },
     },
   };

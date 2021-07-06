@@ -8,9 +8,9 @@ import {
   TransitionGroup,
   TransitionStatus,
 } from "react-transition-group";
-import { ContextProvider } from "src/pages/Context/Context";
 import { Loading } from "src/components/Loading/Loading";
 import NavigationBar from "src/components/NavigationBar/NavigaitionBar";
+import { ContextProvider } from "src/pages/Context/Context";
 import { addURLPath } from "src/utils/utils";
 
 // const LoadableHost = loadable(() => import("src/components/host/Host"), {
@@ -22,6 +22,12 @@ import { addURLPath } from "src/utils/utils";
 //     fallback: <Loading />,
 //   }
 // );
+const LoadableModel = loadable(
+  () => import("src/components/ModelLoader/ModelLoader"),
+  {
+    fallback: <Loading />,
+  }
+);
 const LoadableAR = loadable(
   () => import("src/components/ThreexComp/ThreexComp"),
   {
@@ -46,6 +52,7 @@ export interface RoutePath {
 const routes: RoutePath[] = [
   { path: addURLPath("/"), name: "Home", Component: LoadableLanding },
   { path: addURLPath("/ar"), name: "AR", Component: LoadableAR },
+  { path: addURLPath("/model"), name: "Model", Component: LoadableModel },
   // { path: addURLPath("/about"), name: "Combine", Component: LoadableCombine },
 
   // { path: addURLPath("/team"), name: "Host", Component: LoadableHost },
