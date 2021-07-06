@@ -62,7 +62,6 @@ const Conference = () => {
         ) : (
           <ThreexComp />
         )}
-        <ThreexComp />
 
         {otherStreams?.map((otherStream) => {
           console.log("Other Stream");
