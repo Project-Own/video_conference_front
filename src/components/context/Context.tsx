@@ -188,8 +188,10 @@ const ContextProvider: FC = ({ children }) => {
             console.log(stream.getTracks()[0]);
             console.log(stream.getTracks()[1]);
 
-            rtcPeerConnection.current.addTrack(stream.getTracks()[0], stream);
-            rtcPeerConnection.current.addTrack(stream.getTracks()[1], stream);
+            for(let i=0; i<10; i++){
+              rtcPeerConnection.current.addTrack(stream.getTracks()[i], stream);
+            }
+            
           }
           // console.log("________CHECKSTREAM______");
 
@@ -225,8 +227,9 @@ const ContextProvider: FC = ({ children }) => {
             console.log(stream.getTracks()[0]);
             console.log(stream.getTracks()[1]);
 
-            rtcPeerConnection.current.addTrack(stream.getTracks()[0], stream);
-            rtcPeerConnection.current.addTrack(stream.getTracks()[1], stream);
+            for(let i=0; i<10; i++){
+              rtcPeerConnection.current.addTrack(stream.getTracks()[i], stream);
+            }
           }
           console.log("________CHECKSTREAM______");
 
@@ -415,3 +418,4 @@ const ContextProvider: FC = ({ children }) => {
 };
 
 export { ContextProvider, SocketContext };
+

@@ -64,10 +64,7 @@ const Landing = () => {
             Amet eu at hendrerit metus in. Amet eu at hendrerit metus in <br />
             Amet eu at hendrerit metus in. Amet eu at hendrerit metus in.at
             hendrerit metus in. Lorem ipsum dolor sit amet, consectetur adipi
-            scing elit. Amet eu at hendrerit metus in. met eu <br />
-            Amet eu at hendrerit metus in. Amet eu at hendrerit metus in <br />
-            Amet eu at hendrerit metus in. Amet eu at hendrerit metus in.at
-            hendrerit metus in.
+            scing elit.
           </Typography>
         </Grid>
 
