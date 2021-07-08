@@ -35,7 +35,7 @@ interface SocketContextProps {
   stream: MediaStream | undefined;
   arStream: MediaStream | undefined;
   // setStream: React.Dispatch<React.SetStateAction<MediaStream | undefined>>;
-  setarStream: React.Dispatch<React.SetStateAction<MediaStream | undefined>>;
+  setArStream: React.Dispatch<React.SetStateAction<MediaStream | undefined>>;
 
   otherStreams: MediaStream[] | undefined;
   name: string;
@@ -79,7 +79,7 @@ const ContextProvider: FC = ({ children }) => {
   const [joined, setJoined] = useState(false);
   const [call, setCall] = useState<CallProps>();
   const [me, setMe] = useState("");
-  const [arStream, setarStream] = useState<MediaStream>();
+  const [arStream, setArStream] = useState<MediaStream>();
 
   const connectionRef = useRef<Peer.Instance>();
 
@@ -401,7 +401,7 @@ const ContextProvider: FC = ({ children }) => {
         // myVideo,
         // userVideo,
         arStream,
-        setarStream,
+        setArStream,
         stream,
         otherStreams,
         name,

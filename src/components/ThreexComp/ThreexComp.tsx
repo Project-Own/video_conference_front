@@ -4,13 +4,15 @@ import {
   ArToolkitContext,
   ArToolkitProfile,
 } from "@ar-js-org/ar.js/three.js/build/ar-threex.js";
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useWebcam } from "src/hooks/useWebcam";
+import { SocketContext } from "src/pages/Context/Context";
 import { addURLPath } from "src/utils/utils";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { VideoStreamMerger } from "video-stream-merger";
 
 interface RenderFunction {
   callback: (delta?: number, now?: number) => void;
@@ -418,16 +420,30 @@ export class Scene {
   };
 }
 
+interface HTMLCanvasElementWithCaptureStream extends HTMLCanvasElement {
+  captureStream(frameRate?: number): MediaStream;
+}
+
 const ModelLoader = () => {
   const { videoTracks, toggleWebcam } = useWebcam();
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef = useRef<HTMLCanvasElementWithCaptureStream>(null);
+  const canvasRef2 = useRef<HTMLCanvasElementWithCaptureStream>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRef2 = useRef<HTMLVideoElement>(null);
+  const [canvasStream, setCanvasStream] = useState<MediaStream | null>(null);
+  const { setArStream } = useContext(SocketContext);
+  const videoStreamMerger = new VideoStreamMerger();
 
   useEffect(() => {
     const scene = new Scene(canvasRef.current!, videoRef.current!);
     scene.animate();
 
-    // drawToCanvas();
+    try {
+      setCanvasStream(canvasRef.current?.captureStream(25)!);
+    } catch (error) {
+      console.log(error);
+    }
+
     // document.body.appendChild(renderer.domElement);
   }, []);
 
@@ -435,24 +451,25 @@ const ModelLoader = () => {
     if (videoRef.current) {
       const srcObject = videoTracks ? new MediaStream(videoTracks) : null;
 
+      if (srcObject) {
+        videoStreamMerger.addStream(srcObject, undefined);
+        if (canvasStream) {
+          videoStreamMerger.addStream(canvasStream, undefined);
+        }
+        videoStreamMerger.start();
+        if (videoRef2.current)
+          videoRef2.current.srcObject = videoStreamMerger.result;
+      }
       videoRef.current.srcObject = srcObject;
     }
   }, [videoTracks]);
-  return (
-    <div
-      style={{
-        position: "relative",
-        // height: "500px",
-        width: "100%",
-      }}
-    >
-      <button onClick={toggleWebcam}>Toggle Webcam</button>
-      <p>Sahas</p>
 
+  return (
+    <>
       <video
-        id="arjs-video"
+        ref={videoRef2}
         onCanPlayThrough={() => {
-          videoRef.current?.play().catch((e) => {
+          videoRef2.current?.play().catch((e) => {
             console.log(e);
           });
         }}
@@ -460,26 +477,56 @@ const ModelLoader = () => {
         autoPlay
         playsInline
         muted
-        ref={videoRef}
         style={{
-          width: "inherit",
-          height: "inherit",
+          height: "500px",
+          width: "500px",
+          backgroundColor: "red",
           objectFit: "cover",
           transform: `scaleX(-1)`,
-          position: "absolute",
         }}
       ></video>
-      <canvas
-        ref={canvasRef}
+      <div
         style={{
-          width: "inherit",
-          height: "inherit",
-          position: "absolute",
-
-          transform: `scaleX(-1)`,
+          position: "relative",
+          height: "500px",
+          width: "500px",
         }}
-      ></canvas>
-    </div>
+      >
+        <button onClick={toggleWebcam}>Toggle Webcam</button>
+        <p>Sahas</p>
+
+        <video
+          id="arjs-video"
+          onCanPlayThrough={() => {
+            videoRef.current?.play().catch((e) => {
+              console.log(e);
+            });
+          }}
+          onError={() => console.log("Something went wrorn in video")}
+          autoPlay
+          playsInline
+          muted
+          ref={videoRef}
+          style={{
+            width: "inherit",
+            height: "inherit",
+            objectFit: "cover",
+            transform: `scaleX(-1)`,
+            position: "absolute",
+          }}
+        ></video>
+        <canvas
+          ref={canvasRef}
+          style={{
+            width: "inherit",
+            height: "inherit",
+            position: "absolute",
+
+            transform: `scaleX(-1)`,
+          }}
+        ></canvas>
+      </div>
+    </>
   );
 };
 
