@@ -4,9 +4,8 @@ import {
   ArToolkitContext,
   ArToolkitProfile,
 } from "@ar-js-org/ar.js/three.js/build/ar-threex.js";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useWebcam } from "src/hooks/useWebcam";
-import { SocketContext } from "src/pages/Context/Context";
 import { addURLPath } from "src/utils/utils";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -427,12 +426,10 @@ interface HTMLCanvasElementWithCaptureStream extends HTMLCanvasElement {
 const ModelLoader = () => {
   const { videoTracks, toggleWebcam } = useWebcam();
   const canvasRef = useRef<HTMLCanvasElementWithCaptureStream>(null);
-  const canvasRef2 = useRef<HTMLCanvasElementWithCaptureStream>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoRef2 = useRef<HTMLVideoElement>(null);
   const [canvasStream, setCanvasStream] = useState<MediaStream | null>(null);
-  const { setArStream } = useContext(SocketContext);
-  const videoStreamMerger = new VideoStreamMerger();
+  // const { setArStream } = useContext(SocketContext);
 
   useEffect(() => {
     const scene = new Scene(canvasRef.current!, videoRef.current!);
@@ -448,6 +445,8 @@ const ModelLoader = () => {
   }, []);
 
   useEffect(() => {
+    const videoStreamMerger = new VideoStreamMerger();
+
     if (videoRef.current) {
       const srcObject = videoTracks ? new MediaStream(videoTracks) : null;
 
@@ -462,7 +461,7 @@ const ModelLoader = () => {
       }
       videoRef.current.srcObject = srcObject;
     }
-  }, [videoTracks]);
+  }, [canvasStream, videoTracks]);
 
   return (
     <>
