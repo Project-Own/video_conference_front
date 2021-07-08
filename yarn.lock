@@ -1525,10 +1525,10 @@
   dependencies:
     "@babel/runtime" "^7.4.4"
 
-"@material-ui/lab@^4.0.0-alpha.58":
-  version "4.0.0-alpha.58"
-  resolved "https://registry.yarnpkg.com/@material-ui/lab/-/lab-4.0.0-alpha.58.tgz#c7ebb66f49863c5acbb20817163737caa299fafc"
-  integrity sha512-GKHlJqLxUeHH3L3dGQ48ZavYrqGOTXkFkiEiuYMAnAvXAZP4rhMIqeHOPXSUQan4Bd8QnafDcpovOSLnadDmKw==
+"@material-ui/lab@^4.0.0-alpha.60":
+  version "4.0.0-alpha.60"
+  resolved "https://registry.yarnpkg.com/@material-ui/lab/-/lab-4.0.0-alpha.60.tgz#5ad203aed5a8569b0f1753945a21a05efa2234d2"
+  integrity sha512-fadlYsPJF+0fx2lRuyqAuJj7hAS1tLDdIEEdov5jlrpb5pp4b+mRDUqQTUxi4inRZHS1bEXpU8QWUhO6xX88aA==
   dependencies:
     "@babel/runtime" "^7.4.4"
     "@material-ui/utils" "^4.11.2"
@@ -1971,10 +1971,10 @@
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
   integrity sha1-7ihweulOEdK4J7y+UnC86n8+ce4=
 
-"@types/loadable__component@^5.13.3":
-  version "5.13.3"
-  resolved "https://registry.yarnpkg.com/@types/loadable__component/-/loadable__component-5.13.3.tgz#ea620b218fb2b6744ce5b2efd9a6a5c1a525a021"
-  integrity sha512-nkRRYpKxspH9yiYGSvyfM7GX1m57B9AVMrVEWY7Hlv9ueK2XCu39M5QyBTDHXcj5qixdD+MyAmNgoy2dEDxGLQ==
+"@types/loadable__component@^5.13.4":
+  version "5.13.4"
+  resolved "https://registry.yarnpkg.com/@types/loadable__component/-/loadable__component-5.13.4.tgz#a4646b2406b1283efac1a9d9485824a905b33d4a"
+  integrity sha512-YhoCCxyuvP2XeZNbHbi8Wb9EMaUJuA2VGHxJffcQYrJKIKSkymJrhbzsf9y4zpTmr5pExAAEh5hbF628PAZ8Dg==
   dependencies:
     "@types/react" "*"
 
@@ -2037,10 +2037,10 @@
     hoist-non-react-statics "^3.3.0"
     redux "^4.0.0"
 
-"@types/react-router-dom@^5.1.7":
-  version "5.1.7"
-  resolved "https://registry.yarnpkg.com/@types/react-router-dom/-/react-router-dom-5.1.7.tgz#a126d9ea76079ffbbdb0d9225073eb5797ab7271"
-  integrity sha512-D5mHD6TbdV/DNHYsnwBTv+y73ei+mMjrkGrla86HthE4/PVvL1J94Bu3qABU+COXzpL23T1EZapVVpwHuBXiUg==
+"@types/react-router-dom@^5.1.8":
+  version "5.1.8"
+  resolved "https://registry.yarnpkg.com/@types/react-router-dom/-/react-router-dom-5.1.8.tgz#bf3e1c8149b3d62eaa206d58599de82df0241192"
+  integrity sha512-03xHyncBzG0PmDmf8pf3rehtjY0NpUj7TIN46FrT5n1ZWHPZvXz32gUyNboJ+xsL8cpg8bQVLcllptcQHvocrw==
   dependencies:
     "@types/history" "*"
     "@types/react" "*"
