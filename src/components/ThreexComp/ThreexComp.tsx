@@ -33,7 +33,6 @@ export class Scene {
 
   constructor(canvasRef: HTMLCanvasElement, videoRef: HTMLVideoElement) {
     this.renderer = this.setRenderer(canvasRef);
-    const context = canvasRef.getContext("2d");
 
     this.camera = this.setCamera();
 
@@ -74,6 +73,7 @@ export class Scene {
 
     // window.addEventListener("resize", onWindowResize, false);
   }
+
   setAr = (videoRef: HTMLVideoElement) => {
     // // handle resize
     // window.addEventListener("resize", function () {
