@@ -15,7 +15,7 @@
     "@types/jest": "^26.0.24",
     "@types/react": "^17.0.13",
     "@types/node": "^16.0.0",
-    "@types/react-dom": "^17.0.8",
+    "@types/react-dom": "^17.0.9",
     "animejs": "^3.2.1",
     "react": "^17.0.2",
     "react-copy-to-clipboard": "^5.0.3",
@@ -62,8 +62,6 @@
     "@types/animejs": "^3.1.4",
     "@types/react-copy-to-clipboard": "^5.0.1",
     "@types/loadable__component": "^5.13.4",
-    "@types/react-copy-to-clipboard": "^5.0.0",
-
     "@types/react-router-dom": "^5.1.8",
     "@types/simple-peer": "^9.11.0",
 
