@@ -3,8 +3,7 @@ import React, { createContext, FC, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import Peer, { SignalData } from "simple-peer";
 import { io } from "socket.io-client";
-import { useAudio } from "src/hooks/useAudio";
-import { useWebcam } from "src/hooks/useWebcam";
+import { HTMLCanvasElementWithCaptureStream } from "src/utils/StreamMerger";
 import { addURLPath } from "src/utils/utils";
 
 const SocketContext = createContext<SocketContextProps>(undefined!);
@@ -34,7 +33,7 @@ interface SocketContextProps {
   callAccepted: boolean;
   stream: MediaStream | undefined;
   arStream: MediaStream | undefined;
-  // setStream: React.Dispatch<React.SetStateAction<MediaStream | undefined>>;
+  setStream: React.Dispatch<React.SetStateAction<MediaStream | undefined>>;
   setArStream: React.Dispatch<React.SetStateAction<MediaStream | undefined>>;
 
   otherStreams: MediaStream[] | undefined;
@@ -65,6 +64,45 @@ let iceServers = {
 };
 
 /**
+ * Black Silence (Dummy Stream)
+ * */
+let silence = () => {
+  let ctx = new AudioContext(),
+    oscillator = ctx.createOscillator();
+
+  let audioDestination = ctx.createMediaStreamDestination();
+  let dst = oscillator.connect(audioDestination);
+  oscillator.start();
+
+  return Object.assign(audioDestination.stream.getAudioTracks()[0], {
+    enabled: false,
+  });
+};
+
+interface props {
+  width: number;
+  height: number;
+}
+let black = ({ width = 640, height = 480 }: props) => {
+  let canvas: HTMLCanvasElementWithCaptureStream = Object.assign(
+    document.createElement("canvas"),
+    {
+      width,
+      height,
+    }
+  );
+  canvas?.getContext("2d")?.fillRect(0, 0, width, height);
+
+  let stream: MediaStream | null = null;
+  if (canvas.captureStream) {
+    stream = canvas?.captureStream();
+  }
+  return Object.assign(stream?.getVideoTracks()[0], { enabled: false });
+};
+
+let blackSilence = (props?: props) =>
+  new MediaStream([black({ ...props! }), silence()]);
+/**
  *
  * ContextProvider
  * */
@@ -79,58 +117,38 @@ const ContextProvider: FC = ({ children }) => {
   const [joined, setJoined] = useState(false);
   const [call, setCall] = useState<CallProps>();
   const [me, setMe] = useState("");
+
   const [arStream, setArStream] = useState<MediaStream>();
 
   const connectionRef = useRef<Peer.Instance>();
 
   const history = useHistory();
 
-  const { videoTracks, toggleWebcam } = useWebcam();
-  const { audioTracks, toggleMicrophone } = useAudio();
-
   const rtcPeerConnection = useRef<RTCPeerConnection>();
 
-  // useEffect(() => {
-  //   navigator.mediaDevices
-  //     .getUserMedia({
-  //       video: true,
-  //       audio: true,
-  //     })
-  //     .then((stream) => {
-  //       setStream(stream);
-  //     });
-  // }, []);
-  /**
-   *
-   * update video and audio tracks
-   * */
-  // useEffect(() => {
-  //   const stream = new MediaStream();
-  //   videoTracks?.forEach((track) => stream.addTrack(track));
-  //   audioTracks?.forEach((track) => stream.addTrack(track));
-
-  //   // console.log("VIDEOAUDIOUSEEFFECT");
-  //   // console.log(stream);
-  //   // console.log(stream?.getTracks()[0]);
-  //   // console.log(stream?.getTracks()[1]);
-  //   setStream(stream);
-  // }, [videoTracks, audioTracks]);
-
-  // console.log("VIDEOAUDIO");
-  // console.log(stream);
-  // console.log(stream?.getTracks()[0]);
-  // console.log(stream?.getTracks()[1]);
+  useEffect(() => {
+    try {
+      const videoTrack =
+        stream?.getVideoTracks().length! > 0
+          ? stream?.getVideoTracks()[0]
+          : null;
+      // const audioTrack =
+      //   stream?.getAudioTracks().length! > 0 ? stream?.getAudioTracks()[0] : null;
+      const sender = rtcPeerConnection.current?.getSenders().find((s) => {
+        return s.track?.kind === videoTrack?.kind;
+      });
+      console.log(`Found sender: ${sender}`);
+      sender?.replaceTrack(videoTrack!);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [stream]);
 
   /**
    *
    * ComponentDiDMount
    * */
   useEffect(() => {
-    // console.log("before");
-
-    // toggleWebcam();
-    // toggleMicrophone();
-
     /**
      *Triggered on receiving an ice candidate from the peer.
      * */
@@ -179,23 +197,14 @@ const ContextProvider: FC = ({ children }) => {
     if (roomName !== "") {
       if (creator) {
         socket.on(SocketEvent.ready, () => {
-          console.log("geda");
-          console.log(SocketEvent.ready);
-          console.log(roomName);
-          console.log(creator);
-
           rtcPeerConnection.current = new RTCPeerConnection(iceServers);
           rtcPeerConnection.current.onicecandidate = onIceCandidateFunction;
           rtcPeerConnection.current.ontrack = onTrackFunction;
-          if (stream) {
-            console.log("CHECKSTREAM");
-            console.log(stream);
-            console.log(stream.getTracks()[0]);
-            console.log(stream.getTracks()[1]);
+          const stream = blackSilence();
 
-            rtcPeerConnection.current.addTrack(stream.getTracks()[0], stream);
-            rtcPeerConnection.current.addTrack(stream.getTracks()[1], stream);
-          }
+          rtcPeerConnection.current.addTrack(stream.getTracks()[0], stream);
+          rtcPeerConnection.current.addTrack(stream.getTracks()[1], stream);
+
           // console.log("________CHECKSTREAM______");
 
           // console.log(videoTracks);
@@ -222,17 +231,12 @@ const ContextProvider: FC = ({ children }) => {
           rtcPeerConnection.current = new RTCPeerConnection(iceServers);
           rtcPeerConnection.current.onicecandidate = onIceCandidateFunction;
           rtcPeerConnection.current.ontrack = onTrackFunction;
-          if (stream) {
-            console.log("CHECKSTREAM");
 
-            console.log(stream);
+          const stream = blackSilence();
 
-            console.log(stream.getTracks()[0]);
-            console.log(stream.getTracks()[1]);
+          rtcPeerConnection.current.addTrack(stream.getTracks()[0], stream);
+          rtcPeerConnection.current.addTrack(stream.getTracks()[1], stream);
 
-            rtcPeerConnection.current.addTrack(stream.getTracks()[0], stream);
-            rtcPeerConnection.current.addTrack(stream.getTracks()[1], stream);
-          }
           console.log("________CHECKSTREAM______");
 
           // if (videoTracks) rtcPeerConnection.current.addTrack(videoTracks[0]);
@@ -273,7 +277,7 @@ const ContextProvider: FC = ({ children }) => {
       // setOtherStreams((streams) => [...streams, event.streams[0]]);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [creator, roomName, stream]);
+  }, [creator, roomName]);
 
   /**
    * JOIN ROOM
@@ -316,8 +320,8 @@ const ContextProvider: FC = ({ children }) => {
     setCallAccepted(true);
 
     const stream = new MediaStream();
-    if (videoTracks) videoTracks.forEach((track) => stream.addTrack(track));
-    if (audioTracks) audioTracks.forEach((track) => stream.addTrack(track));
+    // if (videoTracks) videoTracks.forEach((track) => stream.addTrack(track));
+    // if (audioTracks) audioTracks.forEach((track) => stream.addTrack(track));
 
     const peer = new Peer({ initiator: false, trickle: false, stream });
 
@@ -346,8 +350,8 @@ const ContextProvider: FC = ({ children }) => {
    * */
   const callUser = (id: string) => {
     const stream = new MediaStream();
-    if (videoTracks) videoTracks.forEach((track) => stream.addTrack(track));
-    if (audioTracks) audioTracks.forEach((track) => stream.addTrack(track));
+    // if (videoTracks) videoTracks.forEach((track) => stream.addTrack(track));
+    // if (audioTracks) audioTracks.forEach((track) => stream.addTrack(track));
 
     const peer = new Peer({ initiator: true, trickle: false, stream });
 
@@ -386,9 +390,6 @@ const ContextProvider: FC = ({ children }) => {
     setCallEnded(true);
     connectionRef.current?.destroy();
 
-    toggleWebcam();
-    toggleMicrophone();
-
     socket.close();
     history.goBack();
   };
@@ -403,6 +404,7 @@ const ContextProvider: FC = ({ children }) => {
         arStream,
         setArStream,
         stream,
+        setStream,
         otherStreams,
         name,
         setName,

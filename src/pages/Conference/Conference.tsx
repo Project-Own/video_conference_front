@@ -1,10 +1,11 @@
 // import Paper from "@material-ui/core/Paper";
 import { Grid } from "@material-ui/core";
 import { useContext, useEffect } from "react";
+import ARPlayer from "src/components/ARPlayer/ARPlayer";
 import BottomBar from "src/components/BottomComponents/Bottombar";
-import ThreexComp from "src/components/ThreexComp/ThreexComp";
 import VideoPlayer from "src/components/videoplayer/VideoPlayer";
 import { useTray } from "src/hooks/useTray";
+import { useWebcam } from "src/hooks/useWebcam";
 import { SocketContext } from "src/pages/Context/Context";
 
 // const useStyles = makeStyles((theme: Theme) =>
@@ -22,19 +23,32 @@ import { SocketContext } from "src/pages/Context/Context";
 
 const Conference = () => {
   // const classes = useStyles();
-  const { setAr } = useTray();
+
   const context = useContext(SocketContext);
   const { stream, otherStreams } = context!;
 
   // const { id } = useParams<{ id: string }>();
 
-  const { toggleWebcam, toggleMicrophone } = useTray();
+  const { setState, usingAR } = useTray();
+  const { videoTracks } = useWebcam();
 
   useEffect(() => {
-    toggleWebcam();
-    toggleMicrophone();
+    setState({ type: "webcam", value: true });
+    setState({ type: "microphone", value: true });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    const videoObj = videoTracks ? new MediaStream(videoTracks) : null;
+
+    // console.log("What");
+    if (!usingAR) context.setStream(videoObj!);
+
+    // console.log(usingAR);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [usingAR, videoTracks]);
+
   return (
     <Grid
       item
@@ -53,14 +67,14 @@ const Conference = () => {
         justify="center"
       >
         {/* <ThreexComp /> */}
-        {setAr ? (
-          stream && (
-            <Grid item xs={12} md={6} lg={4}>
-              <VideoPlayer stream={stream!} muted={true} />
-            </Grid>
-          )
+        {usingAR ? (
+          <Grid item xs={8} md={6} lg={4}>
+            <ARPlayer />
+          </Grid>
         ) : (
-          <ThreexComp />
+          <Grid item xs={8} md={6} lg={4}>
+            <VideoPlayer stream={stream!} muted={true} />
+          </Grid>
         )}
 
         {otherStreams?.map((otherStream) => {

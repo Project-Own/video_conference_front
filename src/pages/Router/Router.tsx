@@ -22,6 +22,7 @@ import { addURLPath } from "src/utils/utils";
 //     fallback: <Loading />,
 //   }
 // );
+
 const LoadableModel = loadable(
   () => import("src/components/ModelLoader/ModelLoader"),
   {
