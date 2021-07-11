@@ -57,26 +57,42 @@ export default class StreamMerger {
   };
 
   addStream = (stream: MediaStream) => {
-    // const hasVideo = stream.getVideoTracks().length > 0;
-    // const hasAudio = stream.getAudioTracks().length > 0;
+    const hasVideo = stream.getVideoTracks().length > 0;
+    const hasAudio = stream.getAudioTracks().length > 0;
 
-    const videoEl = document.createElement("video");
-    videoEl.srcObject = stream;
-    videoEl.autoplay = true;
-    videoEl.playsInline = true;
-    videoEl.setAttribute("style", " pointer-events: none; opacity:0;");
-    videoEl.muted = true;
-    videoEl.oncanplaythrough = () => {
-      videoEl.play().catch((e) => {
-        console.log(e);
-      });
-    };
+    if (hasVideo) {
+      const videoEl = document.createElement("video");
+      videoEl.srcObject = stream;
+      videoEl.autoplay = true;
+      videoEl.playsInline = true;
+      videoEl.setAttribute("style", " pointer-events: none; opacity:0;");
+      videoEl.muted = true;
+      videoEl.oncanplaythrough = () => {
+        videoEl.play().catch((e) => {
+          console.log(e);
+        });
+      };
 
-    this._streamVideoElements.push(videoEl);
+      this._streamVideoElements.push(videoEl);
+    }
+
+    if (hasAudio) {
+      this.result?.addTrack(stream.getAudioTracks()[0]);
+    }
+
     // if (hasAudio)
     //   stream.getAudioTracks().forEach((track) => this.result?.addTrack(track));
   };
+  addAudio = (stream: MediaStream) => {
+    const hasAudio = stream.getAudioTracks().length > 0;
+    if (hasAudio) {
+      this.result?.addTrack(stream.getAudioTracks()[0]);
+    }
+  };
 
+  addAudioTrack = (track: MediaStreamTrack) => {
+    this.result?.addTrack(track);
+  };
   addCanvas = (canvasEl: HTMLCanvasElement) => {
     this._streamCanvasElements.push(canvasEl);
   };
@@ -85,6 +101,11 @@ export default class StreamMerger {
     this._streamVideoElements.push(videoEl);
   };
 
+  cleanupAudioTracks = () => {
+    this.result
+      ?.getAudioTracks()
+      .forEach((track) => this.result?.removeTrack(track));
+  };
   // Todo
   removeStream = (stream: MediaStream) => {
     // const hasVideo = stream.getVideoTracks().length > 0;
