@@ -57,12 +57,12 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const BottomBar = () => {
-  const { setAr, toggleAr } = useTray();
+  const { usingAR, toggleAr } = useTray();
   const isHost = true;
-  // const [ar_text, setar_text] = useState(false);
+  // const [ar_text, usingAR_text] = useState(false);
   const classes = useStyles();
   // const ar_button = () => {
-  //   setar_text(!ar_text);
+  //   usingAR_text(!ar_text);
   // };
 
   return (
@@ -80,7 +80,7 @@ const BottomBar = () => {
         <Grid item md={2}>
           <Button onClick={toggleAr} className={classes.ar_button}>
             <Typography className={classes.text}>
-              {setAr ? "Start AR" : "Stop AR"}
+              {usingAR ? "Stop AR" : "Start AR"}
             </Typography>
           </Button>
         </Grid>

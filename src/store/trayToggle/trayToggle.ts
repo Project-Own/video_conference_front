@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../reducers";
 import { FeatureKey } from "./../featureKey";
 
@@ -10,13 +10,27 @@ const initialState = {
   participant: false,
   call: false,
   setting: false,
-  setAr: true,
+  usingAR: false,
 };
-
+export interface State {
+  type:
+    | "microphone"
+    | "webcam"
+    | "screenShare"
+    | "chat"
+    | "participant"
+    | "call"
+    | "setting"
+    | "usingAR";
+  value: boolean;
+}
 export const trayToggleSlice = createSlice({
   name: FeatureKey.TRAY_TOGGLE,
   initialState,
   reducers: {
+    setState: (state, action: PayloadAction<State>) => {
+      state[action.payload.type] = action.payload.value;
+    },
     toggleChat: (state) => {
       state.chat = !state.chat;
     },
@@ -39,7 +53,7 @@ export const trayToggleSlice = createSlice({
       state.setting = !state.setting;
     },
     toggleAr: (state) => {
-      state.setAr = !state.setAr;
+      state.usingAR = !state.usingAR;
     },
   },
 });
@@ -56,6 +70,7 @@ export const {
   toggleWebcam,
   toggleSetting,
   toggleAr,
+  setState,
 } = trayToggleSlice.actions;
 
 /**
