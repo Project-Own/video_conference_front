@@ -2,7 +2,7 @@
 import { Grid } from "@material-ui/core";
 import { useContext, useEffect } from "react";
 import ARPlayer from "src/components/ARPlayer/ARPlayer";
-import useSocket from "src/components/ARPlayer/useSocket";
+import useSocket from "src/pages/Conference/useSocket";
 import BottomBar from "src/components/BottomComponents/Bottombar";
 import VideoPlayer from "src/components/videoplayer/VideoPlayer";
 import { SocketContext } from "src/pages/Context/Context";

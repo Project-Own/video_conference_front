@@ -57,6 +57,9 @@ const useSocket = () => {
   const rtcPeerConnection = useRef<RTCPeerConnection | null>(null);
 
   const { stream, setOtherStreams } = useContext(SocketContext);
+
+  const [connected, setConnected] = useState(false);
+
   const location = useLocation();
   const roomName = location.pathname.split("/room/")[1];
 
@@ -85,7 +88,7 @@ const useSocket = () => {
     } catch (error) {
       console.log(error);
     }
-  }, [stream]);
+  }, [stream, connected]);
 
   /**
    *
@@ -143,9 +146,8 @@ const useSocket = () => {
      * */
 
     if (roomName !== "") {
-      // console.log(`answer: ${SocketEvent.answer}`);
       socketConnection.current?.emit(SocketEvent.join, roomName);
-      // socket.emit(SocketEvent.answer, roomName);
+
       /**
         *Room Joined          rtcPeerConnection.current.addTrack(stream?.getTracks()[0]!, stream!);
  
@@ -190,7 +192,7 @@ const useSocket = () => {
             .createOffer()
             .then((offer) => {
               rtcPeerConnection.current?.setLocalDescription(offer);
-              console.log(SocketEvent.offer);
+
               socketConnection.current?.emit(
                 SocketEvent.offer,
                 offer,
@@ -221,7 +223,7 @@ const useSocket = () => {
             .createAnswer()
             .then((answer) => {
               rtcPeerConnection.current?.setLocalDescription(answer);
-              // console.log(SocketEvent.answer);
+
               socketConnection.current?.emit(
                 SocketEvent.answer,
                 answer,
@@ -238,6 +240,8 @@ const useSocket = () => {
      * */
     const onIceCandidateFunction = (event: RTCPeerConnectionIceEvent) => {
       console.log(SocketEvent.candidate);
+      setConnected(true);
+
       if (event.candidate) {
         socketConnection.current?.emit(
           SocketEvent.candidate,
