@@ -60,6 +60,17 @@ let iceServers = {
   iceServers: [
     { urls: "stun:stun.services.mozilla.com" },
     { urls: "stun:stun.l.google.com:19302" },
+
+    {
+      urls: [
+        "stun:xirsys.com",
+        "turn:xirsys.com:80?transport=udp",
+        "turn:xirsys.com:80?transport=tcp",
+        "turns:xirsys.com:443?transport=tcp",
+      ],
+      username: "cdb635f4-adbb-11eb-9bdf-0242ac150003",
+      credential: "cdb635f4-adbb-11eb-9bdf-0242ac150003",
+    },
   ],
 };
 
