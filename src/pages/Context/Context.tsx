@@ -56,20 +56,32 @@ interface SocketContextProps {
 // const socket = io("http://localhost:5000");
 const socket = io("https://video-conference-ar.herokuapp.com/");
 
-let iceServers = {
+let iceServers: RTCConfiguration = {
   iceServers: [
-    { urls: "stun:stun.services.mozilla.com" },
     { urls: "stun:stun.l.google.com:19302" },
-
     {
-      urls: [
-        "stun:xirsys.com",
-        "turn:xirsys.com:80?transport=udp",
-        "turn:xirsys.com:80?transport=tcp",
-        "turns:xirsys.com:443?transport=tcp",
-      ],
+      urls: "turn:numb.viagenie.ca",
+      credential: "webrtcOk",
+      username: "sahasprajapati@gmail.com",
+    },
+    {
+      urls: "stun:xirsys.com",
       username: "cdb635f4-adbb-11eb-9bdf-0242ac150003",
       credential: "cdb635f4-adbb-11eb-9bdf-0242ac150003",
+    },
+    { urls: ["stun:bn-turn1.xirsys.com"] },
+    {
+      username:
+        "Y-P611Yxam-VWk07XOIOi5sUenK9pXKzPwgpBOMw0HoFUndQZUhSpbFVftjS5uajAAAAAGDrAxdiMTBwcmFqYXBhdGk=",
+      credential: "12adc36a-e256-11eb-b7ac-0242ac140004",
+      urls: [
+        "turn:bn-turn1.xirsys.com:80?transport=udp",
+        "turn:bn-turn1.xirsys.com:3478?transport=udp",
+        "turn:bn-turn1.xirsys.com:80?transport=tcp",
+        "turn:bn-turn1.xirsys.com:3478?transport=tcp",
+        "turns:bn-turn1.xirsys.com:443?transport=tcp",
+        "turns:bn-turn1.xirsys.com:5349?transport=tcp",
+      ],
     },
   ],
 };
