@@ -2,9 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { useWebcam } from "src/hooks/useWebcam";
 import StreamMerger from "src/utils/StreamMerger";
 import { Scene } from "../ThreexComp/Scene";
+import { useAudio } from "./../../hooks/useAudio";
+import { useTray } from "./../../hooks/useTray";
 
 const useAR = () => {
   const { videoTracks } = useWebcam();
+  const { audioTracks } = useAudio();
 
   const arCanvasEl = useRef<HTMLCanvasElement>(
     document.createElement("canvas")
@@ -13,38 +16,58 @@ const useAR = () => {
 
   const [ARStream, setARStream] = useState<MediaStream>();
 
+  const streamMerger = useRef<StreamMerger>(
+    new StreamMerger({ height: 400, width: 400 })
+  );
+
+  const { usingAR, setState } = useTray();
+
   useEffect(() => {
-    console.log("WHAAAAATTT");
+    setState({ type: "webcam", value: true });
+    setState({ type: "microphone", value: true });
     scene.current = new Scene(arCanvasEl.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => {
+      setState({ type: "webcam", value: false });
+      setState({ type: "microphone", value: false });
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    console.log("WHAAAAA");
+    streamMerger.current.cleanupAudioTracks();
+    if (audioTracks) {
+      streamMerger.current.addAudioTrack(audioTracks[0]);
+    }
 
-    const streamMerger = new StreamMerger({ height: 400, width: 400 });
+    setARStream(streamMerger.current?.result!);
+  }, [audioTracks]);
 
+  useEffect(() => {
     if (videoTracks) {
       const webcamStream = new MediaStream(videoTracks);
-      if (webcamStream) {
+
+      if (!usingAR) {
+        streamMerger.current?.addStream(webcamStream);
+      } else {
         scene.current?.animate();
         scene.current?.setWebcamStream(webcamStream);
 
-        streamMerger.addStream(webcamStream);
-        streamMerger.addCanvas(arCanvasEl.current);
-      } else {
-        // if (mediaStreamId) streamMerger.removeStream(mediaStreamId);
+        streamMerger.current?.addStream(webcamStream);
+        streamMerger.current?.addCanvas(arCanvasEl.current);
       }
 
-      streamMerger.start();
+      streamMerger.current?.start();
 
-      setARStream(streamMerger.result!);
+      setARStream(streamMerger.current?.result!);
     } else {
     }
 
-    return () => streamMerger.stop();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => streamMerger.current.stop();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [videoTracks]);
+  }, [usingAR, videoTracks]);
 
   return {
     ARStream,

@@ -33,31 +33,30 @@ export const useWebcam = () => {
       getMediaTracks({ video: mediaTrackConstraint }, setVideoTracks);
     }
   };
-  const isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
+  // const isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
 
   const stopVideoTracks = () => {
     closeMediaTracks(videoTracks, setVideoTracks);
   };
 
   useEffect(() => {
+    console.log("Webcam Toggled");
     stopVideoTracks();
     if (webcam) {
-      if (isFirefox) {
-        startVideoTracks();
-      } else {
-        navigator.permissions.query({ name: "camera" }).then((result) => {
-          if (result.state === "denied") {
-            toggleWebcam();
-            alert("Camera Will not function when camera Permission is denied.");
-          } else if (result.state === "granted") {
-            startVideoTracks();
-          }
-        });
-      }
+      startVideoTracks();
+
+      // navigator.permissions.query({ name: "camera" }).then((result) => {
+      //   if (result.state === "denied") {
+      //     toggleWebcam();
+      //     alert("Camera Will not function when camera Permission is denied.");
+      //   } else if (result.state === "granted") {
+      //     startVideoTracks();
+      //   }
+      // });
     }
     return stopVideoTracks;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [webcam, activeVideoDevice]);
+  }, [webcam]);
 
   useEffect(() => {
     getAvailableMediaDevices("videoinput", setVideoDevices).then((devices) => {
