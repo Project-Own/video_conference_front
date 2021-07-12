@@ -27,6 +27,8 @@ const VideoPlayer: FC<{ stream: MediaStream; muted: boolean }> = ({
   const classes = useStyles();
   const videoRef = useRef<HTMLVideoElement>(null);
   useEffect(() => {
+    console.log("peerStream");
+    console.log(stream.getTracks());
     if (videoRef.current) videoRef.current.srcObject = stream;
   }, [stream]);
 
@@ -38,7 +40,11 @@ const VideoPlayer: FC<{ stream: MediaStream; muted: boolean }> = ({
         ref={videoRef}
         autoPlay
         onCanPlay={() => {
-          videoRef.current?.play();
+          try {
+            videoRef.current?.play();
+          } catch (error) {
+            console.log(error);
+          }
         }}
         poster="https://www.pngfind.com/pngs/m/610-6104451_image-placeholder-png-user-profile-placeholder-image-png.png"
         className={classes.video}

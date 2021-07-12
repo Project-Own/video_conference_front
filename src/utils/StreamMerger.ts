@@ -9,6 +9,7 @@ interface StreamOptions {
 export default class StreamMerger {
   _streamVideoElements: HTMLVideoElement[] = [];
   _streamCanvasElements: HTMLCanvasElement[] = [];
+  _streamAudioTracks: MediaStreamTrack[] = [];
   result: MediaStream | null = null;
   _canvas: HTMLCanvasElementWithCaptureStream | null = null;
   _ctx: CanvasRenderingContext2D | null = null;
@@ -41,10 +42,11 @@ export default class StreamMerger {
     this._draw();
 
     if (this._canvas.captureStream) {
-      this.result = this._canvas.captureStream(60);
+      this.result = this._canvas.captureStream(60) as MediaStream;
     } else {
       throw new Error("Canvas Capture Stream not supported");
     }
+    this._streamAudioTracks.map((track) => this.result?.addTrack(track));
   };
 
   stop = () => {
@@ -86,12 +88,12 @@ export default class StreamMerger {
   addAudio = (stream: MediaStream) => {
     const hasAudio = stream.getAudioTracks().length > 0;
     if (hasAudio) {
-      this.result?.addTrack(stream.getAudioTracks()[0]);
+      this._streamAudioTracks.concat(stream.getAudioTracks());
     }
   };
 
   addAudioTrack = (track: MediaStreamTrack) => {
-    this.result?.addTrack(track);
+    this._streamAudioTracks.push(track);
   };
   addCanvas = (canvasEl: HTMLCanvasElement) => {
     this._streamCanvasElements.push(canvasEl);
