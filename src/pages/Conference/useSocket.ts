@@ -6,6 +6,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router";
 import { io, Socket } from "socket.io-client";
 import { DefaultEventsMap } from "socket.io-client/build/typed-events";
+import { useAudio } from "src/hooks/useAudio";
 import { SocketContext } from "src/pages/Context/Context";
 import { blackSilence } from "src/utils/utils";
 
@@ -18,21 +19,15 @@ const iceServers: RTCConfiguration = {
       username: "sahasprajapati@gmail.com",
     },
     {
-      urls: "stun:xirsys.com",
-      username: "cdb635f4-adbb-11eb-9bdf-0242ac150003",
-      credential: "cdb635f4-adbb-11eb-9bdf-0242ac150003",
-    },
-    { urls: ["stun:bn-turn1.xirsys.com"] },
-    {
       username:
         "Y-P611Yxam-VWk07XOIOi5sUenK9pXKzPwgpBOMw0HoFUndQZUhSpbFVftjS5uajAAAAAGDrAxdiMTBwcmFqYXBhdGk=",
       credential: "12adc36a-e256-11eb-b7ac-0242ac140004",
       urls: [
-        "turn:bn-turn1.xirsys.com:80?transport=udp",
+        // "turn:bn-turn1.xirsys.com:80?transport=udp",
         "turn:bn-turn1.xirsys.com:3478?transport=udp",
-        "turn:bn-turn1.xirsys.com:80?transport=tcp",
-        "turn:bn-turn1.xirsys.com:3478?transport=tcp",
-        "turns:bn-turn1.xirsys.com:443?transport=tcp",
+        // "turn:bn-turn1.xirsys.com:80?transport=tcp",
+        // "turn:bn-turn1.xirsys.com:3478?transport=tcp",
+        // "turns:bn-turn1.xirsys.com:443?transport=tcp",
         "turns:bn-turn1.xirsys.com:5349?transport=tcp",
       ],
     },
@@ -59,6 +54,7 @@ const useSocket = () => {
   const { stream, setOtherStreams } = useContext(SocketContext);
 
   const [connected, setConnected] = useState(false);
+  const { audioTracks } = useAudio();
 
   const location = useLocation();
   const roomName = location.pathname.split("/room/")[1];
@@ -70,9 +66,7 @@ const useSocket = () => {
           ? stream?.getVideoTracks()[0]
           : null;
       const audioTrack =
-        stream?.getAudioTracks().length! > 0
-          ? stream?.getAudioTracks()[0]
-          : null;
+        audioTracks && audioTracks?.length! > 0 ? audioTracks[0] : null;
 
       const videoSender = rtcPeerConnection.current?.getSenders().find((s) => {
         return s.track?.kind === videoTrack?.kind;
@@ -88,7 +82,7 @@ const useSocket = () => {
     } catch (error) {
       console.log(error);
     }
-  }, [stream, connected]);
+  }, [stream, connected, audioTracks]);
 
   /**
    *

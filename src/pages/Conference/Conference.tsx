@@ -54,9 +54,9 @@ const Conference = () => {
         </Grid>
 
         {otherStreams?.length! > 0 &&
-          otherStreams?.map((otherStream) => {
+          otherStreams?.map((otherStream, key) => {
             return (
-              <Grid item xs={12} md={6} lg={4}>
+              <Grid key={key} item xs={12} md={6} lg={4}>
                 <VideoPlayer
                   stream={otherStream}
                   key={otherStream.id}

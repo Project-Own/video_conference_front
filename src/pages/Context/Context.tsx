@@ -55,8 +55,7 @@ const ContextProvider: FC = ({ children }) => {
     stream?.getTracks().forEach(function (track) {
       track.stop();
     });
-    history.replace(addURLPath(`/`));
-    window.location.reload();
+    window.location.assign(addURLPath(`/`));
   };
   return (
     <SocketContext.Provider

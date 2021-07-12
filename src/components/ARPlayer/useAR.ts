@@ -2,12 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { useWebcam } from "src/hooks/useWebcam";
 import StreamMerger from "src/utils/StreamMerger";
 import { Scene } from "../ThreexComp/Scene";
-import { useAudio } from "./../../hooks/useAudio";
 import { useTray } from "./../../hooks/useTray";
 
 const useAR = () => {
   const { videoTracks } = useWebcam();
-  const { audioTracks } = useAudio();
 
   const arCanvasEl = useRef<HTMLCanvasElement>(
     document.createElement("canvas")
@@ -49,9 +47,6 @@ const useAR = () => {
       }
 
       streamMerger.current.cleanupAudioTracks();
-      if (audioTracks) {
-        streamMerger.current.addAudioTrack(audioTracks[0]);
-      }
 
       streamMerger.current?.start();
 
@@ -63,7 +58,7 @@ const useAR = () => {
     return () => streamMerger.current.stop();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [usingAR, videoTracks, audioTracks]);
+  }, [usingAR, videoTracks]);
 
   return {
     ARStream,
