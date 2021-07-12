@@ -182,7 +182,10 @@ const useSocket = () => {
         socketConnection.current?.on(SocketEvent.ready, () => {
           rtcPeerConnection.current = new RTCPeerConnection(iceServers);
           rtcPeerConnection.current.onicecandidate = onIceCandidateFunction;
+          rtcPeerConnection.current.oniceconnectionstatechange =
+            onIceConnectionStateChange;
           rtcPeerConnection.current.ontrack = onTrackFunction;
+
           const stream = blackSilence();
 
           rtcPeerConnection.current.addTrack(stream.getTracks()[0], stream);
@@ -211,6 +214,8 @@ const useSocket = () => {
           console.log(creator);
           rtcPeerConnection.current = new RTCPeerConnection(iceServers);
           rtcPeerConnection.current.onicecandidate = onIceCandidateFunction;
+          rtcPeerConnection.current.oniceconnectionstatechange =
+            onIceConnectionStateChange;
           rtcPeerConnection.current.ontrack = onTrackFunction;
 
           const stream = blackSilence();
@@ -239,8 +244,8 @@ const useSocket = () => {
      *
      * */
     const onIceCandidateFunction = (event: RTCPeerConnectionIceEvent) => {
-      console.log(SocketEvent.candidate);
-      setConnected(true);
+      // console.log(SocketEvent.candidate);
+      // setConnected(true);
 
       if (event.candidate) {
         socketConnection.current?.emit(
@@ -251,6 +256,44 @@ const useSocket = () => {
       }
     };
 
+    /**
+     *
+     *
+     * */
+
+    const onIceConnectionStateChange = () => {
+      switch (rtcPeerConnection.current?.iceConnectionState) {
+        case "closed":
+          setConnected(false);
+
+          setOtherStreams([]);
+          console.log("Peer Disconnected");
+          break;
+
+        case "disconnected":
+          setConnected(false);
+
+          setOtherStreams([]);
+          console.log("Peer Disconnected");
+          break;
+        case "completed":
+          setConnected(false);
+          setConnected(true);
+          console.log("Peer Connected");
+          break;
+        case "connected":
+          setConnected(false);
+          setConnected(true);
+          console.log("Peer Connected");
+          break;
+        case "new":
+          setConnected(false);
+          console.log("Peer Connected");
+          break;
+
+        default:
+      }
+    };
     /**
      *
      * */

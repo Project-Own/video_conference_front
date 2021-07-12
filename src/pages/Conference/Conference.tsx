@@ -2,9 +2,9 @@
 import { Grid } from "@material-ui/core";
 import { useContext, useEffect } from "react";
 import ARPlayer from "src/components/ARPlayer/ARPlayer";
-import useSocket from "src/pages/Conference/useSocket";
 import BottomBar from "src/components/BottomComponents/Bottombar";
 import VideoPlayer from "src/components/videoplayer/VideoPlayer";
+import useSocket from "src/pages/Conference/useSocket";
 import { SocketContext } from "src/pages/Context/Context";
 
 // const useStyles = makeStyles((theme: Theme) =>
@@ -53,17 +53,18 @@ const Conference = () => {
           <ARPlayer />
         </Grid>
 
-        {otherStreams?.map((otherStream) => {
-          return (
-            <Grid item xs={12} md={6} lg={4}>
-              <VideoPlayer
-                stream={otherStream}
-                key={otherStream.id}
-                muted={false}
-              />
-            </Grid>
-          );
-        })}
+        {otherStreams?.length! > 0 &&
+          otherStreams?.map((otherStream) => {
+            return (
+              <Grid item xs={12} md={6} lg={4}>
+                <VideoPlayer
+                  stream={otherStream}
+                  key={otherStream.id}
+                  muted={false}
+                />
+              </Grid>
+            );
+          })}
       </Grid>
 
       <BottomBar />

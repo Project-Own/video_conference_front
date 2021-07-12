@@ -35,15 +35,6 @@ const useAR = () => {
   }, []);
 
   useEffect(() => {
-    streamMerger.current.cleanupAudioTracks();
-    if (audioTracks) {
-      streamMerger.current.addAudioTrack(audioTracks[0]);
-    }
-
-    setARStream(streamMerger.current?.result!);
-  }, [audioTracks]);
-
-  useEffect(() => {
     if (videoTracks) {
       const webcamStream = new MediaStream(videoTracks);
 
@@ -57,6 +48,11 @@ const useAR = () => {
         streamMerger.current?.addCanvas(arCanvasEl.current);
       }
 
+      streamMerger.current.cleanupAudioTracks();
+      if (audioTracks) {
+        streamMerger.current.addAudioTrack(audioTracks[0]);
+      }
+
       streamMerger.current?.start();
 
       setARStream(streamMerger.current?.result!);
@@ -67,7 +63,7 @@ const useAR = () => {
     return () => streamMerger.current.stop();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [usingAR, videoTracks]);
+  }, [usingAR, videoTracks, audioTracks]);
 
   return {
     ARStream,
