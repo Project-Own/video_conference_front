@@ -21,7 +21,7 @@ export const useAudio = () => {
     },
   };
 
-  const isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
+  // const isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
 
   const { microphone, toggleMicrophone } = useTray();
 
@@ -52,23 +52,23 @@ export const useAudio = () => {
   useEffect(() => {
     stopAudioTracks();
     if (microphone) {
-      if (isFirefox) {
-        startAudioTracks();
-      } else {
-        navigator.permissions
-          .query({ name: "microphone" })
-          .then((result) => {
-            if (result.state === "denied") {
-              alert(
-                "Microphone will not function when microphone Permission is denied."
-              );
-              toggleMicrophone();
-            } else if (result.state === "granted") {
-              startAudioTracks();
-            }
-          })
-          .catch((e) => console.log(e));
-      }
+      // if (isFirefox) {
+      startAudioTracks();
+      // } else {
+      // navigator.permissions
+      //   .query({ name: "microphone" })
+      //   .then((result) => {
+      //     if (result.state === "denied") {
+      //       alert(
+      //         "Microphone will not function when microphone Permission is denied."
+      //       );
+      //       toggleMicrophone();
+      //     } else if (result.state === "granted") {
+      //       startAudioTracks();
+      //     }
+      //   })
+      //   .catch((e) => console.log(e));
+      // // }
     }
     return stopAudioTracks;
     // eslint-disable-next-line react-hooks/exhaustive-deps

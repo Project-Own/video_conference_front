@@ -131,7 +131,7 @@ export class Scene {
       planeGeometry,
       new THREE.MeshPhongMaterial()
     );
-    plane.rotateX(-Math.PI / 2);
+    // plane.rotateX(-Math.PI / 2);
     plane.position.y = -1;
     plane.receiveShadow = true;
     this.scene.add(plane);

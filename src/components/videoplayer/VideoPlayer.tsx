@@ -1,6 +1,5 @@
 import { makeStyles, Paper } from "@material-ui/core";
 import { FC, useEffect, useRef } from "react";
-
 const useStyles = makeStyles((theme) => ({
   video: {
     width: "100%",
@@ -26,9 +25,10 @@ const VideoPlayer: FC<{ stream: MediaStream; muted: boolean }> = ({
   muted,
 }) => {
   const classes = useStyles();
-  // console.log(ThreexComp);
   const videoRef = useRef<HTMLVideoElement>(null);
   useEffect(() => {
+    console.log("peerStream");
+    console.log(stream.getTracks());
     if (videoRef.current) videoRef.current.srcObject = stream;
   }, [stream]);
 
@@ -43,13 +43,18 @@ const VideoPlayer: FC<{ stream: MediaStream; muted: boolean }> = ({
         ref={videoRef}
         autoPlay
         onCanPlay={() => {
-          videoRef.current?.play();
+          try {
+            videoRef.current?.play();
+          } catch (error) {
+            console.log(error);
+          }
         }}
-        placeholder="https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngfind.com%2Fmpng%2FhJmwxix_image-placeholder-png-user-profile-placeholder-image-png%2F&psig=AOvVaw0iiVcShtJUBhqjR9tTaNjv&ust=1624288437068000&source=images&cd=vfe&ved=0CAoQjRxqFwoTCNiLmo3ApvECFQAAAAAdAAAAABAI"
+        poster="https://www.pngfind.com/pngs/m/610-6104451_image-placeholder-png-user-profile-placeholder-image-png.png"
         className={classes.video}
+        style={{
+          transform: `scale(-1,1)`,
+        }}
       />
-      {/* afsdf
-      <ThreexComp /> */}
     </Paper>
   );
 };
