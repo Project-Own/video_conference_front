@@ -32,6 +32,9 @@ const VideoPlayer: FC<{ stream: MediaStream; muted: boolean }> = ({
     if (videoRef.current) videoRef.current.srcObject = stream;
   }, [stream]);
 
+  // arStream = useAr(canvasRef)
+  // '
+
   return (
     <Paper className={classes.paper}>
       <video
