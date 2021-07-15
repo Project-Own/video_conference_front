@@ -1,8 +1,8 @@
 // import Paper from "@material-ui/core/Paper";
 import { Grid } from "@material-ui/core";
-import { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import BottomBar from "src/components/BottomComponents/Bottombar";
-import ThreexComp from "src/components/ThreexComp/ThreexComp";
+import { useThree } from "src/components/ThreexComp/useThree";
 import VideoPlayer from "src/components/videoplayer/VideoPlayer";
 import { useTray } from "src/hooks/useTray";
 import { SocketContext } from "src/pages/Context/Context";
@@ -22,7 +22,12 @@ import { SocketContext } from "src/pages/Context/Context";
 
 const Conference = () => {
   // const classes = useStyles();
-  const { setAr } = useTray();
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const df = useRef<HTMLElement | null>(null);
+
+  const ar = useThree(canvasRef.current);
+  console.log(df);
+  // const { setAr } = useTray();
   const context = useContext(SocketContext);
   const { stream, otherStreams } = context!;
 
@@ -35,6 +40,17 @@ const Conference = () => {
     toggleMicrophone();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  <canvas
+    id="c1"
+    className="c"
+    style={{ width: "800px", height: "800px" }}
+    // ref={(mount) => {
+    //   this.mount = mount;
+    // }}
+    ref={canvasRef}
+  ></canvas>;
+  <button ref={df}>dsdfdf</button>;
   return (
     <Grid
       item
@@ -53,7 +69,7 @@ const Conference = () => {
         justify="center"
       >
         {/* <ThreexComp /> */}
-        {setAr ? (
+        {/* {setAr ? (
           stream && (
             <Grid item xs={12} md={6} lg={4}>
               <VideoPlayer stream={stream!} muted={true} />
@@ -62,8 +78,12 @@ const Conference = () => {
         ) : (
           <ThreexComp />
         )}
-        <ThreexComp />
-
+        <ThreexComp /> */}
+        ar && (
+        <Grid item xs={12} md={6} lg={4}>
+          <VideoPlayer stream={ar!} muted={true} />
+        </Grid>
+        )
         {otherStreams?.map((otherStream) => {
           console.log("Other Stream");
           console.log(otherStream);
