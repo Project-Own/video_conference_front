@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useWebcam } from "src/hooks/useWebcam";
 import { SocketContext } from "src/pages/Context/Context";
+import World from "src/three/World/World";
 import StreamMerger, {
   HTMLCanvasElementWithCaptureStream,
 } from "src/utils/StreamMerger";
@@ -8,13 +9,23 @@ import { Scene } from "./Scene";
 
 const ModelLoader = () => {
   const { videoTracks, toggleWebcam } = useWebcam();
+  const canvasRef2 = useRef<HTMLCanvasElement>(null);
   const canvasRef = useRef<HTMLCanvasElementWithCaptureStream>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoRef2 = useRef<HTMLVideoElement>(null);
+
+  const container = useRef<HTMLDivElement>(null);
+
   const { setStream } = useContext(SocketContext);
   const [scene, setScene] = useState<Scene>();
   useEffect(() => {
     setScene(new Scene(canvasRef.current!));
+
+    const world = new World(canvasRef2.current!);
+    (async () => {
+      world.init();
+    })().catch((err) => console.log(err));
+    world.start();
 
     // document.body.appendChild(renderer.domElement);
   }, []);
@@ -49,6 +60,10 @@ const ModelLoader = () => {
 
   return (
     <>
+      <div ref={container} style={{ height: "200px", width: "200px" }}>
+        <canvas ref={canvasRef2}></canvas>
+      </div>
+
       <video
         ref={videoRef2}
         onCanPlayThrough={() => {
