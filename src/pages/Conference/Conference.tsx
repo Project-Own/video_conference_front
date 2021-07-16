@@ -1,4 +1,3 @@
-// import Paper from "@material-ui/core/Paper";
 import { Grid } from "@material-ui/core";
 import { useContext, useEffect } from "react";
 import ARPlayer from "src/components/ARPlayer/ARPlayer";
