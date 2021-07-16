@@ -22,8 +22,33 @@ async function loadModel(uri: string) {
     loader.setDRACOLoader(dracoLoader);
     loader.setKTX2Loader(ktx2Loader);
 
+    const progress = document.createElement("progress");
+    const p = document.createElement("p");
+    p.textContent =
+      "Asynchronously downloading selected model ... Select a previous downloaded model or wait for download to complete";
+
+    progress.style.height = "20px";
+    progress.style.width = "200px";
+    progress.style.background = "#000";
+    progress.style.border = "2px solid #000";
+    progress.style.borderRadius = "4px";
+    progress.value = 0;
+    progress.max = 100;
+
+    document.body.appendChild(progress);
+    document.body.appendChild(p);
+
     const modelData = await loader.loadAsync(uri, (event) => {
       console.log(event);
+      const { loaded, total } = event;
+      progress.value = (loaded / total) * 100;
+      console.log(loaded / total);
+      if (loaded / total === 1) {
+        setTimeout(() => {
+          progress.remove();
+          p.remove();
+        }, 1000);
+      }
     });
 
     const { model, modelRenderFxn } = setupModel(modelData);
@@ -45,6 +70,10 @@ async function loadModel(uri: string) {
     model.castShadow = true;
     model.receiveShadow = true;
 
+    // console.log(model.scale);
+    if (model.scale.x > 0.5) {
+      model.scale.set(0.01, 0.01, 0.01);
+    }
     return { model, modelRenderFxn };
   } catch (err) {
     console.log(err);
