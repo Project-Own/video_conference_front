@@ -39,10 +39,9 @@ async function loadModel(uri: string) {
     document.body.appendChild(p);
 
     const modelData = await loader.loadAsync(uri, (event) => {
-      console.log(event);
       const { loaded, total } = event;
       progress.value = (loaded / total) * 100;
-      console.log(loaded / total);
+
       if (loaded / total === 1) {
         setTimeout(() => {
           progress.remove();
