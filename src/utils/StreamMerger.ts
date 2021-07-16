@@ -20,17 +20,21 @@ export default class StreamMerger {
   }
 
   _draw = () => {
-    const { height, width } = this._props;
+    try {
+      const { height, width } = this._props;
 
-    requestAnimationFrame(this._draw);
+      requestAnimationFrame(this._draw);
 
-    this._streamVideoElements.forEach((streamEl) => {
-      this._ctx?.drawImage(streamEl, 0, 0, height, width);
-    });
+      this._streamVideoElements.forEach((streamEl) => {
+        this._ctx?.drawImage(streamEl, 0, 0, height, width);
+      });
 
-    this._streamCanvasElements.forEach((streamEl) => {
-      this._ctx?.drawImage(streamEl, 0, 0, height, width);
-    });
+      this._streamCanvasElements.forEach((streamEl) => {
+        this._ctx?.drawImage(streamEl, 0, 0, height, width);
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   start = () => {

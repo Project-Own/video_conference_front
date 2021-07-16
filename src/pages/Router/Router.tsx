@@ -29,12 +29,7 @@ const LoadableModel = loadable(
     fallback: <Loading />,
   }
 );
-const LoadableAR = loadable(
-  () => import("src/components/ThreexComp/ThreexComp"),
-  {
-    fallback: <Loading />,
-  }
-);
+
 const LoadableLanding = loadable(() => import("src/pages/Landing/Landing"), {
   fallback: <Loading />,
 });
@@ -52,7 +47,6 @@ export interface RoutePath {
 }
 const routes: RoutePath[] = [
   { path: addURLPath("/"), name: "Home", Component: LoadableLanding },
-  { path: addURLPath("/ar"), name: "AR", Component: LoadableAR },
   { path: addURLPath("/model"), name: "Model", Component: LoadableModel },
   // { path: addURLPath("/about"), name: "Combine", Component: LoadableCombine },
 
