@@ -6,7 +6,14 @@ import {
 } from "../utils/media.utils";
 import { useTray } from "./useTray";
 
-export const useWebcam = () => {
+interface WebcamProps {
+  height?: number;
+  width?: number;
+  frameRate?: number;
+}
+export const useWebcam = (props: WebcamProps) => {
+  const { height = 720, width = 720, frameRate = 24 } = props;
+
   const [videoTracks, setVideoTracks] =
     useState<MediaStreamTrack[] | null>(null);
   const [videoDevices, setVideoDevices] =
@@ -15,9 +22,9 @@ export const useWebcam = () => {
 
   const DEFAULT_VIDEO_CONSTRAINTS = {
     video: {
-      frameRate: { ideal: 10, max: 15 },
-      width: { ideal: 720 },
-      height: { ideal: 720 },
+      frameRate: { ideal: frameRate },
+      width: { ideal: width },
+      height: { ideal: height },
     },
   };
 
@@ -77,5 +84,7 @@ export const useWebcam = () => {
     activeVideoDevice,
     toggleWebcam,
     setActiveVideoDevice,
+    height,
+    width,
   };
 };

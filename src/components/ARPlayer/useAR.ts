@@ -1,29 +1,43 @@
 import { useEffect, useRef, useState } from "react";
 import { useWebcam } from "src/hooks/useWebcam";
 import StreamMerger from "src/utils/StreamMerger";
-import { Scene } from "../ThreexComp/Scene";
+import { World } from "../../Three/World";
 import { useTray } from "./../../hooks/useTray";
 
 const useAR = () => {
-  const { videoTracks } = useWebcam();
+  const { videoTracks, height, width } = useWebcam({
+    frameRate: 60,
+  });
 
   const arCanvasEl = useRef<HTMLCanvasElement>(
     document.createElement("canvas")
   );
-  const scene = useRef<Scene>();
+
+  const arWorld = useRef<World>();
 
   const [ARStream, setARStream] = useState<MediaStream>();
 
-  const streamMerger = useRef<StreamMerger>(
-    new StreamMerger({ height: 400, width: 400 })
-  );
+  const [modelName, setModelName] = useState("");
+
+  const [glbModelNames, setGlbModelNames] = useState<string[]>([]);
 
   const { usingAR, setState } = useTray();
 
   useEffect(() => {
     setState({ type: "webcam", value: true });
     setState({ type: "microphone", value: true });
-    scene.current = new Scene(arCanvasEl.current);
+
+    arCanvasEl.current.height = height!;
+    arCanvasEl.current.width = width!;
+    arCanvasEl.current.style.height = `${height}px`;
+    arCanvasEl.current.style.width = `${width}px`;
+
+    arWorld.current = new World(arCanvasEl.current);
+
+    arWorld.current?.init().then(() => {
+      setGlbModelNames(arWorld.current?.glbModelNames!);
+    });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     return () => {
       setState({ type: "webcam", value: false });
@@ -33,35 +47,47 @@ const useAR = () => {
   }, []);
 
   useEffect(() => {
+    const streamMerger = new StreamMerger({ height: height, width: width });
+
     if (videoTracks) {
       const webcamStream = new MediaStream(videoTracks);
 
+      arWorld.current?.stop();
       if (!usingAR) {
-        streamMerger.current?.addStream(webcamStream);
+        streamMerger?.addStream(webcamStream);
       } else {
-        scene.current?.animate();
-        scene.current?.setWebcamStream(webcamStream);
+        arWorld.current?.setWebcamStream(webcamStream);
 
-        streamMerger.current?.addStream(webcamStream);
-        streamMerger.current?.addCanvas(arCanvasEl.current);
+        // arWorld.current?.init();
+        arWorld.current?.start();
+
+        streamMerger?.addStream(webcamStream);
+        streamMerger?.addCanvas(arCanvasEl.current);
       }
 
-      streamMerger.current.cleanupAudioTracks();
+      streamMerger.cleanupAudioTracks();
 
-      streamMerger.current?.start();
+      streamMerger?.start();
 
-      setARStream(streamMerger.current?.result!);
-    } else {
+      setARStream(streamMerger?.result!);
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    return () => streamMerger.current.stop();
+    return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      streamMerger.stop();
+      arWorld.current?.stop();
+    };
+  }, [height, usingAR, videoTracks, width]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [usingAR, videoTracks]);
-
+  useEffect(() => {
+    if (modelName !== null && modelName !== "" && modelName)
+      if (modelName === "cube") arWorld.current?.loadCube();
+      else arWorld.current?.loadGithubGLBModels(modelName);
+  }, [modelName]);
   return {
     ARStream,
+    glbModelNames,
+    setModelName,
   };
 };
 

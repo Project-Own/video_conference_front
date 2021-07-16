@@ -1,17 +1,22 @@
 import { Camera, Clock, Scene, WebGLRenderer } from "three";
-import CustomObject from "../components/CustomObject";
+import Stats from "three/examples/jsm/libs/stats.module";
 
 class Loop {
   #camera: Camera;
   #scene: Scene;
   #renderer: WebGLRenderer;
-  updatables: CustomObject<any>[] = [];
+  #stats: Stats;
+
+  renderFunctions: ((delta: number) => void)[] = [];
 
   #clock: Clock;
   constructor(camera: Camera, scene: Scene, renderer: WebGLRenderer) {
     this.#camera = camera;
     this.#scene = scene;
     this.#renderer = renderer;
+
+    this.#stats = Stats();
+    document.body.append(this.#stats.dom);
 
     this.#clock = new Clock();
   }
@@ -21,21 +26,29 @@ class Loop {
     this.tick();
     // render a frame
     this.#renderer.setAnimationLoop(() => {
+      this.#stats.begin();
       this.tick();
       this.#renderer.render(this.#scene, this.#camera);
+      this.#stats.end();
+
+      this.#stats.update();
     });
   }
-
   stop() {
     this.#renderer.setAnimationLoop(null);
   }
 
   tick() {
-    // only call the getDelta funciton once per frame
-    const delta = this.#clock.getDelta();
+    try {
+      // only call the getDelta funciton once per frame
+      const delta = this.#clock.getDelta();
+      // console.log(`The last frame rendered in ${delta * 1000} milliseconds`);
 
-    for (const object of this.updatables) {
-      object.tick(delta);
+      for (const fxn of this.renderFunctions) {
+        fxn(delta);
+      }
+    } catch (err) {
+      console.log(err);
     }
   }
 }
