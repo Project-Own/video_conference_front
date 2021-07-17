@@ -10,7 +10,6 @@ test("reducers", () => {
   let state;
   state = reducers(
     {
-      todo: { ids: [], entities: {}, isFetching: false, selectedId: null },
       counter: { value: 0, status: "idle" },
       trayToggle: {
         microphone: false,
@@ -20,12 +19,12 @@ test("reducers", () => {
         participant: false,
         call: false,
         setting: false,
+        usingAR: false,
       },
     },
     { type: "TRAY_TOGGLE/toggleParticipant" }
   );
   expect(state).toEqual({
-    todo: { ids: [], entities: {}, isFetching: false, selectedId: null },
     counter: { value: 0, status: "idle" },
     trayToggle: {
       microphone: false,
@@ -35,6 +34,7 @@ test("reducers", () => {
       participant: true,
       call: false,
       setting: false,
+      usingAR: false,
     },
   });
 });
