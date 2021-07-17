@@ -41,6 +41,13 @@ const ARPlayer = () => {
           ))}
         </Select>
       </FormControl>
+      <p>
+        AR Marker:
+        <a href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png">
+          Hiro
+        </a>
+      </p>
+      <p>Display marker to place AR model on.</p>
       <p>Rotation: w🔺 s🔻 d🔺 a🔻</p>
       <p>
         CapitalLetter(Shift+key) **Keep Pressing if slow scaling Scale by 0.01
