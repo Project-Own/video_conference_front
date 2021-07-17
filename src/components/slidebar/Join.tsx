@@ -8,7 +8,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { FC, useContext } from "react";
-import { SocketContext } from "../context/Context";
+import { SocketContext } from "src/pages/Context/Context";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",

@@ -6,7 +6,14 @@ import {
 } from "../utils/media.utils";
 import { useTray } from "./useTray";
 
-export const useWebcam = () => {
+interface WebcamProps {
+  height?: number;
+  width?: number;
+  frameRate?: number;
+}
+export const useWebcam = (props: WebcamProps) => {
+  const { height = 720, width = 720, frameRate = 24 } = props;
+
   const [videoTracks, setVideoTracks] =
     useState<MediaStreamTrack[] | null>(null);
   const [videoDevices, setVideoDevices] =
@@ -15,9 +22,9 @@ export const useWebcam = () => {
 
   const DEFAULT_VIDEO_CONSTRAINTS = {
     video: {
-      frameRate: { ideal: 10, max: 15 },
-      width: { ideal: 1280 },
-      height: { ideal: 720 },
+      frameRate: { ideal: frameRate },
+      width: { ideal: width },
+      height: { ideal: height },
     },
   };
 
@@ -33,31 +40,30 @@ export const useWebcam = () => {
       getMediaTracks({ video: mediaTrackConstraint }, setVideoTracks);
     }
   };
-  const isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
+  // const isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
 
   const stopVideoTracks = () => {
     closeMediaTracks(videoTracks, setVideoTracks);
   };
 
   useEffect(() => {
+    console.log("Webcam Toggled");
     stopVideoTracks();
     if (webcam) {
-      if (isFirefox) {
-        startVideoTracks();
-      } else {
-        navigator.permissions.query({ name: "camera" }).then((result) => {
-          if (result.state === "denied") {
-            toggleWebcam();
-            alert("Camera Will not function when camera Permission is denied.");
-          } else if (result.state === "granted") {
-            startVideoTracks();
-          }
-        });
-      }
+      startVideoTracks();
+
+      // navigator.permissions.query({ name: "camera" }).then((result) => {
+      //   if (result.state === "denied") {
+      //     toggleWebcam();
+      //     alert("Camera Will not function when camera Permission is denied.");
+      //   } else if (result.state === "granted") {
+      //     startVideoTracks();
+      //   }
+      // });
     }
     return stopVideoTracks;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [webcam, activeVideoDevice]);
+  }, [webcam]);
 
   useEffect(() => {
     getAvailableMediaDevices("videoinput", setVideoDevices).then((devices) => {
@@ -78,5 +84,7 @@ export const useWebcam = () => {
     activeVideoDevice,
     toggleWebcam,
     setActiveVideoDevice,
+    height,
+    width,
   };
 };

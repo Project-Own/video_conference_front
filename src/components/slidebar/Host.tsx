@@ -10,7 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Assignment } from "@material-ui/icons";
 import React, { FC, useContext } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import { SocketContext } from "../context/Context";
+import { SocketContext } from "src/pages/Context/Context";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",

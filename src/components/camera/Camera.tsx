@@ -13,18 +13,6 @@ import logo from "src/assests/logo.svg";
 import { useAudio } from "../../hooks/useAudio";
 import { useWebcam } from "../../hooks/useWebcam";
 import { Video } from "./CamerStyles";
-const CAPTURE_MenuItemS: MediaStreamConstraints = {
-  audio: {
-    echoCancellation: true,
-    noiseSuppression: true,
-    autoGainControl: false,
-  },
-  video: {
-    frameRate: { ideal: 10, max: 15 },
-    width: { ideal: 1280 },
-    height: { ideal: 720 },
-  },
-};
 
 const Camera = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -50,7 +38,7 @@ const Camera = () => {
 
     setActiveVideoDevice,
     toggleWebcam,
-  } = useWebcam();
+  } = useWebcam({});
 
   /**
    * UseEffect prevents flickering caused by rerendering

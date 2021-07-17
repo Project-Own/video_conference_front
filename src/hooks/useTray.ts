@@ -1,6 +1,8 @@
 import { useCallback } from "react";
 import {
   selectTrayState,
+  setState,
+  toggleAr,
   toggleCall,
   toggleChat,
   toggleMicrophone,
@@ -8,6 +10,7 @@ import {
   toggleScreenShare,
   toggleSetting,
   toggleWebcam,
+  State,
 } from "./../store/trayToggle/trayToggle";
 import { useAppDispatch, useAppSelector } from "./redux-hooks";
 
@@ -19,6 +22,7 @@ type TrayOperators = {
   participant: boolean;
   call: boolean;
   setting: boolean;
+  usingAR: boolean;
 
   toggleCall: () => void;
   toggleChat: () => void;
@@ -27,6 +31,8 @@ type TrayOperators = {
   toggleScreenShare: () => void;
   toggleWebcam: () => void;
   toggleSetting: () => void;
+  toggleAr: () => void;
+  setState: (state: State) => void;
 };
 
 export const useTray = (): Readonly<TrayOperators> => {
@@ -41,6 +47,7 @@ export const useTray = (): Readonly<TrayOperators> => {
     participant: trayState.participant,
     call: trayState.call,
     setting: trayState.setting,
+    usingAR: trayState.usingAR,
     toggleCall: useCallback(() => dispatch(toggleCall()), [dispatch]),
     toggleChat: useCallback(() => dispatch(toggleChat()), [dispatch]),
     toggleMicrophone: useCallback(
@@ -57,5 +64,10 @@ export const useTray = (): Readonly<TrayOperators> => {
     ),
     toggleWebcam: useCallback(() => dispatch(toggleWebcam()), [dispatch]),
     toggleSetting: useCallback(() => dispatch(toggleSetting()), [dispatch]),
+    toggleAr: useCallback(() => dispatch(toggleAr()), [dispatch]),
+    setState: useCallback(
+      (state: State) => dispatch(setState(state)),
+      [dispatch]
+    ),
   };
 };

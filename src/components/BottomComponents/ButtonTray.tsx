@@ -13,8 +13,8 @@ import StopScreenShareOutlinedIcon from "@material-ui/icons/StopScreenShareOutli
 import VideocamOffOutlinedIcon from "@material-ui/icons/VideocamOffOutlined";
 import VideocamOutlinedIcon from "@material-ui/icons/VideocamOutlined";
 import { useContext } from "react";
-import { useTray } from "../../hooks/useTray";
-import { SocketContext } from "../context/Context";
+import { useTray } from "src/hooks/useTray";
+import { SocketContext } from "src/pages/Context/Context";
 import ChatGrid from "../gridview/chatGrid";
 import ParticipantGrid from "../gridview/participantGrid";
 import SettingsGrid from "../gridview/SettingsGrid";
@@ -36,17 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     button_tray_left: {
-      // background: "#2F4F4F",
-      // borderRadius: "16px 0px 0px 16px",
-      // width: "140px",
-      // position: "absolute",
-      // height: "56px",
-      // left: "605px",
-      // alignItems: "center",
       zIndex: 1,
-
-      // paddingRight: "14px",
-      // justifyContent: "space-around",
     },
     end_call: {
       // maxheight: "72px",
