@@ -1,10 +1,10 @@
-// import Paper from "@material-ui/core/Paper";
 import { Grid } from "@material-ui/core";
 import { useContext, useEffect } from "react";
+import ARPlayer from "src/components/ARPlayer/ARPlayer";
 import BottomBar from "src/components/BottomComponents/Bottombar";
-import { SocketContext } from "src/components/context/Context";
 import VideoPlayer from "src/components/videoplayer/VideoPlayer";
-import { useTray } from "src/hooks/useTray";
+import useSocket from "src/pages/Conference/useSocket";
+import { SocketContext } from "src/pages/Context/Context";
 
 // const useStyles = makeStyles((theme: Theme) =>
 //   createStyles({
@@ -21,18 +21,16 @@ import { useTray } from "src/hooks/useTray";
 
 const Conference = () => {
   // const classes = useStyles();
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useSocket();
   const context = useContext(SocketContext);
-  const { stream, otherStreams } = context!;
+  const { otherStreams } = context!;
 
   // const { id } = useParams<{ id: string }>();
 
-  const { toggleWebcam, toggleMicrophone } = useTray();
-
-  useEffect(() => {
-    toggleWebcam();
-    toggleMicrophone();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   return (
     <Grid
       item
@@ -50,25 +48,22 @@ const Conference = () => {
         alignItems="center"
         justify="center"
       >
-        {stream && (
-          <Grid item xs={12} md={6} lg={4}>
-            <VideoPlayer stream={stream!} muted={true} />
-          </Grid>
-        )}
+        <Grid item xs={8} md={6} lg={4}>
+          <ARPlayer />
+        </Grid>
 
-        {otherStreams?.map((otherStream) => {
-          console.log("Other Stream");
-          console.log(otherStream);
-          return (
-            <Grid item xs={12} md={6} lg={4}>
-              <VideoPlayer
-                stream={otherStream}
-                key={otherStream.id}
-                muted={false}
-              />
-            </Grid>
-          );
-        })}
+        {otherStreams?.length! > 0 &&
+          otherStreams?.map((otherStream, key) => {
+            return (
+              <Grid key={key} item xs={12} md={6} lg={4}>
+                <VideoPlayer
+                  stream={otherStream}
+                  key={otherStream.id}
+                  muted={false}
+                />
+              </Grid>
+            );
+          })}
       </Grid>
 
       <BottomBar />

@@ -2,8 +2,7 @@ import { Typography } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-// import Paper from "@material-ui/core/Paper";
-import { useState } from "react";
+import { useTray } from "../../hooks/useTray";
 import ButtonTray from "./ButtonTray";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -19,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
 
     ar_button: {
-      width: "160px",
+      width: "100%",
       height: "54px",
       // position: "absolute",
       // left: "80px",
@@ -42,16 +41,29 @@ const useStyles = makeStyles((theme: Theme) =>
 
       color: "#A4A4A4",
     },
+    // bottom_bar: {
+    //   // background: "#EDEDEDd",
+    //   background: "green",
+    //   height: "80px",
+    //   overflow: "auto",
+    //   // position: "absolute",
+    //   // bottom: "-90px",
+    //   // left: 0,
+    //   // bottom: "80px",
+    //   // marginTop: "0px",
+    //   alignItems: "center",
+    // },
   })
 );
 
 const BottomBar = () => {
+  const { usingAR, toggleAr } = useTray();
   const isHost = true;
-  const [ar_text, setar_text] = useState(false);
+  // const [ar_text, usingAR_text] = useState(false);
   const classes = useStyles();
-  const ar_button = () => {
-    setar_text(!ar_text);
-  };
+  // const ar_button = () => {
+  //   usingAR_text(!ar_text);
+  // };
 
   return (
     <Grid
@@ -66,9 +78,9 @@ const BottomBar = () => {
     >
       {isHost ? (
         <Grid item md={2}>
-          <Button onClick={() => ar_button()} className={classes.ar_button}>
+          <Button onClick={toggleAr} className={classes.ar_button}>
             <Typography className={classes.text}>
-              {ar_text ? "Start AR" : "Stop AR"}
+              {usingAR ? "Stop AR" : "Start AR"}
             </Typography>
           </Button>
         </Grid>
