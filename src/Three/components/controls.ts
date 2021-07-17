@@ -7,8 +7,9 @@ const createControls = (object: Object3D) => {
 
   const radiansPerSecond = MathUtils.degToRad(30);
 
+  const originalScale = object.scale.clone();
+
   const handleKeyDown = (event: KeyboardEvent) => {
-    // console.log(delta);
     switch (event.key) {
       case "a":
         object.rotation.x += radiansPerSecond;
@@ -38,9 +39,10 @@ const createControls = (object: Object3D) => {
         object.scale.z = scale;
         break;
       case "A":
-        object.scale.x = 1;
-        object.scale.y = 1;
-        object.scale.z = 1;
+        object.scale.x = originalScale.x;
+        object.scale.y = originalScale.y;
+        object.scale.z = originalScale.z;
+
         break;
       case "D":
         object.rotation.x = 0;
