@@ -13,23 +13,6 @@ import NavigationBar from "src/components/NavigationBar/NavigaitionBar";
 import { ContextProvider } from "src/pages/Context/Context";
 import { addURLPath } from "src/utils/utils";
 
-// const LoadableHost = loadable(() => import("src/components/host/Host"), {
-//   fallback: <Loading />,
-// });
-// const LoadableCamera = loadable(
-//   () => import("src/components/videoplayer/VideoPlayerCollection"),
-//   {
-//     fallback: <Loading />,
-//   }
-// );
-
-const LoadableModel = loadable(
-  () => import("src/components/ModelLoader/ModelLoader"),
-  {
-    fallback: <Loading />,
-  }
-);
-
 const LoadableLanding = loadable(() => import("src/pages/Landing/Landing"), {
   fallback: <Loading />,
 });
@@ -47,16 +30,6 @@ export interface RoutePath {
 }
 const routes: RoutePath[] = [
   { path: addURLPath("/"), name: "Home", Component: LoadableLanding },
-  { path: addURLPath("/model"), name: "Model", Component: LoadableModel },
-  // { path: addURLPath("/about"), name: "Combine", Component: LoadableCombine },
-
-  // { path: addURLPath("/team"), name: "Host", Component: LoadableHost },
-
-  // {
-  //   path: addURLPath("/test"),
-  //   name: "Test",
-  //   Component: LoadableCamera,
-  // },
 ];
 const RouterHandler = () => {
   const nodeRef = useRef(null);
