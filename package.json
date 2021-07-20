@@ -6,7 +6,7 @@
   "dependencies": {
     "@ar-js-org/ar.js": "https://github.com/AR-js-org/AR.js.git#90e83dc4003aa1980b242014b3ca054effed8edf",
     "@loadable/component": "^5.15.0",
-    "@material-ui/core": "^4.12.1",
+    "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@reduxjs/toolkit": "^1.6.1",
