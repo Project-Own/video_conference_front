@@ -11,6 +11,11 @@ const initialState = {
   call: false,
   setting: false,
   usingAR: false,
+  usingGesture: false,
+  webcamDeviceID: "",
+  microphoneDeviceID: "",
+  webcamDevices: [] as MediaDeviceInfo[],
+  microphoneDevices: [] as MediaDeviceInfo[],
 };
 export interface State {
   type:
@@ -21,8 +26,15 @@ export interface State {
     | "participant"
     | "call"
     | "setting"
-    | "usingAR";
+    | "usingAR"
+    | "usingGesture";
   value: boolean;
+}
+export interface State2 {
+  value: string;
+}
+export interface State3 {
+  value: MediaDeviceInfo[];
 }
 export const trayToggleSlice = createSlice({
   name: FeatureKey.TRAY_TOGGLE,
@@ -55,6 +67,21 @@ export const trayToggleSlice = createSlice({
     toggleAr: (state) => {
       state.usingAR = !state.usingAR;
     },
+    toggleGesture: (state) => {
+      state.usingGesture = !state.usingGesture;
+    },
+    setWebcamDeviceID: (state, action: PayloadAction<State2>) => {
+      state.webcamDeviceID = action.payload.value;
+    },
+    setMicrophoneDeviceID: (state, action: PayloadAction<State2>) => {
+      state.microphoneDeviceID = action.payload.value;
+    },
+    setMicrophoneDevices: (state, action: PayloadAction<MediaDeviceInfo[]>) => {
+      state.microphoneDevices = action.payload;
+    },
+    setWebcamDevices: (state, action: PayloadAction<MediaDeviceInfo[]>) => {
+      state.webcamDevices = action.payload;
+    },
   },
 });
 
@@ -70,7 +97,12 @@ export const {
   toggleWebcam,
   toggleSetting,
   toggleAr,
+  setWebcamDeviceID,
+  setMicrophoneDeviceID,
+  setMicrophoneDevices,
+  setWebcamDevices,
   setState,
+  toggleGesture,
 } = trayToggleSlice.actions;
 
 /**

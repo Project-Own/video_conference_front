@@ -85,6 +85,7 @@ const ButtonTray = () => {
     chat,
     participant,
     setting,
+
     toggleChat,
     toggleMicrophone,
     toggleParticipant,

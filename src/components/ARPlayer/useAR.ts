@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useWebcam } from "src/hooks/useWebcam";
 import StreamMerger from "src/utils/StreamMerger";
+import { Object3D } from "three";
 import { World } from "../../Three/World";
 import { useTray } from "./../../hooks/useTray";
 
-const useAR = () => {
+const useAR = (createControls?: (object: Object3D) => void) => {
   const { videoTracks, height, width } = useWebcam({
     frameRate: 60,
   });
@@ -12,7 +13,6 @@ const useAR = () => {
   const arCanvasEl = useRef<HTMLCanvasElement>(
     document.createElement("canvas")
   );
-
   const arWorld = useRef<World>();
 
   const [ARStream, setARStream] = useState<MediaStream>();
@@ -32,7 +32,10 @@ const useAR = () => {
     arCanvasEl.current.style.height = `${height}px`;
     arCanvasEl.current.style.width = `${width}px`;
 
-    arWorld.current = new World(arCanvasEl.current);
+    arWorld.current = new World(
+      arCanvasEl.current,
+      createControls ? createControls : undefined
+    );
 
     arWorld.current?.init().then(() => {
       setGlbModelNames(arWorld.current?.glbModelNames!);

@@ -2,6 +2,7 @@ import { Typography } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+
 import { useTray } from "../../hooks/useTray";
 import ButtonTray from "./ButtonTray";
 
@@ -15,6 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: "fixed",
       alignItems: "center",
       padding: theme.spacing(2),
+      zIndex: 10,
     },
 
     ar_button: {
@@ -57,7 +59,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const BottomBar = () => {
-  const { usingAR, toggleAr } = useTray();
+  const { usingAR, toggleAr, usingGesture, toggleGesture } = useTray();
   const isHost = true;
   // const [ar_text, usingAR_text] = useState(false);
   const classes = useStyles();
@@ -77,13 +79,22 @@ const BottomBar = () => {
       alignItems="center"
     >
       {isHost ? (
-        <Grid item md={2}>
-          <Button onClick={toggleAr} className={classes.ar_button}>
-            <Typography className={classes.text}>
-              {usingAR ? "Stop AR" : "Start AR"}
-            </Typography>
-          </Button>
-        </Grid>
+        <>
+          <Grid item md={2}>
+            <Button onClick={toggleAr} className={classes.ar_button}>
+              <Typography className={classes.text}>
+                {usingAR ? "Stop AR" : "Start AR"}
+              </Typography>
+            </Button>
+          </Grid>
+          <Grid item md={2}>
+            <Button onClick={toggleGesture} className={classes.ar_button}>
+              <Typography className={classes.text}>
+                {usingGesture ? "Stop Gesture" : "Start Gesture"}
+              </Typography>
+            </Button>
+          </Grid>
+        </>
       ) : null}
       <ButtonTray />
     </Grid>

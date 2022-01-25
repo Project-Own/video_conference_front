@@ -3,7 +3,13 @@ import {
   ArSmoothedControls,
   ArToolkitContext,
 } from "@ar-js-org/ar.js/three.js/build/ar-threex.js";
-import { Group, PerspectiveCamera, Scene, WebGLRenderer } from "three";
+import {
+  Group,
+  Object3D,
+  PerspectiveCamera,
+  Scene,
+  WebGLRenderer,
+} from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { createAr } from "./components/ar";
 import { createCamera } from "./components/camera";
@@ -31,9 +37,12 @@ export class World {
 
   markerGroup: Group;
   modelGroup: Group;
-
+  createControls: (object: Object3D) => void;
   glbModelNames: string[] = [];
-  constructor(canvasRef: HTMLCanvasElement) {
+  constructor(
+    canvasRef: HTMLCanvasElement,
+    controls?: (object: Object3D) => void
+  ) {
     this.renderer = createRenderer(canvasRef);
 
     this.camera = createCamera();
@@ -66,7 +75,7 @@ export class World {
     );
 
     this.smoothedControls = smoothedControls;
-
+    this.createControls = controls ? controls : createControls;
     this.loadCube();
   }
 
@@ -121,7 +130,7 @@ export class World {
   loadCube = () => {
     const { cubeMesh, cubeRenderFxn } = createCube();
 
-    createControls(cubeMesh);
+    this.createControls(cubeMesh);
 
     this.modelGroup.remove(this.modelGroup.children[0]);
     this.modelGroup.add(cubeMesh);
@@ -132,7 +141,7 @@ export class World {
   loadModel = async (uri: string) => {
     const { model, modelRenderFxn } = await loadModel(uri);
     if (model !== null && model) {
-      createControls(model!);
+      this.createControls(model!);
 
       this.modelGroup.remove(this.modelGroup.children[0]);
       this.modelGroup.add(model!);

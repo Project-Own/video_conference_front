@@ -14,11 +14,13 @@ interface WebcamProps {
 export const useWebcam = (props: WebcamProps) => {
   const { height = 720, width = 720, frameRate = 24 } = props;
 
-  const [videoTracks, setVideoTracks] =
-    useState<MediaStreamTrack[] | null>(null);
-  const [videoDevices, setVideoDevices] =
-    useState<MediaDeviceInfo[] | null>(null);
-  const [activeVideoDevice, setActiveVideoDevice] = useState<string>();
+  const [videoTracks, setVideoTracks] = useState<MediaStreamTrack[] | null>(
+    null
+  );
+  // const [videoDevices, setVideoDevices] = useState<MediaDeviceInfo[] | null>(
+  //   null
+  // );
+  // const [activeVideoDevice, setActiveVideoDevice] = useState<string>();
 
   const DEFAULT_VIDEO_CONSTRAINTS = {
     video: {
@@ -28,14 +30,21 @@ export const useWebcam = (props: WebcamProps) => {
     },
   };
 
-  const { webcam, toggleWebcam } = useTray();
+  const {
+    webcam,
+    toggleWebcam,
+    webcamDeviceID,
+    setWebcamDeviceID,
+    webcamDevices,
+    setWebcamDevices,
+  } = useTray();
 
   const startVideoTracks = () => {
     let mediaTrackConstraint: MediaTrackConstraints | undefined;
     mediaTrackConstraint = DEFAULT_VIDEO_CONSTRAINTS.video;
 
     if (mediaTrackConstraint) {
-      mediaTrackConstraint.deviceId = activeVideoDevice;
+      mediaTrackConstraint.deviceId = webcamDeviceID;
 
       getMediaTracks({ video: mediaTrackConstraint }, setVideoTracks);
     }
@@ -63,13 +72,20 @@ export const useWebcam = (props: WebcamProps) => {
     }
     return stopVideoTracks;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [webcam]);
+  }, [webcam, webcamDeviceID]);
 
   useEffect(() => {
-    getAvailableMediaDevices("videoinput", setVideoDevices).then((devices) => {
+    getAvailableMediaDevices("videoinput", (devices) =>
+      setWebcamDevices(devices!)
+    ).then((devices) => {
       if (devices) {
-        if (devices[0].deviceId !== "")
-          setActiveVideoDevice(devices[0].deviceId);
+        try {
+          if (devices[1].deviceId !== "")
+            setWebcamDeviceID({ value: devices[1].deviceId });
+        } catch (e) {
+          if (devices[0].deviceId !== "")
+            setWebcamDeviceID({ value: devices[0].deviceId });
+        }
       }
     });
 
@@ -78,12 +94,12 @@ export const useWebcam = (props: WebcamProps) => {
   }, []);
 
   return {
-    videoDevices,
+    webcamDevices,
     videoTracks,
     webcam,
-    activeVideoDevice,
+    webcamDeviceID,
     toggleWebcam,
-    setActiveVideoDevice,
+    setWebcamDeviceID,
     height,
     width,
   };

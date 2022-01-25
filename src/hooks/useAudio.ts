@@ -7,11 +7,12 @@ import {
 import { useTray } from "./useTray";
 
 export const useAudio = () => {
-  const [audioTracks, setAudioTracks] =
-    useState<MediaStreamTrack[] | null>(null);
-  const [audioDevices, setAudioDevices] =
-    useState<MediaDeviceInfo[] | null>(null);
-  const [activeAudioDevice, setActiveAudioDevice] = useState<string>();
+  const [audioTracks, setAudioTracks] = useState<MediaStreamTrack[] | null>(
+    null
+  );
+  // const [audioDevices, setAudioDevices] = useState<MediaDeviceInfo[] | null>(
+  //   null
+  // );
 
   const DEFAULT_AUDIO_CONSTRAINTS = {
     audio: {
@@ -23,7 +24,14 @@ export const useAudio = () => {
 
   // const isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
 
-  const { microphone, toggleMicrophone } = useTray();
+  const {
+    microphone,
+    toggleMicrophone,
+    microphoneDeviceID,
+    setMicrophoneDeviceID,
+    microphoneDevices,
+    setMicrophoneDevices,
+  } = useTray();
 
   const stopAudioTracks = () => closeMediaTracks(audioTracks, setAudioTracks);
 
@@ -32,16 +40,18 @@ export const useAudio = () => {
     mediaTrackConstraint = DEFAULT_AUDIO_CONSTRAINTS.audio;
 
     if (mediaTrackConstraint) {
-      mediaTrackConstraint.deviceId = activeAudioDevice;
+      mediaTrackConstraint.deviceId = microphoneDeviceID;
       getMediaTracks({ audio: mediaTrackConstraint }, setAudioTracks);
     }
   };
 
   useEffect(() => {
-    getAvailableMediaDevices("audioinput", setAudioDevices).then((devices) => {
+    getAvailableMediaDevices("audioinput", (devices) =>
+      setMicrophoneDevices(devices!)
+    ).then((devices) => {
       if (devices) {
         if (devices[0].deviceId !== "")
-          setActiveAudioDevice(devices[0].deviceId);
+          setMicrophoneDeviceID({ value: devices[0].deviceId });
       }
     });
 
@@ -72,14 +82,14 @@ export const useAudio = () => {
     }
     return stopAudioTracks;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [microphone, activeAudioDevice]);
+  }, [microphone, microphoneDeviceID]);
 
   return {
-    audioDevices,
+    microphoneDevices,
     audioTracks,
     microphone,
-    activeAudioDevice,
+    microphoneDeviceID,
     toggleMicrophone,
-    setActiveAudioDevice,
+    setMicrophoneDeviceID,
   };
 };

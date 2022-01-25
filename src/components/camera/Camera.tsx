@@ -9,7 +9,6 @@ import {
   Select,
 } from "@material-ui/core";
 import { useEffect, useRef, useState } from "react";
-import logo from "src/assests/logo.svg";
 import { useAudio } from "../../hooks/useAudio";
 import { useWebcam } from "../../hooks/useWebcam";
 import { Video } from "./CamerStyles";
@@ -22,21 +21,21 @@ const Camera = () => {
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 
   const {
-    audioDevices,
+    microphoneDevices,
     audioTracks,
     microphone,
-    activeAudioDevice,
+    microphoneDeviceID,
     toggleMicrophone,
-    setActiveAudioDevice,
+    setMicrophoneDeviceID,
   } = useAudio();
 
   const {
-    videoDevices,
+    webcamDevices,
     videoTracks,
     webcam,
-    activeVideoDevice,
+    webcamDeviceID,
 
-    setActiveVideoDevice,
+    setWebcamDeviceID,
     toggleWebcam,
   } = useWebcam({});
 
@@ -85,7 +84,7 @@ const Camera = () => {
         <Video
           ref={videoRef}
           // hidden={!webcam}
-          poster={logo}
+          // poster={logo}
           onCanPlayThrough={() => {
             setIsVideoPlaying(true);
             videoRef.current?.play().catch((e) => {
@@ -136,13 +135,13 @@ const Camera = () => {
             onChange={({ target }) => {
               const { value } = target;
 
-              setActiveAudioDevice(value as string);
+              setMicrophoneDeviceID({ value: value as string });
             }}
             renderValue={(value) => {
               const id = value as string;
               let device;
-              if (audioDevices) {
-                device = audioDevices.filter(
+              if (microphoneDevices) {
+                device = microphoneDevices.filter(
                   (device) => device.deviceId === id
                 );
 
@@ -151,13 +150,13 @@ const Camera = () => {
                 }
               }
             }}
-            value={activeAudioDevice ? activeAudioDevice : ""}
+            value={microphoneDeviceID ? microphoneDeviceID : ""}
             inputProps={{
               name: "deviceId",
               id: "audio-input-device",
             }}
           >
-            {audioDevices?.map((audioDevice: MediaDeviceInfo) => (
+            {microphoneDevices?.map((audioDevice: MediaDeviceInfo) => (
               <MenuItem key={audioDevice.deviceId} value={audioDevice.deviceId}>
                 {audioDevice.label}
               </MenuItem>
@@ -172,15 +171,15 @@ const Camera = () => {
             onChange={({ target }) => {
               const { value } = target;
 
-              setActiveVideoDevice(value as string);
+              setWebcamDeviceID({ value: value as string });
             }}
             // displayEmpty
 
             renderValue={(value) => {
               const id = value as string;
               let device;
-              if (videoDevices) {
-                device = videoDevices.filter(
+              if (webcamDevices) {
+                device = webcamDevices.filter(
                   (device) => device.deviceId === id
                 );
                 if (device.length !== 0) {
@@ -188,13 +187,13 @@ const Camera = () => {
                 }
               }
             }}
-            value={activeVideoDevice ? activeVideoDevice : ""}
+            value={webcamDeviceID ? webcamDeviceID : ""}
             inputProps={{
               name: "deviceId",
               id: "video-input-device",
             }}
           >
-            {videoDevices?.map((videoDevice: MediaDeviceInfo) => (
+            {webcamDevices?.map((videoDevice: MediaDeviceInfo) => (
               <MenuItem key={videoDevice.deviceId} value={videoDevice.deviceId}>
                 {videoDevice.label}
               </MenuItem>

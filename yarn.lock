@@ -1597,6 +1597,21 @@
     prop-types "^15.7.2"
     react-is "^16.8.0 || ^17.0.0"
 
+"@mediapipe/camera_utils@^0.3.1640029074":
+  version "0.3.1640029074"
+  resolved "https://registry.yarnpkg.com/@mediapipe/camera_utils/-/camera_utils-0.3.1640029074.tgz#f8b50a2c0bf6a5f4d8cff0524ed71887c4639280"
+  integrity sha512-jRV/Mp2lgqNYT68TeVRu/Xq+ptZO9F9vCjxzQsA3VM2r7oXg0TrnfO9De2KKOUTpt0p28dKHs625J8GdWjha8A==
+
+"@mediapipe/drawing_utils@^0.3.1620248257":
+  version "0.3.1620248257"
+  resolved "https://registry.yarnpkg.com/@mediapipe/drawing_utils/-/drawing_utils-0.3.1620248257.tgz#b39dfd235e7cf520e3e39d8b2bac2c5d717a7158"
+  integrity sha512-s598oo1K6C62mX3rWXJ7n1RJFdXjyQn3f6CeI+lU6kD69MVyBcV3hdmO5LnEZlCw5NRDANtaM8WAOuqZHaldLg==
+
+"@mediapipe/hands@^0.4.1635986972":
+  version "0.4.1635986972"
+  resolved "https://registry.yarnpkg.com/@mediapipe/hands/-/hands-0.4.1635986972.tgz#21116c13ed69ddb3452b94a7862367f77a5b6927"
+  integrity sha512-xVsoT7beiY9glBAHtcEBkfYO1eDMMzmU0U3wOYEy+sphu5y4Lx4Eg9k1qR+IsYYr1CDx+hYQH3YMVXm9D68+8Q==
+
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz#7619c2eb21b25483f6d167548b4cfd5a7488c3d5"
@@ -3513,9 +3528,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001125, caniuse-lite@^1.0.30001219:
-  version "1.0.30001239"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001239.tgz#66e8669985bb2cb84ccb10f68c25ce6dd3e4d2b8"
-  integrity sha512-cyBkXJDMeI4wthy8xJ2FvDU6+0dtcZSJW3voUF8+e9f1bBeuvyZfc3PNbkOETyhbR+dGCPzn9E7MA3iwzusOhQ==
+  version "1.0.30001301"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001301.tgz"
+  integrity sha512-csfD/GpHMqgEL3V3uIgosvh+SVIQvCh43SNu9HRbP1lnxkKm1kjDG4f32PP571JplkLjfS+mg2p1gxR7MYrrIA==
 
 capture-exit@^2.0.0:
   version "2.0.0"
