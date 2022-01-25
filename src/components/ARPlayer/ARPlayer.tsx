@@ -1,8 +1,8 @@
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
-import { NormalizedLandmarkList, Results } from "@mediapipe/hands";
-import { useState } from "react";
+import { Results } from "@mediapipe/hands";
+
 import { ChangeEvent, useContext, useEffect, useRef } from "react";
 import { useGesture } from "src/hooks/useGesture";
 import { useTray } from "src/hooks/useTray";
@@ -13,19 +13,18 @@ import useAR from "./useAR";
 const ARPlayer = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [gesture, setGesture] = useState<string>();
+  // const [gesture, setGesture] = useState<string>();
 
-  const [gestureResults, setGestureResults] =
-    useState<NormalizedLandmarkList>();
+  // const [gestureResults, setGestureResults] =
+  //   useState<NormalizedLandmarkList>();
   let pastDiffX = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     pastDiffY = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     pastX = 0,
-    pastY = 0,
-    count = 0;
+    pastY = 0;
 
   const func = (gesture: string, results: Results) => {
-    setGesture(gesture);
-    setGestureResults(results.multiHandLandmarks[0]);
+    // setGesture(gesture);
+    // setGestureResults(results.multiHandLandmarks[0]);
 
     // if (count % 5 === 0) count = 0;
     let diffX = 0,

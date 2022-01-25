@@ -12,7 +12,6 @@ import {
   toggleWebcam,
   State,
   State2,
-  State3,
   setWebcamDeviceID,
   setMicrophoneDeviceID,
   setWebcamDevices,

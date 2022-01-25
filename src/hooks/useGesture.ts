@@ -1,13 +1,12 @@
 import { useEffect, useRef } from "react";
-import { Hands, HAND_CONNECTIONS, Results } from "@mediapipe/hands";
-import { Camera } from "@mediapipe/camera_utils";
+import { Hands, Results } from "@mediapipe/hands";
+
 import {
   classify,
   displayLandmarks,
   getFingerStatuses,
 } from "src/utils/mediapipe.utils";
 import { useTray } from "./useTray";
-import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
 import { useWebcam } from "./useWebcam";
 
 export const useGesture = (
@@ -18,10 +17,10 @@ export const useGesture = (
   // const { webcam } = useTray();
 
   const { webcam, height, width, videoTracks } = useWebcam({});
-  const { usingGesture, toggleGesture, setState } = useTray();
+  const { usingGesture, setState } = useTray();
   const videoRef = useRef(document.createElement("video"));
 
-  const videoElement = useRef(document.createElement("video"));
+  // const videoElement = useRef(document.createElement("video"));
   const canvasElement = canvasRef
     ? canvasRef
     : document.createElement("canvas");
@@ -58,7 +57,7 @@ export const useGesture = (
       canvasElement.height = height;
       canvasElement.width = width; // console.log;
     }
-  }, [videoTracks]);
+  }, [videoTracks, height, width, canvasElement, setState]);
 
   // let pastX = 0,
   //   pastY = 0,
@@ -105,18 +104,18 @@ export const useGesture = (
   // };
   function onResults(results: Results) {
     let gesture = "None";
-    let count = 0;
+    // let count = 0;
     // console.log(results);
     // console.log(canvasElement.current);
     // console.log(canvasElement.current!.getContext("2d"));
     if (canvasElement && display) displayLandmarks(canvasElement, results);
     try {
       const fingersStatus = getFingerStatuses(results);
-      count = 0;
+      // count = 0;
       // console.log(fingersStatus);
-      for (const fingerKey in fingersStatus[0]) {
-        if (fingersStatus[0][fingerKey] === true) count += 1;
-      }
+      // for (const fingerKey in fingersStatus[0]) {
+      //   if (fingersStatus[0][fingerKey] === true) count += 1;
+      // }
       gesture = classify(fingersStatus[0]);
       // console.log(callback);
       if (callback) callback(gesture, results);
@@ -161,6 +160,7 @@ export const useGesture = (
 
     context?.clearRect(0, 0, width, height);
   };
+
   const start = () => {
     if (!requestRef.current) requestRef.current = requestAnimationFrame(draw);
   };
@@ -175,5 +175,6 @@ export const useGesture = (
   useEffect(() => {
     if (!webcam || !usingGesture) stop();
     if (webcam && usingGesture) start();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [webcam, usingGesture]);
 };

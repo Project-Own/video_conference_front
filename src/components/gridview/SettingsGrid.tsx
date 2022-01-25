@@ -1,25 +1,10 @@
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-} from "@material-ui/core";
+import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import List from "@material-ui/core/List";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import CloseIcon from "@material-ui/icons/Close";
-import SearchIcon from "@material-ui/icons/Search";
-import React, { useState } from "react";
 import { useTray } from "../../hooks/useTray";
-import ParticipantList from "./participantList";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -70,46 +55,6 @@ const SettingsGrid = () => {
     setMicrophoneDeviceID,
   } = useTray();
   const classes = useStyles();
-  // const [isOpen, setisOpen] = useState(false);
-
-  // const participantDrawer =
-  //   (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
-  //     setisOpen(open);
-  //   };
-  const dummy_participants = [
-    {
-      id: 1,
-      name: "Nirjal Prajapati",
-    },
-    {
-      id: 2,
-      name: "Sahas Prajapati",
-    },
-    {
-      id: 3,
-      name: "Nirajan Prajapati",
-    },
-    {
-      id: 4,
-      name: "Rohit Prajapati",
-    },
-  ];
-  //   const [name, setname] = useState([{ id: 1, name: "Nirjal Prajapati" }]);
-  const [fieldValue, setfieldValue] = useState("");
-
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setfieldValue("");
-    // console.log(e);
-  };
-
-  //   setname([...name, { id: 2, name: fieldValue }]);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-  ) => {
-    setfieldValue(e.target.value);
-  };
 
   return (
     <Grid container direction="column" justify="center" alignItems="center">
