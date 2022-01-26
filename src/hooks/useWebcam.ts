@@ -7,16 +7,16 @@ import {
 import { useTray } from "./useTray";
 
 interface WebcamProps {
-  height?: number;
-  width?: number;
+  webcamHeight?: number;
+  webcamWidth?: number;
   frameRate?: number;
 }
 export const useWebcam = (props: WebcamProps) => {
-  const { height = 720, width = 720, frameRate = 24 } = props;
+  const { webcamHeight = 720, webcamWidth = 720, frameRate = 24 } = props;
 
-  const [videoTracks, setVideoTracks] = useState<MediaStreamTrack[] | null>(
-    null
-  );
+  const [webcamVideoTracks, setWebcamVideoTracks] = useState<
+    MediaStreamTrack[] | null
+  >(null);
   // const [videoDevices, setVideoDevices] = useState<MediaDeviceInfo[] | null>(
   //   null
   // );
@@ -25,8 +25,8 @@ export const useWebcam = (props: WebcamProps) => {
   const DEFAULT_VIDEO_CONSTRAINTS = {
     video: {
       frameRate: { ideal: frameRate },
-      width: { ideal: width },
-      height: { ideal: height },
+      webcamWidth: { ideal: webcamWidth },
+      webcamHeight: { ideal: webcamHeight },
     },
   };
 
@@ -39,38 +39,38 @@ export const useWebcam = (props: WebcamProps) => {
     setWebcamDevices,
   } = useTray();
 
-  const startVideoTracks = () => {
+  const startwebcamVideoTracks = () => {
     let mediaTrackConstraint: MediaTrackConstraints | undefined;
     mediaTrackConstraint = DEFAULT_VIDEO_CONSTRAINTS.video;
 
     if (mediaTrackConstraint) {
       mediaTrackConstraint.deviceId = webcamDeviceID;
 
-      getMediaTracks({ video: mediaTrackConstraint }, setVideoTracks);
+      getMediaTracks({ video: mediaTrackConstraint }, setWebcamVideoTracks);
     }
   };
   // const isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
 
-  const stopVideoTracks = () => {
-    closeMediaTracks(videoTracks, setVideoTracks);
+  const stopwebcamVideoTracks = () => {
+    closeMediaTracks(webcamVideoTracks, setWebcamVideoTracks);
   };
 
   useEffect(() => {
     console.log("Webcam Toggled");
-    stopVideoTracks();
+    stopwebcamVideoTracks();
     if (webcam) {
-      startVideoTracks();
+      startwebcamVideoTracks();
 
       // navigator.permissions.query({ name: "camera" }).then((result) => {
       //   if (result.state === "denied") {
       //     toggleWebcam();
       //     alert("Camera Will not function when camera Permission is denied.");
       //   } else if (result.state === "granted") {
-      //     startVideoTracks();
+      //     startwebcamVideoTracks();
       //   }
       // });
     }
-    return stopVideoTracks;
+    return stopwebcamVideoTracks;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [webcam, webcamDeviceID]);
 
@@ -89,18 +89,18 @@ export const useWebcam = (props: WebcamProps) => {
       }
     });
 
-    return stopVideoTracks;
+    return stopwebcamVideoTracks;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {
     webcamDevices,
-    videoTracks,
+    webcamVideoTracks,
     webcam,
     webcamDeviceID,
     toggleWebcam,
     setWebcamDeviceID,
-    height,
-    width,
+    webcamHeight,
+    webcamWidth,
   };
 };

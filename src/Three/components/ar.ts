@@ -46,6 +46,7 @@ const createAr = (camera: PerspectiveCamera) => {
   const arMarkerControls = new ArMarkerControls(arToolkitContext, markerGroup, {
     type: "pattern",
     patternUrl: addURLPath("/data/patt.hiro"),
+    // patternUrl: addURLPath("/data/pattern-marker.patt"),
   });
 
   const smoothedControls = new ArSmoothedControls(markerGroup, {

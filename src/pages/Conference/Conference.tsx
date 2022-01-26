@@ -4,7 +4,7 @@ import ARPlayer from "src/components/ARPlayer/ARPlayer";
 import BottomBar from "src/components/BottomComponents/Bottombar";
 
 import VideoPlayer from "src/components/videoplayer/VideoPlayer";
-import useSocket from "src/pages/Conference/useSocket";
+import useSocket from "src/hooks/useSocket";
 import { SocketContext } from "src/pages/Context/Context";
 
 // const useStyles = makeStyles((theme: Theme) =>

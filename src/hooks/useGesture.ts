@@ -16,7 +16,9 @@ export const useGesture = (
 ) => {
   // const { webcam } = useTray();
 
-  const { webcam, height, width, videoTracks } = useWebcam({});
+  const { webcam, webcamHeight, webcamWidth, webcamVideoTracks } = useWebcam(
+    {}
+  );
   const { usingGesture, setState } = useTray();
   const videoRef = useRef(document.createElement("video"));
 
@@ -30,8 +32,8 @@ export const useGesture = (
   const requestRef = useRef<number | undefined>();
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.srcObject = videoTracks
-        ? new MediaStream(videoTracks)
+      videoRef.current.srcObject = webcamVideoTracks
+        ? new MediaStream(webcamVideoTracks)
         : null;
     }
     videoRef.current.autoplay = true;
@@ -50,14 +52,14 @@ export const useGesture = (
     //     console.log(e);
     //   });
     // };
-    videoRef.current.height = height;
-    videoRef.current.width = width;
+    videoRef.current.height = webcamHeight;
+    videoRef.current.width = webcamWidth;
 
     if (canvasElement) {
-      canvasElement.height = height;
-      canvasElement.width = width; // console.log;
+      canvasElement.height = webcamHeight;
+      canvasElement.width = webcamWidth; // console.log;
     }
-  }, [videoTracks, height, width, canvasElement, setState]);
+  }, [webcamVideoTracks, webcamHeight, webcamWidth, canvasElement, setState]);
 
   // let pastX = 0,
   //   pastY = 0,
@@ -144,8 +146,8 @@ export const useGesture = (
     requestRef.current = undefined;
     const context = canvasElement?.getContext("2d");
 
-    context?.clearRect(0, 0, width, height);
-    context?.drawImage(videoRef.current, 0, 0, width, height);
+    context?.clearRect(0, 0, webcamWidth, webcamHeight);
+    context?.drawImage(videoRef.current, 0, 0, webcamWidth, webcamHeight);
 
     context?.fillText("Count= " + count.current, 10, 10);
 
@@ -158,7 +160,7 @@ export const useGesture = (
   const clearFrame = () => {
     const context = canvasElement?.getContext("2d");
 
-    context?.clearRect(0, 0, width, height);
+    context?.clearRect(0, 0, webcamWidth, webcamHeight);
   };
 
   const start = () => {

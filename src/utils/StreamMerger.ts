@@ -1,5 +1,5 @@
 export interface HTMLCanvasElementWithCaptureStream extends HTMLCanvasElement {
-  captureStream?(frameRate?: number): MediaStream;
+  captureStream(frameRate?: number): MediaStream;
 }
 
 interface StreamOptions {

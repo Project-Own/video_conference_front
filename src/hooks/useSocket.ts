@@ -5,7 +5,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router";
 import { io, Socket } from "socket.io-client";
-import { DefaultEventsMap } from "socket.io-client/build/typed-events";
 import { useAudio } from "src/hooks/useAudio";
 import { SocketContext } from "src/pages/Context/Context";
 import { blackSilence } from "src/utils/utils";
@@ -47,8 +46,7 @@ export enum SocketEvent {
 
 const useSocket = () => {
   const [creator, setCreator] = useState(false);
-  const socketConnection =
-    useRef<Socket<DefaultEventsMap, DefaultEventsMap> | null>(null);
+  const socketConnection = useRef<Socket | null>(null);
   const rtcPeerConnection = useRef<RTCPeerConnection | null>(null);
 
   const { stream, setOtherStreams } = useContext(SocketContext);

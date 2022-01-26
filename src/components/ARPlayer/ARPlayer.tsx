@@ -4,11 +4,12 @@ import Select from "@material-ui/core/Select";
 import { Results } from "@mediapipe/hands";
 
 import { ChangeEvent, useContext, useEffect, useRef } from "react";
+import useAR from "src/hooks/useAR";
 import { useGesture } from "src/hooks/useGesture";
+import { useScreenShare } from "src/hooks/useScreenShare";
 import { useTray } from "src/hooks/useTray";
 import { SocketContext } from "src/pages/Context/Context";
 import { MathUtils, Object3D } from "three";
-import useAR from "./useAR";
 
 const ARPlayer = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -181,12 +182,26 @@ const ARPlayer = () => {
   const { setStream } = useContext(SocketContext);
 
   const { ARStream, glbModelNames, setModelName } = useAR(createControls);
-  const { setState } = useTray();
+  const { videoTracks } = useScreenShare({
+    frameRate: 60,
+    cursor: "always",
+  });
+  const { setState, screenShare } = useTray();
   useGesture(canvasRef.current!, func, true);
   useEffect(() => {
-    setStream(ARStream);
-    if (videoRef.current) videoRef.current.srcObject = ARStream!;
-  }, [ARStream, setStream]);
+    let stream = ARStream;
+    if (screenShare) {
+      if (videoTracks) {
+        stream = new MediaStream(videoTracks);
+        setState({ type: "webcam", value: false });
+        setState({ type: "usingAR", value: false });
+        setState({ type: "usingGesture", value: false });
+      }
+    }
+    setStream(stream);
+
+    if (videoRef.current) videoRef.current.srcObject = stream!;
+  }, [ARStream, setStream, videoTracks, screenShare, setState]);
 
   const handleChange = (
     event: ChangeEvent<{
@@ -235,7 +250,7 @@ const ARPlayer = () => {
           style={{
             width: "100%",
             objectFit: "cover",
-            transform: `scaleX(-1)`,
+            transform: screenShare ? `` : `scaleX(-1)`,
             position: "absolute",
             top: 0,
             bottom: 0,
@@ -259,7 +274,7 @@ const ARPlayer = () => {
           style={{
             width: "100%",
             objectFit: "cover",
-            transform: `scaleX(-1)`,
+            transform: screenShare ? `` : `scaleX(-1)`,
             position: "absolute",
             top: 0,
             bottom: 0,

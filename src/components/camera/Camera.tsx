@@ -31,7 +31,7 @@ const Camera = () => {
 
   const {
     webcamDevices,
-    videoTracks,
+    webcamVideoTracks,
     webcam,
     webcamDeviceID,
 
@@ -47,11 +47,11 @@ const Camera = () => {
    * */
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.srcObject = videoTracks
-        ? new MediaStream(videoTracks)
+      videoRef.current.srcObject = webcamVideoTracks
+        ? new MediaStream(webcamVideoTracks)
         : null;
     }
-  }, [videoTracks]);
+  }, [webcamVideoTracks]);
 
   useEffect(() => {
     if (audioRef.current) {

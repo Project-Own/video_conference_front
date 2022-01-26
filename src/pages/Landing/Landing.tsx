@@ -11,7 +11,7 @@ const Landing = () => {
       direction="row"
       style={{ width: "100%", height: "100%", padding: 32 }}
       spacing={4}
-      justify="center"
+      justifyContent="center"
       alignItems="center"
     >
       <Grid item md={1} />
@@ -21,7 +21,7 @@ const Landing = () => {
         md={5}
         direction="row"
         alignItems="center"
-        justify="center"
+        justifyContent="center"
       >
         <Grid
           item

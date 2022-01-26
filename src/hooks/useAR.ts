@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useWebcam } from "src/hooks/useWebcam";
+import { World } from "src/Three/World";
 import StreamMerger from "src/utils/StreamMerger";
 import { Object3D } from "three";
-import { World } from "../../Three/World";
-import { useTray } from "./../../hooks/useTray";
+import { useTray } from "./useTray";
 
 const useAR = (createControls?: (object: Object3D) => void) => {
-  const { videoTracks, height, width } = useWebcam({
+  const { webcamVideoTracks, webcamHeight, webcamWidth } = useWebcam({
     frameRate: 60,
   });
 
@@ -24,13 +24,13 @@ const useAR = (createControls?: (object: Object3D) => void) => {
   const { usingAR, setState } = useTray();
 
   useEffect(() => {
-    setState({ type: "webcam", value: true });
     setState({ type: "microphone", value: true });
+    setState({ type: "webcam", value: true });
 
-    arCanvasEl.current.height = height!;
-    arCanvasEl.current.width = width!;
-    arCanvasEl.current.style.height = `${height}px`;
-    arCanvasEl.current.style.width = `${width}px`;
+    arCanvasEl.current.height = webcamHeight!;
+    arCanvasEl.current.width = webcamWidth!;
+    arCanvasEl.current.style.height = `${webcamHeight}px`;
+    arCanvasEl.current.style.width = `${webcamWidth}px`;
 
     arWorld.current = new World(
       arCanvasEl.current,
@@ -50,10 +50,13 @@ const useAR = (createControls?: (object: Object3D) => void) => {
   }, []);
 
   useEffect(() => {
-    const streamMerger = new StreamMerger({ height: height, width: width });
+    const streamMerger = new StreamMerger({
+      height: webcamHeight,
+      width: webcamWidth,
+    });
 
-    if (videoTracks) {
-      const webcamStream = new MediaStream(videoTracks);
+    if (webcamVideoTracks) {
+      const webcamStream = new MediaStream(webcamVideoTracks);
 
       arWorld.current?.stop();
       if (!usingAR) {
@@ -80,7 +83,7 @@ const useAR = (createControls?: (object: Object3D) => void) => {
       streamMerger.stop();
       arWorld.current?.stop();
     };
-  }, [height, usingAR, videoTracks, width]);
+  }, [webcamHeight, usingAR, webcamVideoTracks, webcamWidth]);
 
   useEffect(() => {
     if (modelName !== null && modelName !== "" && modelName)

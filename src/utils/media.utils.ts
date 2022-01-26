@@ -91,17 +91,44 @@ export const getMediaTracks = async (
 /**
  *
  * */
-export const getDisplayMedia = async (
+export const getDisplayMediaTracks = async (
   requestedMedia: MediaStreamConstraints,
   setTracks: (tracks: MediaStreamTrack[] | null) => void
 ) => {
-  // try {
-  //   navigator.ge;
-  //   const stream = await navigator.mediaDevices.get(requestedMedia);
-  //   const tracks = stream.getTracks();
-  //   if (tracks.length > 0) console.log(`Using tracks device: ${tracks[0].label}`);
-  //   setTracks(tracks);
-  // } catch (err) {
-  //   console.log(err);
-  // }
+  try {
+    const tracks = await navigator.mediaDevices
+      .getDisplayMedia(requestedMedia)
+      .catch((e) => {
+        console.log(e);
+      })
+      .then((stream) => {
+        const tracks = stream ? stream.getTracks() : [];
+        if (tracks.length > 0) {
+          setTracks(tracks);
+        } else {
+          console.log("Cannot Use UserMedia");
+        }
+        return tracks;
+      });
+    return tracks;
+  } catch (err) {
+    console.log(err);
+  }
 };
+/**
+ *
+ * */
+// export const getDisplayMedia = async (
+//   requestedMedia: MediaStreamConstraints,
+//   setTracks: (tracks: MediaStreamTrack[] | null) => void
+// ) => {
+//   // try {
+//   //   navigator.ge;
+//   //   const stream = await navigator.mediaDevices.get(requestedMedia);
+//   //   const tracks = stream.getTracks();
+//   //   if (tracks.length > 0) console.log(`Using tracks device: ${tracks[0].label}`);
+//   //   setTracks(tracks);
+//   // } catch (err) {
+//   //   console.log(err);
+//   // }
+// };

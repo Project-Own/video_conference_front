@@ -47,7 +47,7 @@ const NavigationBar: FC<{ routes: RoutePath[] }> = ({ routes }) => {
       xs={12}
       direction="row"
       alignItems="center"
-      justify="flex-end"
+      justifyContent="flex-end"
       spacing={2}
     >
       {routes.map(({ name, path }) => (
