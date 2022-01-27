@@ -22,6 +22,12 @@ const LoadableConference = loadable(
     fallback: <Loading />,
   }
 );
+const LoadableMediaServerConference = loadable(
+  () => import("src/pages/MediaServerConference/MediaServerConference"),
+  {
+    fallback: <Loading />,
+  }
+);
 
 export interface RoutePath {
   path: string;
@@ -67,6 +73,11 @@ const RouterHandler = () => {
             exact
             path={addURLPath("/room/:id")}
             children={<LoadableConference />}
+          />
+          <Route
+            exact
+            path={addURLPath("/media-server-room/:id")}
+            children={<LoadableMediaServerConference />}
           />
         </TransitionGroup>
       </ContextProvider>
