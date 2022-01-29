@@ -20,6 +20,11 @@ test("reducers", () => {
         call: false,
         setting: false,
         usingAR: false,
+        usingGesture: false,
+        webcamDeviceID: "",
+        microphoneDeviceID: "",
+        webcamDevices: [],
+        microphoneDevices: [],
       },
     },
     { type: "TRAY_TOGGLE/toggleParticipant" }

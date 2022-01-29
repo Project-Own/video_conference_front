@@ -151,7 +151,7 @@ export class World {
 
   loadGithubGLBModels = async (name: string) => {
     console.log(name);
-    const uri = `https://corsanywhere.herokuapp.com/https://github.com/mrdoob/three.js/raw/dev/examples/models/gltf/${name}.glb`;
+    const uri = `https://cors-anywhere.herokuapp.com/https://github.com/mrdoob/three.js/raw/dev/examples/models/gltf/${name}.glb`;
 
     await this.loadModel(uri);
   };
