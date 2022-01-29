@@ -55,19 +55,18 @@ const Landing = () => {
           }}
         >
           <Typography variant="h6" align="left">
-            Lorem ipsum dolor sit amet, consectetur adipi scing elit. Amet eu at
-            hendrerit metus in. met eu <br />
-            Amet eu at hendrerit metus in. Amet eu at hendrerit metus in <br />
-            Amet eu at hendrerit metus in. Amet eu at hendrerit metus in.at
-            hendrerit metus in. Lorem ipsum dolor sit amet, consectetur adipi
-            scing elit. Amet eu at hendrerit metus in. met eu <br />
-            Amet eu at hendrerit metus in. Amet eu at hendrerit metus in <br />
-            Amet eu at hendrerit metus in. Amet eu at hendrerit metus in.at
-            hendrerit metus in. Lorem ipsum dolor sit amet, consectetur adipi
-            scing elit. Amet eu at hendrerit metus in. met eu <br />
-            Amet eu at hendrerit metus in. Amet eu at hendrerit metus in <br />
-            Amet eu at hendrerit metus in. Amet eu at hendrerit metus in.at
-            hendrerit metus in.
+            Virtual meet is video conferencing app where people can talk with
+            each other.
+            <br />
+            With the help of this app, we can display the image in three
+            dimensional. <br />
+            We can control the different functionalities using the gestures.{" "}
+            <br />
+            We can share our screen for presenting our content towards other
+            users.
+            <br />
+            Participant can use the chat features for not interrupting the
+            meetings.
           </Typography>
         </Grid>
 
