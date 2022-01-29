@@ -1,5 +1,4 @@
 import { Grid } from "@material-ui/core";
-import { current } from "@reduxjs/toolkit";
 import { useRef } from "react";
 import { useLocation } from "react-router-dom";
 import VideoPlayer from "src/components/videoplayer/VideoPlayer";
