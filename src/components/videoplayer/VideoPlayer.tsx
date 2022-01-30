@@ -52,7 +52,7 @@ const VideoPlayer: FC<{ stream: MediaStream; muted: boolean }> = ({
         poster="https://www.pngfind.com/pngs/m/610-6104451_image-placeholder-png-user-profile-placeholder-image-png.png"
         className={classes.video}
         style={{
-          transform: `scale(-1,1)`,
+//           transform: `scale(-1,1)`,
         }}
       />
     </Paper>
