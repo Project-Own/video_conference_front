@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { ConferenceContext } from "src/context/ConferenceContext";
 import {
   closeMediaTracks,
   getAvailableMediaDevices,
   getMediaTracks,
 } from "../utils/media.utils";
-import { useTray } from "./useTray";
 
 interface WebcamProps {
-  webcamHeight?: number;
-  webcamWidth?: number;
+  height?: number;
+  width?: number;
   frameRate?: number;
 }
 export const useWebcam = (props: WebcamProps) => {
-  const { webcamHeight = 720, webcamWidth = 720, frameRate = 24 } = props;
+  const { height = 720, width = 720, frameRate = 24 } = props;
 
   const [webcamVideoTracks, setWebcamVideoTracks] = useState<
     MediaStreamTrack[] | null
@@ -25,82 +25,91 @@ export const useWebcam = (props: WebcamProps) => {
   const DEFAULT_VIDEO_CONSTRAINTS = {
     video: {
       frameRate: { ideal: frameRate },
-      webcamWidth: { ideal: webcamWidth },
-      webcamHeight: { ideal: webcamHeight },
+      webcamWidth: { ideal: width },
+      webcamHeight: { ideal: height },
     },
   };
 
   const {
     webcam,
-    toggleWebcam,
-    webcamDeviceID,
-    setWebcamDeviceID,
-    webcamDevices,
-    setWebcamDevices,
-  } = useTray();
+    webcamDeviceId,
+    stream,
 
-  const startwebcamVideoTracks = () => {
+    setWebcamDeviceId,
+    setWebcamDevices,
+    setWebcamTrack,
+    setStream,
+  } = useContext(ConferenceContext);
+
+  const startWebcamVideoTracks = () => {
     let mediaTrackConstraint: MediaTrackConstraints | undefined;
     mediaTrackConstraint = DEFAULT_VIDEO_CONSTRAINTS.video;
 
     if (mediaTrackConstraint) {
-      mediaTrackConstraint.deviceId = webcamDeviceID;
+      mediaTrackConstraint.deviceId = webcamDeviceId;
 
       getMediaTracks({ video: mediaTrackConstraint }, setWebcamVideoTracks);
     }
   };
   // const isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
 
-  const stopwebcamVideoTracks = () => {
+  const stopWebcamVideoTracks = () => {
+    if (webcamVideoTracks) stream?.removeTrack(webcamVideoTracks[0]);
+
     closeMediaTracks(webcamVideoTracks, setWebcamVideoTracks);
   };
 
   useEffect(() => {
     console.log("Webcam Toggled");
-    stopwebcamVideoTracks();
-    if (webcam) {
-      startwebcamVideoTracks();
-
-      // navigator.permissions.query({ name: "camera" }).then((result) => {
-      //   if (result.state === "denied") {
-      //     toggleWebcam();
-      //     alert("Camera Will not function when camera Permission is denied.");
-      //   } else if (result.state === "granted") {
-      //     startwebcamVideoTracks();
-      //   }
-      // });
+    if (!webcam || !webcamDeviceId) {
+      stopWebcamVideoTracks();
+      return stopWebcamVideoTracks;
     }
-    return stopwebcamVideoTracks;
+
+    startWebcamVideoTracks();
+
+    // navigator.permissions.query({ name: "camera" }).then((result) => {
+    //   if (result.state === "denied") {
+    //     toggleWebcam();
+    //     alert("Camera Will not function when camera Permission is denied.");
+    //   } else if (result.state === "granted") {
+    //     startWebcamVideoTracks();
+    //   }
+    // });
+
+    return stopWebcamVideoTracks;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [webcam, webcamDeviceID]);
+  }, [webcam, webcamDeviceId]);
 
   useEffect(() => {
     getAvailableMediaDevices("videoinput", (devices) =>
       setWebcamDevices(devices!)
     ).then((devices) => {
       if (devices) {
-        try {
-          if (devices[1].deviceId !== "")
-            setWebcamDeviceID({ value: devices[1].deviceId });
-        } catch (e) {
-          if (devices[0].deviceId !== "")
-            setWebcamDeviceID({ value: devices[0].deviceId });
-        }
+        if (devices[0].deviceId !== "") setWebcamDeviceId(devices[0].deviceId);
       }
     });
 
-    return stopwebcamVideoTracks;
+    return stopWebcamVideoTracks;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return {
-    webcamDevices,
-    webcamVideoTracks,
-    webcam,
-    webcamDeviceID,
-    toggleWebcam,
-    setWebcamDeviceID,
-    webcamHeight,
-    webcamWidth,
-  };
+  useEffect(() => {
+    if (!webcamVideoTracks) return;
+
+    setWebcamTrack(webcamVideoTracks[0]);
+
+    if (
+      stream &&
+      stream.getAudioTracks() &&
+      stream.getAudioTracks().length > 0
+    ) {
+      setStream(
+        new MediaStream([webcamVideoTracks[0], stream.getAudioTracks()[0]])
+      );
+      return;
+    }
+    setStream(new MediaStream(webcamVideoTracks));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [webcamVideoTracks]);
 };

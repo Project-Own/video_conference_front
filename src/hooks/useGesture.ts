@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { Hands, Results } from "@mediapipe/hands";
 
 import {
@@ -6,20 +6,17 @@ import {
   displayLandmarks,
   getFingerStatuses,
 } from "src/utils/mediapipe.utils";
-import { useTray } from "./useTray";
-import { useWebcam } from "./useWebcam";
+import { ConferenceContext } from "src/context/ConferenceContext";
 
 export const useGesture = (
+  canvas: { height: number; width: number },
   canvasRef?: HTMLCanvasElement,
   callback?: (gesture: string, results: Results) => void,
   display = true
 ) => {
   // const { webcam } = useTray();
 
-  const { webcam, webcamHeight, webcamWidth, webcamVideoTracks } = useWebcam(
-    {}
-  );
-  const { usingGesture, setState } = useTray();
+  const { usingGesture, webcamTrack, webcam } = useContext(ConferenceContext);
   const videoRef = useRef(document.createElement("video"));
 
   // const videoElement = useRef(document.createElement("video"));
@@ -32,8 +29,8 @@ export const useGesture = (
   const requestRef = useRef<number | undefined>();
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.srcObject = webcamVideoTracks
-        ? new MediaStream(webcamVideoTracks)
+      videoRef.current.srcObject = webcamTrack
+        ? new MediaStream([webcamTrack])
         : null;
     }
     videoRef.current.autoplay = true;
@@ -44,7 +41,7 @@ export const useGesture = (
         console.log(e);
       });
       // draw();
-      setState({ type: "usingGesture", value: true });
+      // setState({ type: "usingGesture", value: true });
     };
     // videoRef.current.oncanplaythrough = () => {
     //   // setIsVideoPlaying(true);
@@ -52,14 +49,14 @@ export const useGesture = (
     //     console.log(e);
     //   });
     // };
-    videoRef.current.height = webcamHeight;
-    videoRef.current.width = webcamWidth;
+    videoRef.current.height = canvas.height;
+    videoRef.current.width = canvas.width;
 
     if (canvasElement) {
-      canvasElement.height = webcamHeight;
-      canvasElement.width = webcamWidth; // console.log;
+      canvasElement.height = canvas.height;
+      canvasElement.width = canvas.width; // console.log;
     }
-  }, [webcamVideoTracks, webcamHeight, webcamWidth, canvasElement, setState]);
+  }, [webcamTrack, canvas.height, canvas.width, canvasElement]);
 
   // let pastX = 0,
   //   pastY = 0,
@@ -127,40 +124,28 @@ export const useGesture = (
     // console.log(results.multiHandedness);
   }
 
-  const mp_hands = new Hands({
-    locateFile: (file) => {
-      return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
-    },
-  });
-  mp_hands.setOptions({
-    maxNumHands: 1,
-    modelComplexity: 1,
-    minDetectionConfidence: 0.5,
-    minTrackingConfidence: 0.5,
-  });
-
-  mp_hands.onResults(onResults);
+  const mp_hands = useRef<Hands>();
 
   const count = useRef(0);
   const draw = () => {
     requestRef.current = undefined;
     const context = canvasElement?.getContext("2d");
 
-    context?.clearRect(0, 0, webcamWidth, webcamHeight);
-    context?.drawImage(videoRef.current, 0, 0, webcamWidth, webcamHeight);
+    context?.clearRect(0, 0, canvas.width, canvas.height);
+    context?.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
     context?.fillText("Count= " + count.current, 10, 10);
 
     count.current += 1;
 
-    mp_hands.send({ image: canvasElement! }).then(() => {
+    mp_hands.current?.send({ image: canvasElement! }).then(() => {
       start();
     });
   };
   const clearFrame = () => {
     const context = canvasElement?.getContext("2d");
 
-    context?.clearRect(0, 0, webcamWidth, webcamHeight);
+    context?.clearRect(0, 0, canvas.width, canvas.height);
   };
 
   const start = () => {
@@ -176,7 +161,24 @@ export const useGesture = (
 
   useEffect(() => {
     if (!webcam || !usingGesture) stop();
-    if (webcam && usingGesture) start();
+    if (webcam && usingGesture) {
+      if (!mp_hands.current) {
+        mp_hands.current = new Hands({
+          locateFile: (file) => {
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+          },
+        });
+        mp_hands.current.setOptions({
+          maxNumHands: 1,
+          modelComplexity: 1,
+          minDetectionConfidence: 0.5,
+          minTrackingConfidence: 0.5,
+        });
+
+        mp_hands.current.onResults(onResults);
+      }
+      start();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [webcam, usingGesture]);
 };

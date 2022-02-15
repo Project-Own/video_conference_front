@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { ConferenceContext } from "src/context/ConferenceContext";
 import { closeMediaTracks, getDisplayMediaTracks } from "../utils/media.utils";
-import { useTray } from "./useTray";
 
 interface ScreenShareProps {
   height?: number;
@@ -33,7 +33,7 @@ export const useScreenShare = (props: ScreenShareProps) => {
     },
   };
 
-  const { screenShare, toggleScreenShare } = useTray();
+  const { screenShare, setStream, stream } = useContext(ConferenceContext);
 
   const startVideoTracks = () => {
     let mediaTrackConstraint: MediaTrackConstraints | undefined;
@@ -42,39 +42,48 @@ export const useScreenShare = (props: ScreenShareProps) => {
     // if (mediaTrackConstraint) {
     //   mediaTrackConstraint.deviceId = webcamDeviceID;
 
-    getDisplayMediaTracks({ video: mediaTrackConstraint }, setVideoTracks);
+    getDisplayMediaTracks(
+      { video: mediaTrackConstraint, audio: false },
+      setVideoTracks
+    );
   };
   // const isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
 
   const stopVideoTracks = () => {
+    if (videoTracks) stream?.removeTrack(videoTracks[0]);
+
     closeMediaTracks(videoTracks, setVideoTracks);
   };
 
   useEffect(() => {
-    console.log("Screen Share Toggled");
-    stopVideoTracks();
-    if (screenShare) {
-      startVideoTracks();
-
-      // navigator.permissions.query({ name: "camera" }).then((result) => {
-      //   if (result.state === "denied") {
-      //     toggleWebcam();
-      //     alert("Camera Will not function when camera Permission is denied.");
-      //   } else if (result.state === "granted") {
-      //     startVideoTracks();
-      //   }
-      // });
+    console.log("Screen Share Toggled", screenShare);
+    if (!screenShare) {
+      stopVideoTracks();
+      return stopVideoTracks;
     }
+    startVideoTracks();
+
     return stopVideoTracks;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screenShare]);
 
-  return {
-    videoTracks,
-    screenShare,
+  useEffect(() => {}, [videoTracks]);
 
-    toggleScreenShare,
-    height,
-    width,
-  };
+  useEffect(() => {
+    if (!videoTracks) return;
+
+    if (videoTracks && videoTracks?.length > 0)
+      videoTracks[0].onended = () => stopVideoTracks();
+
+    if (
+      stream &&
+      stream.getAudioTracks() &&
+      stream.getAudioTracks().length > 0
+    ) {
+      setStream(new MediaStream([videoTracks[0], stream.getAudioTracks()[0]]));
+      return;
+    }
+    setStream(new MediaStream(videoTracks));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [videoTracks]);
 };

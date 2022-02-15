@@ -1,36 +1,33 @@
-import { useEffect, useRef, useState } from "react";
-import { useWebcam } from "src/hooks/useWebcam";
-import { World } from "src/Three/World";
+import { useContext, useEffect, useRef } from "react";
+import { ConferenceContext } from "src/context/ConferenceContext";
+import { World } from "src/three/World";
 import StreamMerger from "src/utils/StreamMerger";
 import { Object3D } from "three";
-import { useTray } from "./useTray";
 
-const useAR = (createControls?: (object: Object3D) => void) => {
-  const { webcamVideoTracks, webcamHeight, webcamWidth } = useWebcam({
-    frameRate: 60,
-  });
-
+const useAR = (
+  canvas: {
+    height: number;
+    width: number;
+  },
+  createControls?: (object: Object3D) => void
+) => {
   const arCanvasEl = useRef<HTMLCanvasElement>(
     document.createElement("canvas")
   );
   const arWorld = useRef<World>();
 
-  const [ARStream, setARStream] = useState<MediaStream>();
+  // const [ARStream, setARStream] = useState<MediaStream>();
 
-  const [modelName, setModelName] = useState("");
+  // const [glbModelNames, setGlbModelNames] = useState<string[]>([]);
 
-  const [glbModelNames, setGlbModelNames] = useState<string[]>([]);
-
-  const { usingAR, setState } = useTray();
+  const { usingAR, modelName, webcamTrack, stream, setStream } =
+    useContext(ConferenceContext);
 
   useEffect(() => {
-    setState({ type: "microphone", value: true });
-    setState({ type: "webcam", value: true });
-
-    arCanvasEl.current.height = webcamHeight!;
-    arCanvasEl.current.width = webcamWidth!;
-    arCanvasEl.current.style.height = `${webcamHeight}px`;
-    arCanvasEl.current.style.width = `${webcamWidth}px`;
+    arCanvasEl.current.height = canvas.height;
+    arCanvasEl.current.width = canvas.width;
+    arCanvasEl.current.style.height = `${canvas.height}px`;
+    arCanvasEl.current.style.width = `${canvas.width}px`;
 
     arWorld.current = new World(
       arCanvasEl.current,
@@ -38,25 +35,20 @@ const useAR = (createControls?: (object: Object3D) => void) => {
     );
 
     arWorld.current?.init().then(() => {
-      setGlbModelNames(arWorld.current?.glbModelNames!);
+      // setGlbModelNames(arWorld.current?.glbModelNames!);
     });
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    return () => {
-      setState({ type: "webcam", value: false });
-      setState({ type: "microphone", value: false });
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     const streamMerger = new StreamMerger({
-      height: webcamHeight,
-      width: webcamWidth,
+      height: canvas.height,
+      width: canvas.width,
     });
 
-    if (webcamVideoTracks) {
-      const webcamStream = new MediaStream(webcamVideoTracks);
+    if (webcamTrack) {
+      const webcamStream = new MediaStream([webcamTrack]);
 
       arWorld.current?.stop();
       if (!usingAR) {
@@ -75,7 +67,10 @@ const useAR = (createControls?: (object: Object3D) => void) => {
 
       streamMerger?.start();
 
-      setARStream(streamMerger?.result!);
+      if (stream?.getAudioTracks() && stream.getAudioTracks.length > 0) {
+        streamMerger.result?.addTrack(stream.getAudioTracks()[0]);
+      }
+      setStream(streamMerger?.result!);
     }
 
     return () => {
@@ -83,18 +78,14 @@ const useAR = (createControls?: (object: Object3D) => void) => {
       streamMerger.stop();
       arWorld.current?.stop();
     };
-  }, [webcamHeight, usingAR, webcamVideoTracks, webcamWidth]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canvas.height, canvas.width, setStream, usingAR, webcamTrack]);
 
   useEffect(() => {
     if (modelName !== null && modelName !== "" && modelName)
       if (modelName === "cube") arWorld.current?.loadCube();
       else arWorld.current?.loadGithubGLBModels(modelName);
   }, [modelName]);
-  return {
-    ARStream,
-    glbModelNames,
-    setModelName,
-  };
 };
 
 export default useAR;

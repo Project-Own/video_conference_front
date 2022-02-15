@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { ConferenceContext } from "src/context/ConferenceContext";
 import {
   closeMediaTracks,
   getAvailableMediaDevices,
   getMediaTracks,
 } from "./../utils/media.utils";
-import { useTray } from "./useTray";
 
 export const useAudio = () => {
   const [audioTracks, setAudioTracks] = useState<MediaStreamTrack[] | null>(
@@ -26,21 +26,25 @@ export const useAudio = () => {
 
   const {
     microphone,
-    toggleMicrophone,
-    microphoneDeviceID,
-    setMicrophoneDeviceID,
-    microphoneDevices,
+    microphoneDeviceId,
+    stream,
+    setMicrophoneDeviceId,
+    setStream,
     setMicrophoneDevices,
-  } = useTray();
+  } = useContext(ConferenceContext);
 
-  const stopAudioTracks = () => closeMediaTracks(audioTracks, setAudioTracks);
+  const stopAudioTracks = () => {
+    if (audioTracks) stream?.removeTrack(audioTracks[0]);
+
+    closeMediaTracks(audioTracks, setAudioTracks);
+  };
 
   const startAudioTracks = () => {
     let mediaTrackConstraint: MediaTrackConstraints | undefined;
     mediaTrackConstraint = DEFAULT_AUDIO_CONSTRAINTS.audio;
 
     if (mediaTrackConstraint) {
-      mediaTrackConstraint.deviceId = microphoneDeviceID;
+      mediaTrackConstraint.deviceId = microphoneDeviceId;
       getMediaTracks({ audio: mediaTrackConstraint }, setAudioTracks);
     }
   };
@@ -51,7 +55,7 @@ export const useAudio = () => {
     ).then((devices) => {
       if (devices) {
         if (devices[0].deviceId !== "")
-          setMicrophoneDeviceID({ value: devices[0].deviceId });
+          setMicrophoneDeviceId(devices[0].deviceId);
       }
     });
 
@@ -60,36 +64,59 @@ export const useAudio = () => {
   }, []);
 
   useEffect(() => {
-    stopAudioTracks();
-    if (microphone) {
-      // if (isFirefox) {
-      startAudioTracks();
-      // } else {
-      // navigator.permissions
-      //   .query({ name: "microphone" })
-      //   .then((result) => {
-      //     if (result.state === "denied") {
-      //       alert(
-      //         "Microphone will not function when microphone Permission is denied."
-      //       );
-      //       toggleMicrophone();
-      //     } else if (result.state === "granted") {
-      //       startAudioTracks();
-      //     }
-      //   })
-      //   .catch((e) => console.log(e));
-      // // }
+    if (!microphone || !microphoneDeviceId) {
+      stopAudioTracks();
+      return stopAudioTracks;
     }
+    // if (isFirefox) {
+    startAudioTracks();
+    // } else {
+    // navigator.permissions
+    //   .query({ name: "microphone" })
+    //   .then((result) => {
+    //     if (result.state === "denied") {
+    //       alert(
+    //         "Microphone will not function when microphone Permission is denied."
+    //       );
+    //       toggleMicrophone();
+    //     } else if (result.state === "granted") {
+    //       startAudioTracks();
+    //     }
+    //   })
+    //   .catch((e) => console.log(e));
+    // // }
     return stopAudioTracks;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [microphone, microphoneDeviceID]);
+  }, [microphone, microphoneDeviceId]);
 
-  return {
-    microphoneDevices,
-    audioTracks,
-    microphone,
-    microphoneDeviceID,
-    toggleMicrophone,
-    setMicrophoneDeviceID,
-  };
+  useEffect(() => {
+    console.log("Microphone Toggled", microphone);
+    if (!microphone) {
+      stopAudioTracks();
+      return stopAudioTracks;
+    }
+    startAudioTracks();
+
+    return stopAudioTracks;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [microphone]);
+
+  useEffect(() => {}, [audioTracks]);
+
+  useEffect(() => {
+    if (!audioTracks) {
+      return;
+    }
+
+    if (
+      stream &&
+      stream.getVideoTracks() &&
+      stream.getVideoTracks().length > 0
+    ) {
+      setStream(new MediaStream([audioTracks[0], stream.getVideoTracks()[0]]));
+      return;
+    }
+    setStream(new MediaStream(audioTracks));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [audioTracks]);
 };
