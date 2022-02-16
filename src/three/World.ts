@@ -5,6 +5,7 @@ import {
 } from "@ar-js-org/ar.js/three.js/build/ar-threex.js";
 import { fetchModelNames } from "src/utils/three";
 import {
+  AxesHelper,
   Group,
   Object3D,
   PerspectiveCamera,
@@ -18,6 +19,7 @@ import { createControls } from "./components/controls";
 import { createCube } from "./components/cube";
 import { createLights } from "./components/lights";
 import loadModel from "./components/models/model";
+import { createOrbitControls } from "./components/orbitControls";
 import { createShadowCatcher } from "./components/shadowCatcher";
 import Loop from "./system/Loop";
 import { createRenderer } from "./system/renderer";
@@ -36,12 +38,13 @@ export class World {
 
   smoothedControls: typeof ArSmoothedControls;
 
-  markerGroup: Group;
+  markerGroup?: Group;
   modelGroup: Group;
   createControls: (object: Object3D) => void;
   glbModelNames: string[] = [];
   constructor(
     canvasRef: HTMLCanvasElement,
+    arMode: boolean = true,
     controls?: (object: Object3D) => void
   ) {
     this.renderer = createRenderer(canvasRef);
@@ -52,32 +55,69 @@ export class World {
 
     this.loop = new Loop(this.camera, this.scene, this.renderer);
 
-    const { ambientLight, mainLight, lightSphere } = createLights();
+    const {
+      ambientLight,
 
-    const { markerGroup, arToolkitContext, smoothedControls } = createAr(
-      this.camera
-    );
+      directionalLightHelper,
+
+      directionalLight,
+      rectLight,
+    } = createLights();
 
     this.modelGroup = new Group();
 
     const floorMesh = createShadowCatcher();
-
-    this.arToolkitContext = arToolkitContext;
-    this.markerGroup = markerGroup;
-
-    this.scene.add(markerGroup);
-
-    this.markerGroup.add(
-      floorMesh,
-      ambientLight,
-      mainLight,
-      lightSphere,
-      this.modelGroup
-    );
-
-    this.smoothedControls = smoothedControls;
     this.createControls = controls ? controls : createControls;
+
     this.loadCube();
+
+    if (arMode) {
+      const { markerGroup, arToolkitContext, smoothedControls } = createAr(
+        this.camera
+      );
+
+      this.arToolkitContext = arToolkitContext;
+      this.markerGroup = markerGroup;
+
+      this.scene.add(markerGroup);
+
+      this.markerGroup.add(
+        floorMesh,
+        ambientLight,
+        rectLight,
+
+        // pointLight,
+        // lightSphere,
+        directionalLight,
+        directionalLight.target,
+        this.modelGroup
+      );
+
+      this.smoothedControls = smoothedControls;
+    } else {
+      const axesHelper = new AxesHelper();
+      // this.scene.background = new Color("skyblue");
+
+      this.scene.add(
+        floorMesh,
+        ambientLight,
+        axesHelper,
+        this.modelGroup,
+
+        rectLight,
+        // lightSphere,
+        // pointLight,
+        // pointLightHelper,
+
+        directionalLight,
+        directionalLight.target,
+        directionalLightHelper
+      );
+      const controls = createOrbitControls(this.camera, canvasRef);
+      controls.target.copy(this.modelGroup.position);
+      controls.enableDamping = true;
+      this.loop.renderFunctions.push(() => controls.update());
+    }
   }
 
   setWebcamStream = (webcamStream: MediaStream) => {
@@ -105,6 +145,7 @@ export class World {
       }
     });
   };
+
   init = async () => {
     this.glbModelNames = (await fetchModelNames()) as string[];
   };

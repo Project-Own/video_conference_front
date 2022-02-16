@@ -1,18 +1,22 @@
 import { Paper, useTheme } from "@mui/material";
 import { FC, useEffect, useRef } from "react";
 
-const VideoPlayer: FC<{ stream: MediaStream | undefined; muted: boolean }> = ({
-  stream,
-  muted,
-}) => {
+const VideoPlayer: FC<{
+  stream: MediaStream | undefined;
+  muted: boolean;
+  style?: React.CSSProperties;
+  controls?: boolean;
+}> = ({ stream, muted, style, controls = true }) => {
   const theme = useTheme();
   const videoRef = useRef<HTMLVideoElement>(null);
   console.log(
-    "Video Reference Stream"
+    "My Style",
+    { ...style }
 
     // videoRef.current?.srcObject &&
     //   (videoRef.current?.srcObject as MediaStream).getVideoTracks()
   );
+
   useEffect(() => {
     if (!stream) return;
     if (videoRef.current) videoRef.current.srcObject = stream;
@@ -25,15 +29,16 @@ const VideoPlayer: FC<{ stream: MediaStream | undefined; muted: boolean }> = ({
     <Paper
       sx={{
         padding: "10px",
-        border: `2px solid ${theme.palette.text}`,
+        border: `2px solid ${theme.palette.background.default}`,
         margin: "10px",
       }}
+      elevation={8}
     >
       <video
         playsInline
         muted={muted}
         ref={videoRef}
-        controls
+        controls={controls}
         autoPlay
         onCanPlay={() => {
           try {
@@ -46,6 +51,7 @@ const VideoPlayer: FC<{ stream: MediaStream | undefined; muted: boolean }> = ({
         style={{
           width: "100%",
           height: "100%",
+          ...style,
           // transform: `scale(-1,1)`,
         }}
       />

@@ -1,0 +1,31 @@
+/**************************/
+/* CSS Animations Classes */
+/**************************/
+
+/* 
+The following class-endings: *-enter, *-enter-active, *-exit, *-exit-active,
+have very specific meanings to <CSSTransition />
+(see more: https://reactcommunity.org/react-transition-group/css-transition)
+*/
+
+.fade-enter {
+  opacity: 0;
+  transform: translate(0, 25px);
+  z-index: 1;
+}
+.fade-enter.fade-enter-active {
+  opacity: 1;
+  transform: translate(0, 0);
+
+  transition: opacity 250ms ease-out, transform 300ms ease;
+}
+.fade-exit {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+.fade-exit.fade-exit-active {
+  opacity: 0;
+  transform: translate(0, 30px);
+
+  transition: opacity 250ms ease-out, transform 300ms ease;
+}

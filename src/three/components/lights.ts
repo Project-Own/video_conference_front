@@ -1,27 +1,40 @@
 import {
+  DirectionalLight,
+  DirectionalLightHelper,
   HemisphereLight,
   Mesh,
   MeshBasicMaterial,
   PointLight,
+  PointLightHelper,
+  RectAreaLight,
   SphereGeometry,
 } from "three";
 const createLights = () => {
-  const ambientLight = new HemisphereLight("skyblue", "brown", 2);
+  const ambientLight = new HemisphereLight("skyblue", "#353535", 0.5);
 
-  const mainLight = new PointLight("white", 5, 100);
-  mainLight.position.set(0, 10, 0); //default; light shining from top
-  mainLight.castShadow = true;
+  const width = 10;
+  const height = 20;
+  const intensity = 1;
+  const rectLight = new RectAreaLight("#ffef87", intensity, width, height);
+  rectLight.position.set(2, 2, 2);
+  rectLight.lookAt(0, 0, 0);
+  // rectLight.castShadow = true;
 
-  // const pointLightHelper = new .PointLightHelper(pointLight);
-  // this.sceneGroup.add(pointLightHelper);
+  const pointLight = new PointLight("green", 1, 10);
+  pointLight.position.set(-2, 2, -2); //default; light shining from top
+  pointLight.rotateZ(30);
+  pointLight.castShadow = true;
 
-  // var directionalLight = new THREE.DirectionalLight("red", 3);
-  // directionalLight.position.set(1, 1, 1);
+  const pointLightHelper = new PointLightHelper(pointLight);
+
+  var directionalLight = new DirectionalLight("skyblue", 0.5);
+  directionalLight.position.set(15, 12, 3);
+  directionalLight.target.position.set(0, 0, 0);
+  directionalLight.castShadow = true;
+
   // this.sceneGroup.add(directionalLight);
 
-  // var directionalLightHelper = new THREE.DirectionalLightHelper(
-  //   directionalLight
-  // );
+  var directionalLightHelper = new DirectionalLightHelper(directionalLight);
   // this.sceneGroup.add(directionalLightHelper);
 
   const lightSphere = new Mesh(
@@ -32,9 +45,17 @@ const createLights = () => {
       opacity: 0.8,
     })
   );
-  lightSphere.position.copy(mainLight.position);
+  lightSphere.position.copy(directionalLight.position);
 
-  return { ambientLight, mainLight, lightSphere };
+  return {
+    ambientLight,
+    pointLight,
+    pointLightHelper,
+    directionalLight,
+    directionalLightHelper,
+    lightSphere,
+    rectLight,
+  };
 };
 
 export { createLights };

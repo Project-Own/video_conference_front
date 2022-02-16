@@ -10,7 +10,7 @@ import { useConference } from "src/hooks/useConference";
 const Conference: FC = () => {
   const [hideBottomBar, setHideBottomBar] = useState(true);
   const hideTimeout = useRef<NodeJS.Timeout>();
-  const { stream, roomName, setRoomName, otherStreams, peers } =
+  const { stream, roomName, setRoomName, otherStreams, screenShare, peers } =
     useContext(ConferenceContext);
 
   const location = useLocation();
@@ -50,7 +50,16 @@ const Conference: FC = () => {
         <Grid item container xs={12} direction="row">
           <Grid item xs={12} sm={6} md={4} lg={3}>
             {/* <ARPlayer /> */}
-            <VideoPlayer stream={stream} muted={true} />
+            <VideoPlayer
+              stream={stream}
+              muted={true}
+              style={
+                screenShare
+                  ? { transform: "scale(1,1)" }
+                  : { transform: "scale(-1,1)" }
+              }
+              controls={false}
+            />
           </Grid>
 
           {otherStreams?.length! > 0 &&

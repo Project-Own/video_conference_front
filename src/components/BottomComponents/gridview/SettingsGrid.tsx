@@ -8,10 +8,11 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
-  Typography
+  Typography,
 } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { ConferenceContext } from "src/context/ConferenceContext";
+import useModelDisplay from "src/hooks/useModelDisplay";
 import { fetchModelNames } from "src/utils/three";
 
 // const useStyles = makeStyles((theme: Theme) =>
@@ -80,6 +81,9 @@ const SettingsGrid = () => {
       );
     }
   };
+
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  useModelDisplay(canvasRef);
 
   useEffect(() => {
     fetchModelNames().then((value) => setGlbModelNames(value));
@@ -196,11 +200,15 @@ const SettingsGrid = () => {
         </FormControl>
       </Grid>
 
-      <Grid item alignItems="center" justifyContent="center">
-        <div
-          // className={classes.info}
-          style={{ padding: "2em" }}
-        >
+      <Grid
+        item
+        container
+        alignItems="center"
+        justifyContent="center"
+        style={{ padding: "2em" }}
+        direction="column"
+      >
+        <Grid item>
           <FormControl>
             <InputLabel>Available Models</InputLabel>
             <Select native onChange={handleChange}>
@@ -227,7 +235,12 @@ const SettingsGrid = () => {
               </Link>
             </div>
           ) : null}
-          <span className="model-load-spinner"></span>
+        </Grid>
+        <Grid item>
+          <canvas ref={canvasRef} height="400px" width="400px"></canvas>
+        </Grid>
+
+        <Grid item>
           <Typography>
             AR Marker:
             <Link href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png">
@@ -243,7 +256,7 @@ const SettingsGrid = () => {
 
           <Typography>Reset Rotation: D💞 </Typography>
           <Typography>Reset Scale: A💞 </Typography>
-        </div>
+        </Grid>
       </Grid>
     </Grid>
   );

@@ -5,7 +5,7 @@ import { FC, useContext, useEffect, useState } from "react";
 
 import Hamburger from "src/components/Layout/Hamburger/Hamburger";
 import { UIContext } from "src/context/UIContext";
-import { RoutePath } from "src/routes/Router";
+import { RoutePath } from "src/routes/PageRoutes";
 
 const NavigationBar: FC<{ routes: RoutePath[] }> = ({ routes }) => {
   const [list, setList] = useState(false);

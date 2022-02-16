@@ -1,6 +1,6 @@
 import { Paper, Toolbar } from "@mui/material";
 import { FC } from "react";
-import { routes } from "src/routes/Router";
+import { routes } from "src/routes/PageRoutes";
 import NavigationBar from "src/components/Layout/NavigationBar/NavigationBar";
 import { ErrorBoundary } from "../ErrorBoundary/ErrorBoundary";
 

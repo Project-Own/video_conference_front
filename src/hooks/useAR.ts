@@ -42,6 +42,7 @@ const useAR = (
 
     arWorld.current = new World(
       arCanvasEl.current,
+      true,
       createControls ? createControls : undefined
     );
 
