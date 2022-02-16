@@ -1,28 +1,34 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { ConferenceContext } from "src/context/ConferenceContext";
 import { MathUtils, Object3D } from "three";
 import useAR from "./useAR";
-import { useAudio } from "./useAudio";
 import { useGesture } from "./useGesture";
 import { useScreenShare } from "./useScreenShare";
 import { useWebcam } from "./useWebcam";
 import { Results } from "@mediapipe/hands";
 import { useMediaServer } from "./useMediaServer";
+import { useAudio } from "./useAudio";
 
 export const useConference = () => {
-  const { setUsingAR } = useContext(ConferenceContext);
+  const {
+    setUsingAR,
+    setStream,
+    webcam,
+    screenShare,
+    usingAR,
+    setWebcam,
+  } = useContext(ConferenceContext);
 
   const params = {
     height: 720,
-    width: 720,
+    width: 1024,
+    frameRate: 24,
   };
-  const frameRate = 60;
+  const { webcamVideoTracks } = useWebcam({ ...params });
+  const { audioTracks } = useAudio();
 
-  useWebcam({ ...params, frameRate: frameRate });
-  useAudio();
-  useScreenShare({
+  const { screenShareVideoTracks } = useScreenShare({
     ...params,
-    frameRate: frameRate,
     cursor: "always",
   });
 
@@ -64,6 +70,7 @@ export const useConference = () => {
     // if (Math.abs(diffX) > 0.05) console.log("Difference X", diffX);
     // if (Math.abs(diffX) > 0.1) console.log("Difference X", diffX);
     // if (Math.abs(diffY) > 0.1) console.log("Difference Y", diffY);
+    // console.log(gesture);
     if (gesture === "Ok") {
       if (diffX > 0.1) {
         dispatchEvent(
@@ -188,8 +195,39 @@ export const useConference = () => {
     window.addEventListener("keydown", handleKeyDown);
   };
 
-  useAR(params, createControls);
+  const { arVideoTrack } = useAR({ ...params }, createControls);
   useGesture(params, undefined, func, false);
-
   useMediaServer();
+
+  useEffect(() => {
+    let tracks: MediaStreamTrack[] = [];
+    if (audioTracks && audioTracks.length > 0) tracks.push(audioTracks[0]);
+
+    if (webcam && !screenShare) {
+      if (webcamVideoTracks && webcamVideoTracks.length > 0)
+        if (webcamVideoTracks[0].readyState === "ended") setWebcam(false);
+        else {
+          if (usingAR) {
+            if (arVideoTrack) tracks.push(arVideoTrack);
+          } else tracks.push(webcamVideoTracks[0]);
+        }
+    } else {
+      if (screenShareVideoTracks && screenShareVideoTracks.length > 0)
+        tracks.push(screenShareVideoTracks[0]);
+    }
+
+    const stream = new MediaStream(tracks);
+    setStream(stream);
+    console.log("New stream Tracks", stream.getTracks());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    audioTracks,
+    webcamVideoTracks,
+    screenShareVideoTracks,
+    setStream,
+    webcam,
+    usingAR,
+    screenShare,
+    arVideoTrack,
+  ]);
 };

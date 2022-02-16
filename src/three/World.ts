@@ -123,6 +123,9 @@ export class World {
   // Load model by specifying URI
   loadModel = async (uri: string) => {
     const { model, modelRenderFxn } = await loadModel(uri);
+    if (model === null) {
+      throw Error("Failed to Load Model!");
+    }
     if (model !== null && model) {
       this.createControls(model!);
 

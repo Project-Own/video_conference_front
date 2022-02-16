@@ -6,14 +6,14 @@ import { ErrorBoundary } from "../ErrorBoundary/ErrorBoundary";
 
 const Layout: FC = ({ children }) => {
   return (
-    <Paper sx={{ height: "100%", width: "100%" }}>
-      <ErrorBoundary>
+    <ErrorBoundary>
+      <Paper sx={{ height: "100%", width: "100%" }}>
         <Toolbar>
           <NavigationBar routes={routes} />
         </Toolbar>
         {children}
-      </ErrorBoundary>
-    </Paper>
+      </Paper>
+    </ErrorBoundary>
   );
 };
 export default Layout;

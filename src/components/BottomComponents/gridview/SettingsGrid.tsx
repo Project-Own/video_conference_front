@@ -4,12 +4,15 @@ import {
   Grid,
   IconButton,
   InputLabel,
+  Link,
   MenuItem,
   Select,
-  Typography,
+  SelectChangeEvent,
+  Typography
 } from "@mui/material";
-import { ChangeEvent, useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ConferenceContext } from "src/context/ConferenceContext";
+import { fetchModelNames } from "src/utils/three";
 
 // const useStyles = makeStyles((theme: Theme) =>
 //   createStyles({
@@ -59,24 +62,28 @@ const SettingsGrid = () => {
     microphoneDevices,
     microphoneDeviceId,
     webcamDeviceId,
+    showCORSInfo,
     setWebcamDeviceId,
     setMicrophoneDeviceId,
+    setModelName,
   } = useContext(ConferenceContext);
-
+  const [glbModelNames, setGlbModelNames] = useState<string[]>([]);
   // const { glbModelNames, setModelName } = useAR();
-  const handleChange = (
-    event: ChangeEvent<{
-      name?: string | undefined;
-      value: unknown;
-    }>
-  ) => {
-    // eslint-disable-next-line eqeqeq
-    // if (event.target.value == 69) {
-    //   setModelName("cube");
-    // } else {
-    //   setModelName(glbModelNames[event.target.value! as number]);
-    // }
+  const handleChange = (event: SelectChangeEvent<number>) => {
+    if (event.target.value === "69") {
+      setModelName("cube");
+    } else {
+      setModelName(
+        glbModelNames[event.target.value as number] === null
+          ? "cube"
+          : glbModelNames[event.target.value as number]
+      );
+    }
   };
+
+  useEffect(() => {
+    fetchModelNames().then((value) => setGlbModelNames(value));
+  }, []);
   return (
     <Grid
       container
@@ -196,30 +203,46 @@ const SettingsGrid = () => {
         >
           <FormControl>
             <InputLabel>Available Models</InputLabel>
-            {/* <Select native onChange={handleChange}>
+            <Select native onChange={handleChange}>
               <option value={69}>Default Cube</option>
               {glbModelNames.map((name, key) => (
                 <option key={key} value={key}>
                   {name}
                 </option>
               ))}
-            </Select> */}
+            </Select>
           </FormControl>
-          <p>
+          {showCORSInfo ? (
+            <div>
+              <Typography variant="h6" color="error">
+                Activate CORS anywhere demo to be able to fetch glb models from
+                three.js repository
+              </Typography>
+
+              <Link
+                href="https://cors-anywhere.herokuapp.com/corsdemo"
+                target="_blank"
+              >
+                https://cors-anywhere.herokuapp.com/corsdemo
+              </Link>
+            </div>
+          ) : null}
+          <span className="model-load-spinner"></span>
+          <Typography>
             AR Marker:
-            <a href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png">
+            <Link href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png">
               Hiro
-            </a>
-          </p>
-          <p>Display marker to place AR model on.</p>
-          <p>Rotation: w🔺 s🔻 d🔺 a🔻</p>
-          <p>
+            </Link>
+          </Typography>
+          <Typography>Display marker to place AR model on.</Typography>
+          <Typography>Rotation: w🔺 s🔻 d🔺 a🔻</Typography>
+          <Typography>
             CapitalLetter(Shift+key) **Keep Pressing if slow scaling Scale by
             0.01 W🔺 S🔻
-          </p>
+          </Typography>
 
-          <p>Reset Rotation: D💞 </p>
-          <p>Reset Scale: A💞 </p>
+          <Typography>Reset Rotation: D💞 </Typography>
+          <Typography>Reset Scale: A💞 </Typography>
         </div>
       </Grid>
     </Grid>

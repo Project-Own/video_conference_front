@@ -1,5 +1,6 @@
 import { Divider, ListItemText, Typography } from "@mui/material";
-import { FC } from "react";
+import { FC, useContext } from "react";
+import { ConferenceContext } from "src/context/ConferenceContext";
 
 // const useStyles = makeStyles((theme: Theme) =>
 //   createStyles({
@@ -13,32 +14,33 @@ import { FC } from "react";
 //   })
 // );
 
-interface participantInterface {
-  id: number;
-  name: string;
-}
-
-const ParticipantList: FC<{ participants: participantInterface[] }> = ({
-  participants,
-}) => {
+const ParticipantList: FC<{ participants: string[] }> = ({ participants }) => {
   //   const { text, senderId } = props;
   //   console.log(props);
   // const { participants } = props;
   //   console.log(participants);
+  const { peers, name } = useContext(ConferenceContext);
+
   return (
     <>
-      {participants.map((participant: participantInterface, index: number) => {
+      {participants.map((participant: string, index: number) => {
         return (
-          <>
+          <div key={index}>
             <ListItemText style={{ margin: "12px" }}>
               <Typography>
-                {participant.id + ". " + participant.name}
+                {index + 1 + ". " + peers[participant].name}
               </Typography>
             </ListItemText>
             <Divider variant="fullWidth" />
-          </>
+          </div>
         );
       })}
+      <div>
+        <ListItemText style={{ margin: "12px" }}>
+          <Typography>{participants.length + 1 + ". " + name}</Typography>
+        </ListItemText>
+        <Divider variant="fullWidth" />
+      </div>
     </>
   );
 };

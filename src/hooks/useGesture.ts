@@ -16,7 +16,8 @@ export const useGesture = (
 ) => {
   // const { webcam } = useTray();
 
-  const { usingGesture, webcamTrack, webcam } = useContext(ConferenceContext);
+  const { usingGesture, webcamTrack, webcam, setWebcam } =
+    useContext(ConferenceContext);
   const videoRef = useRef(document.createElement("video"));
 
   // const videoElement = useRef(document.createElement("video"));
@@ -28,6 +29,7 @@ export const useGesture = (
   // const canvasElement = useRef(document.createElement("canvas"));
   const requestRef = useRef<number | undefined>();
   useEffect(() => {
+    if (webcamTrack?.readyState === "ended") setWebcam(false);
     if (videoRef.current) {
       videoRef.current.srcObject = webcamTrack
         ? new MediaStream([webcamTrack])
@@ -56,7 +58,7 @@ export const useGesture = (
       canvasElement.height = canvas.height;
       canvasElement.width = canvas.width; // console.log;
     }
-  }, [webcamTrack, canvas.height, canvas.width, canvasElement]);
+  }, [webcamTrack, canvas.height, canvas.width, canvasElement, setWebcam]);
 
   // let pastX = 0,
   //   pastY = 0,
@@ -160,7 +162,14 @@ export const useGesture = (
   };
 
   useEffect(() => {
-    if (!webcam || !usingGesture) stop();
+    if (!usingGesture) {
+      stop();
+      return;
+    }
+    if (!webcam) {
+      setWebcam(true);
+      return;
+    }
     if (webcam && usingGesture) {
       if (!mp_hands.current) {
         mp_hands.current = new Hands({

@@ -38,17 +38,24 @@ async function loadModel(uri: string) {
     document.body.appendChild(progress);
     document.body.appendChild(p);
 
-    const modelData = await loader.loadAsync(uri, (event) => {
-      const { loaded, total } = event;
-      progress.value = (loaded / total) * 100;
+    const modelData = await loader
+      .loadAsync(uri, (event) => {
+        const { loaded, total } = event;
+        progress.value = (loaded / total) * 100;
 
-      if (loaded / total === 1) {
+        if (loaded / total === 1) {
+          setTimeout(() => {
+            progress.remove();
+            p.remove();
+          }, 1000);
+        }
+      })
+      .finally(() => {
         setTimeout(() => {
           progress.remove();
           p.remove();
         }, 1000);
-      }
-    });
+      });
 
     const { model, modelRenderFxn } = setupModel(modelData);
 
@@ -74,8 +81,9 @@ async function loadModel(uri: string) {
       model.scale.set(0.01, 0.01, 0.01);
     }
     return { model, modelRenderFxn };
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
+    // console.log(err.response);
   }
 
   const model = null;

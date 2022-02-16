@@ -5,6 +5,7 @@ export interface HTMLCanvasElementWithCaptureStream extends HTMLCanvasElement {
 interface StreamOptions {
   height: number;
   width: number;
+  frameRate: number;
 }
 export default class StreamMerger {
   _streamVideoElements: HTMLVideoElement[] = [];
@@ -26,11 +27,11 @@ export default class StreamMerger {
       requestAnimationFrame(this._draw);
 
       this._streamVideoElements.forEach((streamEl) => {
-        this._ctx?.drawImage(streamEl, 0, 0, height, width);
+        this._ctx?.drawImage(streamEl, 0, 0, width, height);
       });
 
       this._streamCanvasElements.forEach((streamEl) => {
-        this._ctx?.drawImage(streamEl, 0, 0, height, width);
+        this._ctx?.drawImage(streamEl, 0, 0, width, height);
       });
     } catch (error) {
       console.log(error);
@@ -46,7 +47,9 @@ export default class StreamMerger {
     this._draw();
 
     if (this._canvas.captureStream) {
-      this.result = this._canvas.captureStream(60) as MediaStream;
+      this.result = this._canvas.captureStream(
+        this._props.frameRate
+      ) as MediaStream;
     } else {
       throw new Error("Canvas Capture Stream not supported");
     }

@@ -16,7 +16,6 @@ export interface RoutePath {
 }
 export const routes: RoutePath[] = [
   { path: addURLPath("/"), name: "Home", Component: <Home /> },
-  { path: addURLPath("/s"), name: "Home", Component: <div>sd </div> },
 ];
 
 const Router = () => {

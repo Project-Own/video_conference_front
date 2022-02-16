@@ -1,13 +1,15 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { ConferenceContext } from "src/context/ConferenceContext";
 import { World } from "src/three/World";
 import StreamMerger from "src/utils/StreamMerger";
 import { Object3D } from "three";
+import { useWebcam } from "./useWebcam";
 
 const useAR = (
   canvas: {
     height: number;
     width: number;
+    frameRate: number;
   },
   createControls?: (object: Object3D) => void
 ) => {
@@ -16,13 +18,22 @@ const useAR = (
   );
   const arWorld = useRef<World>();
 
-  // const [ARStream, setARStream] = useState<MediaStream>();
+  const [arVideoTrack, setARVideoTrack] = useState<MediaStreamTrack>();
 
   // const [glbModelNames, setGlbModelNames] = useState<string[]>([]);
 
-  const { usingAR, modelName, webcamTrack, stream, setStream } =
-    useContext(ConferenceContext);
+  const {
+    usingAR,
+    modelName,
 
+    setWebcam,
+    setStream,
+    setShowCORSInfo,
+  } = useContext(ConferenceContext);
+
+  const { webcamVideoTracks } = useWebcam({
+    ...canvas,
+  });
   useEffect(() => {
     arCanvasEl.current.height = canvas.height;
     arCanvasEl.current.width = canvas.width;
@@ -42,13 +53,18 @@ const useAR = (
   }, []);
 
   useEffect(() => {
+    // if (!usingAR) return;
+
     const streamMerger = new StreamMerger({
       height: canvas.height,
       width: canvas.width,
+      frameRate: canvas.frameRate,
     });
 
-    if (webcamTrack) {
-      const webcamStream = new MediaStream([webcamTrack]);
+    if (webcamVideoTracks) {
+      // if (usingAR) {
+      console.log("Webcam Track", webcamVideoTracks);
+      const webcamStream = new MediaStream(webcamVideoTracks);
 
       arWorld.current?.stop();
       if (!usingAR) {
@@ -61,17 +77,17 @@ const useAR = (
 
         streamMerger?.addStream(webcamStream);
         streamMerger?.addCanvas(arCanvasEl.current);
+        // }
       }
-
-      streamMerger.cleanupAudioTracks();
-
-      streamMerger?.start();
-
-      if (stream?.getAudioTracks() && stream.getAudioTracks.length > 0) {
-        streamMerger.result?.addTrack(stream.getAudioTracks()[0]);
-      }
-      setStream(streamMerger?.result!);
+    } else {
+      setWebcam(false);
     }
+    streamMerger.cleanupAudioTracks();
+
+    streamMerger?.start();
+
+    if (streamMerger.result?.getVideoTracks())
+      setARVideoTrack(streamMerger?.result?.getVideoTracks()[0]);
 
     return () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -79,13 +95,24 @@ const useAR = (
       arWorld.current?.stop();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [canvas.height, canvas.width, setStream, usingAR, webcamTrack]);
+  }, [canvas.height, canvas.width, setStream, usingAR, webcamVideoTracks]);
 
   useEffect(() => {
     if (modelName !== null && modelName !== "" && modelName)
       if (modelName === "cube") arWorld.current?.loadCube();
-      else arWorld.current?.loadGithubGLBModels(modelName);
+      else
+        arWorld.current
+          ?.loadGithubGLBModels(modelName)
+          .then(() => {
+            setShowCORSInfo(false);
+          })
+          .catch((err) => {
+            setShowCORSInfo(true);
+          });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modelName]);
+
+  return { arVideoTrack };
 };
 
 export default useAR;

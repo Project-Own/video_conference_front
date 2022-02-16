@@ -6,6 +6,7 @@ import { ConferenceContext } from "src/context/ConferenceContext";
 const Host: FC = () => {
   const { joinRoom } = useContext(ConferenceContext);
   const [roomName, setRoomName] = useState("");
+  const [name, setName] = useState("");
   const theme = useTheme();
   return (
     <Grid container sx={{ border: `2px solid ${theme.palette.text.primary}` }}>
@@ -17,14 +18,30 @@ const Host: FC = () => {
           label="Room Name"
           value={roomName}
           onChange={(e) => setRoomName(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && roomName !== "" && name !== "") {
+              joinRoom(roomName, name);
+            }
+          }}
+          fullWidth
+        />
+        <TextField
+          label="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && roomName !== "" && name !== "") {
+              joinRoom(roomName, name);
+            }
+          }}
           fullWidth
         />
         <Button
           variant="contained"
           color="primary"
           fullWidth
-          disabled={roomName === ""}
-          onClick={() => joinRoom(roomName)}
+          disabled={roomName === "" || name === ""}
+          onClick={() => joinRoom(roomName, name)}
           sx={{ mt: "2em" }}
         >
           Host

@@ -17,6 +17,7 @@ export const useWebcam = (props: WebcamProps) => {
   const [webcamVideoTracks, setWebcamVideoTracks] = useState<
     MediaStreamTrack[] | null
   >(null);
+
   // const [videoDevices, setVideoDevices] = useState<MediaDeviceInfo[] | null>(
   //   null
   // );
@@ -33,12 +34,10 @@ export const useWebcam = (props: WebcamProps) => {
   const {
     webcam,
     webcamDeviceId,
-    stream,
 
     setWebcamDeviceId,
     setWebcamDevices,
     setWebcamTrack,
-    setStream,
   } = useContext(ConferenceContext);
 
   const startWebcamVideoTracks = () => {
@@ -54,8 +53,6 @@ export const useWebcam = (props: WebcamProps) => {
   // const isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
 
   const stopWebcamVideoTracks = () => {
-    if (webcamVideoTracks) stream?.removeTrack(webcamVideoTracks[0]);
-
     closeMediaTracks(webcamVideoTracks, setWebcamVideoTracks);
   };
 
@@ -63,7 +60,7 @@ export const useWebcam = (props: WebcamProps) => {
     console.log("Webcam Toggled");
     if (!webcam || !webcamDeviceId) {
       stopWebcamVideoTracks();
-      return stopWebcamVideoTracks;
+      return;
     }
 
     startWebcamVideoTracks();
@@ -77,10 +74,13 @@ export const useWebcam = (props: WebcamProps) => {
     //   }
     // });
 
-    return stopWebcamVideoTracks;
+    // return stopWebcamVideoTracks;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [webcam, webcamDeviceId]);
-
+  useEffect(() => {
+    setWebcamTrack(webcamVideoTracks ? webcamVideoTracks[0] : undefined);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [webcamVideoTracks]);
   useEffect(() => {
     getAvailableMediaDevices("videoinput", (devices) =>
       setWebcamDevices(devices!)
@@ -90,26 +90,11 @@ export const useWebcam = (props: WebcamProps) => {
       }
     });
 
-    return stopWebcamVideoTracks;
+    // return stopWebcamVideoTracks;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (!webcamVideoTracks) return;
-
-    setWebcamTrack(webcamVideoTracks[0]);
-
-    if (
-      stream &&
-      stream.getAudioTracks() &&
-      stream.getAudioTracks().length > 0
-    ) {
-      setStream(
-        new MediaStream([webcamVideoTracks[0], stream.getAudioTracks()[0]])
-      );
-      return;
-    }
-    setStream(new MediaStream(webcamVideoTracks));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [webcamVideoTracks]);
+  return {
+    webcamVideoTracks,
+  };
 };

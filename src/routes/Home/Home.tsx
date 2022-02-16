@@ -42,7 +42,7 @@ const Landing = () => {
           xs={12}
         >
           <Typography variant="h5" align="center">
-            Distance means so little.{" "}
+            Distance means so little.
           </Typography>
         </Grid>
 

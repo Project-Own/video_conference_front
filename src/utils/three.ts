@@ -11,10 +11,10 @@ export const fetchModelNames = async () => {
     if (name.pop() === "glb") {
       return name[0];
     }
-    return null;
+    return undefined;
   });
-  const names = modelNames.filter((name) => {
-    return name;
+  const names: string[] = modelNames.filter((name): name is string => {
+    return !!name;
   })!;
   return names;
 };

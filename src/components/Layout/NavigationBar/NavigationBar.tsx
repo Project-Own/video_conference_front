@@ -1,8 +1,8 @@
 import { DarkMode, LightMode } from "@mui/icons-material";
-import { Grid, IconButton, Typography, useTheme } from "@mui/material";
+import { Grid, IconButton, Typography, useTheme, Link } from "@mui/material";
 import anime from "animejs";
 import { FC, useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+
 import Hamburger from "src/components/Layout/Hamburger/Hamburger";
 import { UIContext } from "src/context/UIContext";
 import { RoutePath } from "src/routes/Router";
@@ -55,7 +55,7 @@ const NavigationBar: FC<{ routes: RoutePath[] }> = ({ routes }) => {
       {routes.map(({ name, path }) => (
         <Grid item hidden={hidden} key={path}>
           <Typography variant="h6" className="list">
-            <Link to={path}>{name}</Link>
+            <Link href={path}>{name}</Link>
           </Typography>
         </Grid>
       ))}

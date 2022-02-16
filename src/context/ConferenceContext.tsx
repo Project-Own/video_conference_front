@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { createContext, FC, useState } from "react";
+import React, { createContext, FC, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { addURLPath } from "src/utils/utils";
 
@@ -11,12 +11,17 @@ const ConferenceContext = createContext<ConferenceContextProps>(undefined!);
 //   name: string;
 //   signal: SignalData;
 // }
+export interface PeerStream {
+  id: string;
+  stream: MediaStream;
+  peerId: string;
+}
 /**
  * Props
  * */
 interface ConferenceContextProps {
   stream: MediaStream | undefined;
-  otherStreams: { id: string; stream: MediaStream }[];
+  otherStreams: PeerStream[];
   name: string;
   roomName: string | undefined;
 
@@ -35,7 +40,28 @@ interface ConferenceContextProps {
   microphoneDevices: MediaDeviceInfo[];
   modelName: string;
   webcamTrack: MediaStreamTrack | undefined;
+  showCORSInfo: boolean;
+  peers: {
+    [key: string]: {
+      isAdmin: boolean;
+      name: string;
+    };
+  };
+  activeSpeaker: React.MutableRefObject<{
+    producerId: string | null;
+    peerId: string | null;
+    volume: number | null;
+  }>;
 
+  setPeers: React.Dispatch<
+    React.SetStateAction<{
+      [key: string]: {
+        isAdmin: boolean;
+        name: string;
+      };
+    }>
+  >;
+  setShowCORSInfo: React.Dispatch<React.SetStateAction<boolean>>;
   setWebcamTrack: React.Dispatch<
     React.SetStateAction<MediaStreamTrack | undefined>
   >;
@@ -51,10 +77,8 @@ interface ConferenceContextProps {
   setUsingGesture: React.Dispatch<React.SetStateAction<boolean>>;
   setWebcamDeviceId: React.Dispatch<React.SetStateAction<string>>;
   setMicrophoneDeviceId: React.Dispatch<React.SetStateAction<string>>;
-  setOtherStreams: React.Dispatch<
-    React.SetStateAction<{ id: string; stream: MediaStream }[]>
-  >;
-  setStream: React.Dispatch<React.SetStateAction<MediaStream | undefined>>;
+  setOtherStreams: React.Dispatch<React.SetStateAction<PeerStream[]>>;
+  setStream: React.Dispatch<React.SetStateAction<MediaStream>>;
   setName: React.Dispatch<React.SetStateAction<string>>;
   setRoomName: React.Dispatch<React.SetStateAction<string | undefined>>;
   setWebcamDevices: React.Dispatch<React.SetStateAction<MediaDeviceInfo[]>>;
@@ -72,7 +96,7 @@ interface ConferenceContextProps {
       | "participant"
   ) => void;
 
-  joinRoom: (roomName: string) => void;
+  joinRoom: (room: string, name: string) => void;
   leaveCall: () => void;
 }
 
@@ -81,11 +105,15 @@ interface ConferenceContextProps {
  * ConferenceContextProvider
  * */
 const ConferenceContextProvider: FC = ({ children }) => {
-  const [stream, setStream] = useState<MediaStream>();
-  const [otherStreams, setOtherStreams] = useState<
-    { id: string; stream: MediaStream }[]
-  >([]);
-
+  const [stream, setStream] = useState<MediaStream>(new MediaStream([]));
+  const [otherStreams, setOtherStreams] = useState<PeerStream[]>([]);
+  const [peers, setPeers] = useState<{
+    [key: string]: {
+      isAdmin: boolean;
+      name: string;
+    };
+  }>({});
+  const [showCORSInfo, setShowCORSInfo] = useState<boolean>(true);
   const [microphone, setMicrophone] = useState<boolean>(true);
   const [webcam, setWebcam] = useState<boolean>(true);
   const [screenShare, setScreenShare] = useState<boolean>(false);
@@ -152,9 +180,10 @@ const ConferenceContextProvider: FC = ({ children }) => {
 
   const navigate = useNavigate();
 
-  const joinRoom = (name: string) => {
-    setRoomName(name);
-    navigate(addURLPath(`/room/${name}`));
+  const joinRoom = (room: string, name: string) => {
+    setRoomName(room);
+    setName(name);
+    navigate(addURLPath(`/room/${room}`));
   };
 
   /**
@@ -168,6 +197,12 @@ const ConferenceContextProvider: FC = ({ children }) => {
     navigate(-1);
   };
 
+  const activeSpeaker = useRef<{
+    producerId: string | null;
+    peerId: string | null;
+    volume: number | null;
+  }>({ producerId: null, volume: null, peerId: null });
+
   // Threejs Model name
   const [modelName, setModelName] = useState("");
 
@@ -179,7 +214,7 @@ const ConferenceContextProvider: FC = ({ children }) => {
         name,
         roomName,
         modelName,
-
+        activeSpeaker,
         webcam,
         microphone,
         webcamDeviceId,
@@ -194,7 +229,12 @@ const ConferenceContextProvider: FC = ({ children }) => {
         microphoneDevices,
         webcamDevices,
         webcamTrack,
+        showCORSInfo,
+        peers,
 
+        setPeers,
+
+        setShowCORSInfo,
         setWebcamTrack,
         setModelName,
         setWebcam,

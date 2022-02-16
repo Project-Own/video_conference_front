@@ -58,7 +58,8 @@ import ButtonTray from "./ButtonTray";
 // );
 
 const BottomBar = () => {
-  const { usingAR, usingGesture, toggle } = useContext(ConferenceContext);
+  const { usingAR, usingGesture, webcam, toggle } =
+    useContext(ConferenceContext);
   const isHost = true;
   // const [ar_text, usingAR_text] = useState(false);
   const theme = useTheme();
@@ -82,12 +83,13 @@ const BottomBar = () => {
     >
       <Grid item sx={{ display: { xs: "none", md: "block" } }} md={1} lg={2} />
       {isHost ? (
-        <Grid item container xs={6} sm={4} md={3} lg={2} direction="row">
+        <Grid item container xs={7} sm={4} md={3} lg={2} direction="row">
           <Grid item xs={6}>
             <Button
-              variant={usingAR ? "contained" : "outlined"}
+              variant="contained"
               color={usingAR ? "success" : "primary"}
               sx={{ height: "100%" }}
+              disabled={!webcam}
               onClick={() => toggle("usingAR")}
             >
               <Typography>{usingAR ? "Stop AR" : "Start AR"}</Typography>
@@ -96,9 +98,10 @@ const BottomBar = () => {
           <Grid item xs={6}>
             <Button
               sx={{ height: "100%" }}
-              variant={usingGesture ? "contained" : "outlined"}
+              variant="contained"
               color={usingGesture ? "success" : "primary"}
               onClick={() => toggle("usingGesture")}
+              disabled={!webcam}
             >
               <Typography>
                 {usingGesture ? "Stop Gesture" : "Start Gesture"}

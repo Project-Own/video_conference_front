@@ -16,9 +16,9 @@ export const useScreenShare = (props: ScreenShareProps) => {
     cursor = "always",
   } = props;
 
-  const [videoTracks, setVideoTracks] = useState<MediaStreamTrack[] | null>(
-    null
-  );
+  const [screenShareVideoTracks, setScreenShareVideoTracks] = useState<
+    MediaStreamTrack[] | null
+  >(null);
   // const [videoDevices, setVideoDevices] = useState<MediaDeviceInfo[] | null>(
   //   null
   // );
@@ -33,7 +33,7 @@ export const useScreenShare = (props: ScreenShareProps) => {
     },
   };
 
-  const { screenShare, setStream, stream } = useContext(ConferenceContext);
+  const { screenShare } = useContext(ConferenceContext);
 
   const startVideoTracks = () => {
     let mediaTrackConstraint: MediaTrackConstraints | undefined;
@@ -44,46 +44,28 @@ export const useScreenShare = (props: ScreenShareProps) => {
 
     getDisplayMediaTracks(
       { video: mediaTrackConstraint, audio: false },
-      setVideoTracks
+      setScreenShareVideoTracks
     );
   };
   // const isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
 
   const stopVideoTracks = () => {
-    if (videoTracks) stream?.removeTrack(videoTracks[0]);
-
-    closeMediaTracks(videoTracks, setVideoTracks);
+    closeMediaTracks(screenShareVideoTracks, setScreenShareVideoTracks);
   };
 
   useEffect(() => {
     console.log("Screen Share Toggled", screenShare);
     if (!screenShare) {
       stopVideoTracks();
-      return stopVideoTracks;
+      return;
     }
     startVideoTracks();
 
-    return stopVideoTracks;
+    return;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screenShare]);
 
-  useEffect(() => {}, [videoTracks]);
-
-  useEffect(() => {
-    if (!videoTracks) return;
-
-    if (videoTracks && videoTracks?.length > 0)
-      videoTracks[0].onended = () => stopVideoTracks();
-
-    if (
-      stream &&
-      stream.getAudioTracks() &&
-      stream.getAudioTracks().length > 0
-    ) {
-      setStream(new MediaStream([videoTracks[0], stream.getAudioTracks()[0]]));
-      return;
-    }
-    setStream(new MediaStream(videoTracks));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [videoTracks]);
+  return {
+    screenShareVideoTracks,
+  };
 };

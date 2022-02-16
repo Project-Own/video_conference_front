@@ -7,10 +7,14 @@ const VideoPlayer: FC<{ stream: MediaStream | undefined; muted: boolean }> = ({
 }) => {
   const theme = useTheme();
   const videoRef = useRef<HTMLVideoElement>(null);
+  console.log(
+    "Video Reference Stream"
+
+    // videoRef.current?.srcObject &&
+    //   (videoRef.current?.srcObject as MediaStream).getVideoTracks()
+  );
   useEffect(() => {
-    console.log("My Stream");
     if (!stream) return;
-    console.log(stream.getTracks());
     if (videoRef.current) videoRef.current.srcObject = stream;
   }, [stream]);
 
@@ -41,6 +45,7 @@ const VideoPlayer: FC<{ stream: MediaStream | undefined; muted: boolean }> = ({
         poster="https://www.pngfind.com/pngs/m/610-6104451_image-placeholder-png-user-profile-placeholder-image-png.png"
         style={{
           width: "100%",
+          height: "100%",
           // transform: `scale(-1,1)`,
         }}
       />

@@ -50,7 +50,7 @@ import ParticipantList from "./participantList";
 // );
 
 const ParticipantGrid = () => {
-  const { toggle } = useContext(ConferenceContext);
+  const { toggle, peers } = useContext(ConferenceContext);
 
   // const [isOpen, setisOpen] = useState(false);
 
@@ -58,24 +58,24 @@ const ParticipantGrid = () => {
   //   (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
   //     setisOpen(open);
   //   };
-  const dummy_participants = [
-    {
-      id: 1,
-      name: "Nirjal Prajapati",
-    },
-    {
-      id: 2,
-      name: "Sahas Prajapati",
-    },
-    {
-      id: 3,
-      name: "Nirajan Prajapati",
-    },
-    {
-      id: 4,
-      name: "Rohit Prajapati",
-    },
-  ];
+  // const dummy_participants = [
+  //   {
+  //     id: 1,
+  //     name: "Nirjal Prajapati",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Sahas Prajapati",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Nirajan Prajapati",
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Rohit Prajapati",
+  //   },
+  // ];
   //   const [name, setname] = useState([{ id: 1, name: "Nirjal Prajapati" }]);
   const [fieldValue, setfieldValue] = useState("");
 
@@ -125,7 +125,6 @@ const ParticipantGrid = () => {
             },
           }}
           InputProps={{
-            disableUnderline: true,
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton type="submit">
@@ -145,7 +144,7 @@ const ParticipantGrid = () => {
       <List
       // className={classes.participantBox}
       >
-        <ParticipantList participants={dummy_participants} />
+        <ParticipantList participants={Object.keys(peers)} />
       </List>
     </Grid>
   );
