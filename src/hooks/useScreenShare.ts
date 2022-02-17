@@ -54,7 +54,7 @@ export const useScreenShare = (props: ScreenShareProps) => {
   };
 
   useEffect(() => {
-    console.log("Screen Share Toggled", screenShare);
+    // console.log("Screen Share Toggled", screenShare);
     if (!screenShare) {
       stopVideoTracks();
       return;

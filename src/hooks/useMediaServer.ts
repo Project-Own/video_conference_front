@@ -393,7 +393,7 @@ const useMediaServer = () => {
         //   '" autoplay class="video" ></video>';
         // videoContainer.current.appendChild(newElem);
 
-        const { track, appData } = consumer;
+        const { track, appData, kind } = consumer;
 
         // remoteVideo.srcObject = new MediaStream([track]);
         // document.getElementById(remoteProducerId).srcObject = new MediaStream(
@@ -418,6 +418,34 @@ const useMediaServer = () => {
           //   aud.forEach((track) =>
           //     streams.current[appData.socketId].stream.removeTrack(track)
           //   );
+
+          if (kind === "audio") {
+            const videoTracks =
+              streams.current[appData.socketId].stream.getVideoTracks();
+            if (videoTracks && videoTracks.length > 0) {
+              streams.current[appData.socketId].stream = new MediaStream([
+                track,
+                videoTracks[0],
+              ]);
+            } else {
+              streams.current[appData.socketId].stream = new MediaStream([
+                track,
+              ]);
+            }
+          } else if (kind === "video") {
+            const audioTracks =
+              streams.current[appData.socketId].stream.getAudioTracks();
+            if (audioTracks && audioTracks.length > 0) {
+              streams.current[appData.socketId].stream = new MediaStream([
+                track,
+                audioTracks[0],
+              ]);
+            } else {
+              streams.current[appData.socketId].stream = new MediaStream([
+                track,
+              ]);
+            }
+          }
           streams.current[appData.socketId].stream.addTrack(track);
         } else {
           streams.current[appData.socketId] = {
@@ -489,7 +517,6 @@ const useMediaServer = () => {
   useEffect(() => {
     // const roomName = window.location.pathname.split("/")[2];
 
-    console.log(roomName);
     socket.current = io("http://localhost:3000/mediasoup");
 
     socket.current.on("connection-success", ({ socketId }) => {
@@ -568,6 +595,7 @@ const useMediaServer = () => {
   }, []);
   useEffect(() => {
     if (roomName) {
+      console.log("Room name:", roomName);
       joinRoom();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -587,7 +615,7 @@ const useMediaServer = () => {
       }
     }
 
-    console.log("Stream Tracks", stream?.getVideoTracks());
+    // console.log("Stream Tracks", stream?.getVideoTracks());
     const videoTrack = stream?.getVideoTracks()[0];
     if (videoTrack && videoTrack.readyState !== "ended") {
       // Video Track to produces
@@ -602,7 +630,7 @@ const useMediaServer = () => {
         videoProducer.current?.replaceTrack({ track: videoTrack });
       } catch (error) {
         console.log(error);
-        console.log(videoTrack);
+        // console.log(videoTrack);
       }
     }
   }, [stream]);

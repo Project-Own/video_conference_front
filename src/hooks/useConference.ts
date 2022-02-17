@@ -10,14 +10,8 @@ import { useMediaServer } from "./useMediaServer";
 import { useAudio } from "./useAudio";
 
 export const useConference = () => {
-  const {
-    setUsingAR,
-    setStream,
-    webcam,
-    screenShare,
-    usingAR,
-    setWebcam,
-  } = useContext(ConferenceContext);
+  const { setUsingAR, setStream, webcam, screenShare, usingAR, setWebcam } =
+    useContext(ConferenceContext);
 
   const params = {
     height: 720,
@@ -218,7 +212,7 @@ export const useConference = () => {
 
     const stream = new MediaStream(tracks);
     setStream(stream);
-    console.log("New stream Tracks", stream.getTracks());
+    // console.log("New stream Tracks", stream.getTracks());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     audioTracks,

@@ -4,7 +4,7 @@ import { World } from "src/three/World";
 
 const useModelDisplay = (canvasRef: React.RefObject<HTMLCanvasElement>) => {
   const arWorld = useRef<World>();
-  const { modelName, setShowCORSInfo } = useContext(ConferenceContext);
+  const { modelName, setShowCORSInfo, setting } = useContext(ConferenceContext);
   useEffect(() => {
     arWorld.current = new World(canvasRef.current!, false);
 
@@ -15,6 +15,10 @@ const useModelDisplay = (canvasRef: React.RefObject<HTMLCanvasElement>) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (setting) arWorld.current?.start();
+    else arWorld.current?.stop();
+  }, [setting]);
   useEffect(() => {
     if (modelName !== null && modelName !== "" && modelName)
       if (modelName === "cube") arWorld.current?.loadCube();

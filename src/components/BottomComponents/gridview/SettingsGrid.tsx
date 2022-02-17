@@ -241,9 +241,13 @@ const SettingsGrid = () => {
         </Grid>
 
         <Grid item>
+          <Typography> AR Marker:</Typography>
           <Typography>
-            AR Marker:
-            <Link href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png">
+            Download the marker and use it for AR.
+            <Link
+              href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png"
+              target="_blank"
+            >
               Hiro
             </Link>
           </Typography>

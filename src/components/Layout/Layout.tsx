@@ -11,7 +11,7 @@ const Layout: FC = ({ children }) => {
         <Toolbar>
           <NavigationBar routes={routes} />
         </Toolbar>
-        {children}
+        <div style={{ height: "100%", width: "100%" }}>{children}</div>
       </Paper>
     </ErrorBoundary>
   );

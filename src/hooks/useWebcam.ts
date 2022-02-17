@@ -57,7 +57,7 @@ export const useWebcam = (props: WebcamProps) => {
   };
 
   useEffect(() => {
-    console.log("Webcam Toggled");
+    // console.log("Webcam Toggled");
     if (!webcam || !webcamDeviceId) {
       stopWebcamVideoTracks();
       return;
@@ -79,7 +79,7 @@ export const useWebcam = (props: WebcamProps) => {
   }, [webcam, webcamDeviceId]);
   useEffect(() => {
     setWebcamTrack(webcamVideoTracks ? webcamVideoTracks[0] : undefined);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [webcamVideoTracks]);
   useEffect(() => {
     getAvailableMediaDevices("videoinput", (devices) =>

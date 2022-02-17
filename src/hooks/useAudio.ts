@@ -44,7 +44,7 @@ export const useAudio = () => {
   };
 
   useEffect(() => {
-    console.log("Microphone Toggled", microphone);
+    // console.log("Microphone Toggled", microphone);
     if (!microphone || !microphoneDeviceId) {
       stopAudioTracks();
       return stopAudioTracks;
