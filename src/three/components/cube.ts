@@ -6,7 +6,7 @@ const createCube = () => {
     color: "white",
     sheen: 0.8,
     sheenColor: new Color("red"),
-    transmission: 0.5,
+    transmission: 0.2,
     opacity: 1,
     metalness: 0.3,
     roughness: 0.8,

@@ -119,7 +119,7 @@ const ConferenceContextProvider: FC = ({ children }) => {
   const [screenShare, setScreenShare] = useState<boolean>(false);
   const [chat, setChat] = useState<boolean>(false);
   const [call, setCall] = useState<boolean>(false);
-  const [setting, setSetting] = useState<boolean>(false);
+  const [setting, setSetting] = useState<boolean>(true);
   const [usingAR, setUsingAR] = useState<boolean>(false);
   const [usingGesture, setUsingGesture] = useState<boolean>(false);
   const [participant, setParticipant] = useState<boolean>(false);
