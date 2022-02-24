@@ -1,4 +1,5 @@
-import { Grid } from "@mui/material";
+import { Close } from "@mui/icons-material";
+import { Button, Grid, IconButton, Snackbar } from "@mui/material";
 import { FC, useContext, useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import BottomBar from "src/components/BottomComponents/BottomBar";
@@ -14,6 +15,7 @@ const Conference: FC = () => {
     stream,
     roomName,
     setRoomName,
+    message,
     otherStreams,
 
     screenShare,
@@ -22,7 +24,7 @@ const Conference: FC = () => {
   } = useContext(ConferenceContext);
   const location = useLocation();
   const room = location.pathname.split("/room/")[1];
-
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     console.log("Context room", roomName);
     console.log("Path room", room);
@@ -30,6 +32,10 @@ const Conference: FC = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (message !== "") setOpen(true);
+  }, [message]);
   // console.log("My Stream", stream?.getTracks());
   // otherStreams.forEach((stream) => {
   //   console.log("Other Stream", stream.peerId, stream.stream.getTracks());
@@ -37,8 +43,31 @@ const Conference: FC = () => {
 
   useConference();
 
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const action = (
+    <>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        <Close fontSize="small" />
+      </IconButton>
+    </>
+  );
+
   return (
     <Layout>
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message={message}
+        action={action}
+      />
       <Grid
         container
         direction="column"

@@ -232,7 +232,7 @@ const ConferenceContextProvider: FC = ({ children }) => {
 
       if (res.server_status === "running") {
         console.log(res);
-        const uri = `http://${res.public_ip}:3000/mediasoup`;
+        const uri = `https://${res.public_ip}:3000/mediasoup`;
         setUri(uri);
         return;
       } else {
