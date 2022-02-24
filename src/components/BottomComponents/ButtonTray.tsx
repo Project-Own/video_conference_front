@@ -1,83 +1,83 @@
-import { IconButton } from "@material-ui/core";
-import Drawer from "@material-ui/core/Drawer";
-import Grid from "@material-ui/core/Grid";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import CallEndIcon from "@material-ui/icons/CallEnd";
-import ChatRoundedIcon from "@material-ui/icons/ChatRounded";
-import MicIcon from "@material-ui/icons/Mic";
-import MicOffIcon from "@material-ui/icons/MicOff";
-import PeopleAltRoundedIcon from "@material-ui/icons/PeopleAltRounded";
-import ScreenShareOutlinedIcon from "@material-ui/icons/ScreenShareOutlined";
-import SettingsIcon from "@material-ui/icons/Settings";
-import StopScreenShareOutlinedIcon from "@material-ui/icons/StopScreenShareOutlined";
-import VideocamOffOutlinedIcon from "@material-ui/icons/VideocamOffOutlined";
-import VideocamOutlinedIcon from "@material-ui/icons/VideocamOutlined";
+import {
+  CallEndRounded,
+  Chat,
+  Mic,
+  MicOff,
+  PeopleRounded,
+  ScreenShareOutlined,
+  Settings,
+  StopScreenShareOutlined,
+  VideoCameraBackOutlined,
+  VideoCameraFrontOutlined,
+} from "@mui/icons-material";
+import { Button, Drawer, Grid, useTheme } from "@mui/material";
 import { useContext } from "react";
-import { useTray } from "src/hooks/useTray";
-import { SocketContext } from "src/pages/Context/Context";
-import ChatGrid from "../gridview/chatGrid";
-import ParticipantGrid from "../gridview/participantGrid";
-import SettingsGrid from "../gridview/SettingsGrid";
+import { ConferenceContext } from "src/context/ConferenceContext";
+import { UIContext } from "src/context/UIContext";
 import ButtonInfo from "./ButtonInfo";
+import ChatGrid from "./gridview/chatGrid";
+import ParticipantGrid from "./gridview/participantGrid";
+import SettingsGrid from "./gridview/SettingsGrid";
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    buttons: {
-      maxheight: "44px",
-      minWidth: "44px",
-      minHeight: "44px",
-      maxWidth: "44px",
-      background: "#FFFFFF",
-      boxShadow: "0px 4px 6px 2px rgba(0, 0, 0, 0.30)",
-      mixBlendMode: "overlay",
-      borderRadius: "14px",
-      "&:hover": {
-        color: "white",
-      },
-    },
-    button_tray_left: {
-      zIndex: 1,
-    },
-    end_call: {
-      // maxheight: "72px",
-      // minWidth: "72px",
-      // minHeight: "72px",
-      // maxWidth: "72px",
-      padding: theme.spacing(2),
-      background: "#cb2020",
-      // borderRadius: "40px",
-      boxShadow: "0px 4px 6px 2px rgba(0, 0, 0, 0.30)",
-      // position: "absolute",
-      // height: "56px",
-      // left: "732px",
-      zIndex: 2,
-      "&:hover": {
-        color: "white",
-        background: "#8b0000",
-      },
-    },
-    button_tray_right: {
-      // background: "#2F4F4F",
-      // borderRadius: "0px 16px 16px 0px",
-      // width: "280px",
-      // position: "absolute",
-      // height: "56px",
-      // left: "791px",
-      // alignItems: "center",
-      zIndex: 1,
-      // paddingLeft: "14px",
-      // justifyContent: "space-around",
-    },
-    drawer: {
-      width: "320px",
-      background: "#A4A4A4",
-    },
-  })
-);
+// const useStyles = makeStyles((theme: Theme) =>
+//   createStyles({
+//     buttons: {
+//       maxheight: "44px",
+//       minWidth: "44px",
+//       minHeight: "44px",
+//       maxWidth: "44px",
+//       background: "#FFFFFF",
+//       boxShadow: "0px 4px 6px 2px rgba(0, 0, 0, 0.30)",
+//       mixBlendMode: "overlay",
+//       borderRadius: "14px",
+//       "&:hover": {
+//         color: "white",
+//       },
+//     },
+//     button_tray_left: {
+//       zIndex: 1,
+//     },
+//     end_call: {
+//       // maxheight: "72px",
+//       // minWidth: "72px",
+//       // minHeight: "72px",
+//       // maxWidth: "72px",
+//       padding: theme.spacing(2),
+//       background: "#cb2020",
+//       // borderRadius: "40px",
+//       boxShadow: "0px 4px 6px 2px rgba(0, 0, 0, 0.30)",
+//       // position: "absolute",
+//       // height: "56px",
+//       // left: "732px",
+//       zIndex: 2,
+//       "&:hover": {
+//         color: "white",
+//         background: "#8b0000",
+//       },
+//     },
+//     button_tray_right: {
+//       // background: "#2F4F4F",
+//       // borderRadius: "0px 16px 16px 0px",
+//       // width: "280px",
+//       // position: "absolute",
+//       // height: "56px",
+//       // left: "791px",
+//       // alignItems: "center",
+//       zIndex: 1,
+//       // paddingLeft: "14px",
+//       // justifyContent: "space-around",
+//     },
+//     drawer: {
+//       width: "320px",
+//       background: "#A4A4A4",
+//     },
+//   })
+// );
 
 const ButtonTray = () => {
-  const classes = useStyles();
+  // const classes = useStyles();
   // const [on, seton] = useState(false);
+  const { themeMode } = useContext(UIContext);
   const {
     microphone,
     webcam,
@@ -85,32 +85,28 @@ const ButtonTray = () => {
     chat,
     participant,
     setting,
+    leaveCall,
+    toggle,
+  } = useContext(ConferenceContext);
 
-    toggleChat,
-    toggleMicrophone,
-    toggleParticipant,
-    toggleScreenShare,
-    toggleWebcam,
-    toggleSetting,
-  } = useTray();
   const icons_list_left = [
     {
       name: "videoIcon",
       icon: {
-        active: VideocamOutlinedIcon,
-        passive: VideocamOffOutlinedIcon,
+        active: VideoCameraFrontOutlined,
+        passive: VideoCameraBackOutlined,
       },
       state: webcam,
-      handleToggle: toggleWebcam,
+      handleToggle: () => toggle("webcam"),
     },
     {
       name: "micIcon",
       icon: {
-        active: MicIcon,
-        passive: MicOffIcon,
+        active: Mic,
+        passive: MicOff,
       },
       state: microphone,
-      handleToggle: toggleMicrophone,
+      handleToggle: () => toggle("microphone"),
     },
   ];
 
@@ -118,42 +114,40 @@ const ButtonTray = () => {
     {
       name: "screenShareIcon",
       icon: {
-        active: ScreenShareOutlinedIcon,
-        passive: StopScreenShareOutlinedIcon,
+        active: ScreenShareOutlined,
+        passive: StopScreenShareOutlined,
       },
       state: screenShare,
-      handleToggle: toggleScreenShare,
+      handleToggle: () => toggle("screenShare"),
     },
     {
       name: "chatIcon",
       icon: {
-        active: ChatRoundedIcon,
-        passive: ChatRoundedIcon,
+        active: Chat,
+        passive: Chat,
       },
       state: chat,
-      handleToggle: toggleChat,
+      handleToggle: () => toggle("chat"),
     },
     {
       name: "participantIcon",
       icon: {
-        active: PeopleAltRoundedIcon,
-        passive: PeopleAltRoundedIcon,
+        active: PeopleRounded,
+        passive: PeopleRounded,
       },
       state: participant,
-      handleToggle: toggleParticipant,
+      handleToggle: () => toggle("participant"),
     },
     {
       name: "settingsIcon",
       icon: {
-        active: SettingsIcon,
-        passive: SettingsIcon,
+        active: Settings,
+        passive: Settings,
       },
       state: setting,
-      handleToggle: toggleSetting,
+      handleToggle: () => toggle("setting"),
     },
   ];
-
-  const context = useContext(SocketContext);
 
   // const doThis = (index: any) => {
   //   let tmp = icons_list_left;
@@ -165,33 +159,35 @@ const ButtonTray = () => {
   //   console.log(icons_list_left);
   // };
 
+  const theme = useTheme();
   return (
     <Grid
       xs={12}
-      md={7}
-      lg={5}
-      xl={4}
       item
-      style={{
-        background: "#2F4F4F",
-        padding: 2,
+      sx={{
+        backgroundColor:
+          themeMode === "light"
+            ? theme.palette.primary.dark
+            : theme.palette.primary.main,
+        padding: theme.spacing(1),
         borderRadius: "16px 16px 16px 16px",
       }}
+      alignItems="center"
+      justifyContent="center"
       container
       direction="row"
-      alignItems="center"
-      justify="center"
     >
       <Grid
         item
+        spacing={2}
         xs={4}
-        md={4}
+        md={3}
         container
-        className={classes.button_tray_left}
+        alignItems="center"
+        justifyContent="center"
+        // className={classes.button_tray_left}
         direction="row"
         // spacing={2}
-        alignItems="center"
-        justify="space-around"
       >
         {icons_list_left.map((icon, index) => (
           <Grid item key={index}>
@@ -209,33 +205,32 @@ const ButtonTray = () => {
 
       <Grid
         item
-        container
+        alignItems="center"
+        justifyContent="center"
         xs={2}
         md={1}
         // lg={1}
-        style={{
-          background: "#2F4F4F",
-        }}
-        justify="center"
       >
-        <IconButton
-          onClick={() => context.leaveCall()}
-          className={classes.end_call}
+        <Button
+          onClick={() => leaveCall()}
+          variant="contained"
+          color="error"
+          sx={{ borderRadius: "2em" }}
         >
-          <CallEndIcon />
-        </IconButton>
+          <CallEndRounded />
+        </Button>
       </Grid>
-
       <Grid
         item
         container
+        spacing={2}
         xs={6}
         md={6}
-        className={classes.button_tray_right}
+        // className={classes.button_tray_right}
         direction="row"
-        // spacing={2}
         alignItems="center"
-        justify="space-around"
+        justifyContent="center"
+        // spacing={2}
       >
         {icons_list_right.map((icon, index) => (
           <Grid item key={index}>
@@ -252,28 +247,28 @@ const ButtonTray = () => {
       </Grid>
 
       <Drawer
-        classes={{ paper: classes.drawer }}
+        // classes={{ paper: classes.drawer }}
         anchor="right"
         open={chat}
-        onClose={toggleChat}
+        onClose={() => toggle("chat")}
         transitionDuration={{ enter: 600, exit: 300 }}
       >
         <ChatGrid />
       </Drawer>
       <Drawer
-        classes={{ paper: classes.drawer }}
+        // classes={{ paper: classes.drawer }}
         anchor="right"
         open={participant}
-        onClose={toggleParticipant}
+        onClose={() => toggle("participant")}
         transitionDuration={{ enter: 600, exit: 300 }}
       >
         <ParticipantGrid />
       </Drawer>
       <Drawer
-        classes={{ paper: classes.drawer }}
+        // classes={{ paper: classes.drawer }}
         anchor="right"
         open={setting}
-        onClose={toggleSetting}
+        onClose={() => toggle("setting")}
         transitionDuration={{ enter: 600, exit: 300 }}
       >
         <SettingsGrid />

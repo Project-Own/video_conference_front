@@ -1,18 +1,15 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { ConferenceContext } from "src/context/ConferenceContext";
 import {
   closeMediaTracks,
   getAvailableMediaDevices,
   getMediaTracks,
-} from "./../utils/media.utils";
-import { useTray } from "./useTray";
+} from "../utils/media.utils";
 
 export const useAudio = () => {
   const [audioTracks, setAudioTracks] = useState<MediaStreamTrack[] | null>(
     null
   );
-  // const [audioDevices, setAudioDevices] = useState<MediaDeviceInfo[] | null>(
-  //   null
-  // );
 
   const DEFAULT_AUDIO_CONSTRAINTS = {
     audio: {
@@ -22,28 +19,51 @@ export const useAudio = () => {
     },
   };
 
-  // const isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
-
   const {
     microphone,
-    toggleMicrophone,
-    microphoneDeviceID,
-    setMicrophoneDeviceID,
-    microphoneDevices,
-    setMicrophoneDevices,
-  } = useTray();
+    microphoneDeviceId,
 
-  const stopAudioTracks = () => closeMediaTracks(audioTracks, setAudioTracks);
+    setMicrophoneDeviceId,
+    setMicrophoneDevices,
+  } = useContext(ConferenceContext);
 
   const startAudioTracks = () => {
     let mediaTrackConstraint: MediaTrackConstraints | undefined;
     mediaTrackConstraint = DEFAULT_AUDIO_CONSTRAINTS.audio;
 
     if (mediaTrackConstraint) {
-      mediaTrackConstraint.deviceId = microphoneDeviceID;
+      mediaTrackConstraint.deviceId = microphoneDeviceId;
+
       getMediaTracks({ audio: mediaTrackConstraint }, setAudioTracks);
     }
   };
+  // const isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
+
+  const stopAudioTracks = () => {
+    closeMediaTracks(audioTracks, setAudioTracks);
+  };
+
+  useEffect(() => {
+    // console.log("Microphone Toggled", microphone);
+    if (!microphone || !microphoneDeviceId) {
+      stopAudioTracks();
+      return stopAudioTracks;
+    }
+
+    startAudioTracks();
+
+    // navigator.permissions.query({ name: "camera" }).then((result) => {
+    //   if (result.state === "denied") {
+    //     togglemicrophone();
+    //     alert("Camera Will not function when camera Permission is denied.");
+    //   } else if (result.state === "granted") {
+    //     startAudioTracks();
+    //   }
+    // });
+
+    return stopAudioTracks;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [microphone, microphoneDeviceId]);
 
   useEffect(() => {
     getAvailableMediaDevices("audioinput", (devices) =>
@@ -51,7 +71,7 @@ export const useAudio = () => {
     ).then((devices) => {
       if (devices) {
         if (devices[0].deviceId !== "")
-          setMicrophoneDeviceID({ value: devices[0].deviceId });
+          setMicrophoneDeviceId(devices[0].deviceId);
       }
     });
 
@@ -59,37 +79,7 @@ export const useAudio = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    stopAudioTracks();
-    if (microphone) {
-      // if (isFirefox) {
-      startAudioTracks();
-      // } else {
-      // navigator.permissions
-      //   .query({ name: "microphone" })
-      //   .then((result) => {
-      //     if (result.state === "denied") {
-      //       alert(
-      //         "Microphone will not function when microphone Permission is denied."
-      //       );
-      //       toggleMicrophone();
-      //     } else if (result.state === "granted") {
-      //       startAudioTracks();
-      //     }
-      //   })
-      //   .catch((e) => console.log(e));
-      // // }
-    }
-    return stopAudioTracks;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [microphone, microphoneDeviceID]);
-
   return {
-    microphoneDevices,
     audioTracks,
-    microphone,
-    microphoneDeviceID,
-    toggleMicrophone,
-    setMicrophoneDeviceID,
   };
 };

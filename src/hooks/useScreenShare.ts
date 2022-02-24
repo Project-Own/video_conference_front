@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { ConferenceContext } from "src/context/ConferenceContext";
 import { closeMediaTracks, getDisplayMediaTracks } from "../utils/media.utils";
-import { useTray } from "./useTray";
 
 interface ScreenShareProps {
   height?: number;
@@ -16,9 +16,9 @@ export const useScreenShare = (props: ScreenShareProps) => {
     cursor = "always",
   } = props;
 
-  const [videoTracks, setVideoTracks] = useState<MediaStreamTrack[] | null>(
-    null
-  );
+  const [screenShareVideoTracks, setScreenShareVideoTracks] = useState<
+    MediaStreamTrack[] | null
+  >(null);
   // const [videoDevices, setVideoDevices] = useState<MediaDeviceInfo[] | null>(
   //   null
   // );
@@ -33,7 +33,7 @@ export const useScreenShare = (props: ScreenShareProps) => {
     },
   };
 
-  const { screenShare, toggleScreenShare } = useTray();
+  const { screenShare } = useContext(ConferenceContext);
 
   const startVideoTracks = () => {
     let mediaTrackConstraint: MediaTrackConstraints | undefined;
@@ -42,39 +42,30 @@ export const useScreenShare = (props: ScreenShareProps) => {
     // if (mediaTrackConstraint) {
     //   mediaTrackConstraint.deviceId = webcamDeviceID;
 
-    getDisplayMediaTracks({ video: mediaTrackConstraint }, setVideoTracks);
+    getDisplayMediaTracks(
+      { video: mediaTrackConstraint, audio: false },
+      setScreenShareVideoTracks
+    );
   };
   // const isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
 
   const stopVideoTracks = () => {
-    closeMediaTracks(videoTracks, setVideoTracks);
+    closeMediaTracks(screenShareVideoTracks, setScreenShareVideoTracks);
   };
 
   useEffect(() => {
-    console.log("Screen Share Toggled");
-    stopVideoTracks();
-    if (screenShare) {
-      startVideoTracks();
-
-      // navigator.permissions.query({ name: "camera" }).then((result) => {
-      //   if (result.state === "denied") {
-      //     toggleWebcam();
-      //     alert("Camera Will not function when camera Permission is denied.");
-      //   } else if (result.state === "granted") {
-      //     startVideoTracks();
-      //   }
-      // });
+    // console.log("Screen Share Toggled", screenShare);
+    if (!screenShare) {
+      stopVideoTracks();
+      return;
     }
-    return stopVideoTracks;
+    startVideoTracks();
+
+    return;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screenShare]);
 
   return {
-    videoTracks,
-    screenShare,
-
-    toggleScreenShare,
-    height,
-    width,
+    screenShareVideoTracks,
   };
 };

@@ -1,8 +1,12 @@
-import "./App.css";
-import RouterHandler from "./pages/Router/Router";
+import { FC } from "react";
+import { UIContextProvider } from "./context/UIContext";
+import Router from "./routes/Router";
 
-function App() {
-  return <RouterHandler />;
-}
-
+const App: FC = () => {
+  return (
+    <UIContextProvider>
+      <Router />
+    </UIContextProvider>
+  );
+};
 export default App;
