@@ -1,5 +1,5 @@
 import { Close } from "@mui/icons-material";
-import { Button, Grid, IconButton, Snackbar } from "@mui/material";
+import { Grid, IconButton, Snackbar } from "@mui/material";
 import { FC, useContext, useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import BottomBar from "src/components/BottomComponents/BottomBar";
