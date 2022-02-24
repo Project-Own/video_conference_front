@@ -243,6 +243,7 @@ const ConferenceContextProvider: FC = ({ children }) => {
       }
     } catch (err) {
       console.log(err);
+      setMessage("Wait sometime for server to launch!");
       setTimeout(() => {
         // navigate(0);
         getPublicIp();

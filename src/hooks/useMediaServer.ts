@@ -502,7 +502,7 @@ const useMediaServer = () => {
             activeSpeaker.current?.peerId === null
           )
             return;
-          adjustPeerStream();
+          // adjustPeerStream();
         }
       );
     }

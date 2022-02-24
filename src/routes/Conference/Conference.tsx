@@ -158,6 +158,7 @@ const Conference: FC = () => {
                     stream={otherStream.stream}
                     key={otherStream.id}
                     muted={false}
+                    controls={false}
                     displayName={
                       peers[otherStream.peerId]?.name
                         ? peers[otherStream.peerId].name
