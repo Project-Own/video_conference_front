@@ -77,14 +77,14 @@ const VideoPlayer: FC<{
             controls={controls}
             autoPlay
             onTimeUpdate={(ev) => {
-              let duration = 0;
+              // let duration = 0;
 
               if (videoTime.current) {
-                duration = ev.currentTarget.currentTime - videoTime.current;
+                // duration = ev.currentTarget.currentTime - videoTime.current;
               }
               videoTime.current = ev.currentTarget.currentTime;
 
-              console.log(duration);
+              // console.log(duration);
               setHideVideo(false);
               if (videoTimeout.current) clearTimeout(videoTimeout.current);
 
@@ -166,7 +166,7 @@ const VideoPlayer: FC<{
           }
           audioTime.current = ev.currentTarget.currentTime;
 
-          console.log(duration);
+          // console.log(duration);
           if (duration > 0.23 && duration < 0.26) {
             setHideAudio(false);
             if (audioTimeout.current) clearTimeout(audioTimeout.current);

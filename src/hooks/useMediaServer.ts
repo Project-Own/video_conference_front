@@ -11,7 +11,7 @@ import {
   IceParameters,
   Transport,
 } from "mediasoup-client/lib/Transport";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { ConferenceContext, PeerStream } from "src/context/ConferenceContext";
 
@@ -32,6 +32,7 @@ const useMediaServer = () => {
     setPeers,
     otherStreams,
     setOtherStreams,
+    uri,
   } = useContext(ConferenceContext);
   // const { webcam, webcamVideoTracks } = useWebcam({});
   // const { audioTracks } = useAudio();
@@ -54,45 +55,8 @@ const useMediaServer = () => {
 
   const videoProducer = useRef<Producer>();
   const audioProducer = useRef<Producer>();
-  // const params = useRef({
-  //   videoTrack: {} as MediaStreamTrack,
-  //   audioTrack: {} as MediaStreamTrack,
-  //   // mediasoup params
-  //   encodings: [
-  //     {
-  //       rid: "r0",
-  //       maxBitrate: 100000,
-  //       scalabilityMode: "S1T3",
-  //     },
-  //     {
-  //       rid: "r1",
-  //       maxBitrate: 300000,
-  //       scalabilityMode: "S1T3",
-  //     },
-  //     {
-  //       rid: "r2",
-  //       maxBitrate: 900000,
-  //       scalabilityMode: "S1T3",
-  //     },
-  //   ],
-  //   // https://mediasoup.org/documentation/v3/mediasoup-client/api/#ProducerCodecOptions
-  //   codecOptions: {
-  //     videoGoogleStartBitrate: 1000,
-  //   },
-  // });
 
-  // const streamSuccess = (stream: MediaStream) => {
-  //   console.log(stream);
-  //   if (localVideo.current) localVideo.current.srcObject = stream;
-
-  //   // const track = stream.getVideoTracks()[0];
-  //   params.current = {
-  //     ...params.current,
-  //     videoTrack: stream.getVideoTracks()[0],
-  //     audioTrack: stream.getAudioTracks()[0],
-  //   };
-  //   joinRoom();
-  // };
+  const [ready, setReady] = useState(false);
 
   const joinRoom = () => {
     socket.current?.emit(
@@ -107,40 +71,6 @@ const useMediaServer = () => {
       }
     );
   };
-
-  // const getLocalStream = () => {
-  //   navigator.mediaDevices
-  //     .getUserMedia({
-  //       audio: true,
-  //       video: {
-  //         width: {
-  //           min: 640,
-  //           max: 1920,
-  //         },
-  //         height: {
-  //           min: 400,
-  //           max: 1080,
-  //         },
-  //       },
-  //     })
-  //     .then(streamSuccess)
-  //     .catch((error) => {
-  //       console.log(error.message);
-  //     });
-  // };
-
-  // const goConsume = () => {
-  //   goConnect(false);
-  // };
-
-  // const goConnect = (producerOrConsumer) => {
-  //   isProducer = producerOrConsumer;
-  //   device === undefined ? getRtpCapabilities() : goCreateTransport();
-  // };
-
-  // const goCreateTransport = () => {
-  //   isProducer ? createSendTransport() : createRecvTransport();
-  // };
 
   const createDevice = async () => {
     try {
@@ -255,6 +185,8 @@ const useMediaServer = () => {
             }
           }
         );
+
+        setReady(true);
       }
     );
   };
@@ -305,7 +237,7 @@ const useMediaServer = () => {
           console.log(params.error);
           return;
         }
-        console.log(params);
+        console.log("New Producer Added Params:", params);
 
         let consumerTransport;
 
@@ -513,95 +445,85 @@ const useMediaServer = () => {
     getPeers();
     setOtherStreams(s);
   };
-
-  useEffect(() => {
-    // const roomName = window.location.pathname.split("/")[2];
-
-    socket.current = io("http://localhost:3000/mediasoup");
-
-    socket.current.on("connection-success", ({ socketId }) => {
-      console.log("Socket Id", socketId);
-      console.log(socket.current?.id);
-      socketID.current = socketId;
-      // getLocalStream();
-    });
-
-    // let consumer;
-    // let isProducer = false;
-
-    // const getRtpCapabilities = () => {
-    //   socket.emit("createRoom", (data) => {
-    //     console.log(`Router RTP capabilities ${data.rtpCapabilities}`);
-    //     rtpCapabilities = data.rtpCapabilities;
-
-    //     createDevice();
-    //   });
-    // };
-
-    socket.current.on(
-      "new-producer",
-      ({ id, appData }: { id: string; appData: any }) => {
-        console.log("New Producer added: ", id, appData);
-        signalNewConsumerTransport({ id, appData });
-      }
-    );
-
-    socket.current.on("producer-closed", ({ remoteProducerId }) => {
-      const producerToClose = consumerTransports.current.find(
-        (transportData) => transportData.producerId === remoteProducerId
+  const assignListener = () => {
+    if (socket.current) {
+      socket.current.on("connection-success", ({ socketId }) => {
+        console.log("Socket Id", socketId);
+        console.log(socket.current?.id);
+        socketID.current = socketId;
+        joinRoom();
+        // getLocalStream();
+      });
+      socket.current.on(
+        "new-producer",
+        ({ id, appData }: { id: string; appData: any }) => {
+          console.log("New Producer added: ", id, appData);
+          signalNewConsumerTransport({ id, appData });
+        }
       );
-
-      producerToClose?.consumerTransport.close();
-      producerToClose?.consumer.close();
-
-      consumerTransports.current = consumerTransports.current.filter(
-        (transportData) => transportData.producerId !== remoteProducerId
-      );
-
-      // videoContainer.current.removeChild(
-      //   document.getElementById(`td-${remoteProducerId}`)
-      // );
-
-      delete streams.current[producerToClose?.consumer.appData.socketId];
-
-      // streams.current = streams.current.filter((stream) => {
-      //   // console.log("Stream", stream.id);
-      //   // console.log("Stream", remoteProducerId);
-      //   // console.log(stream.id === remoteProducerId);
-      //   return !(stream.id === remoteProducerId);
-      // });
-      // console.log(streams.current);
-      // setOtherStreams(streams.current);
-      adjustPeerStream();
-    });
-    // io.emit("active-speaker", { activeSpeaker: rooms[roomName].activeSpeaker });
-
-    socket.current.on(
-      "active-speaker",
-      (params: { activeSpeaker: typeof activeSpeaker.current }) => {
-        activeSpeaker.current = params.activeSpeaker;
-        console.log("Active Speaker", params.activeSpeaker);
-        if (
-          activeSpeaker.current?.peerId === socket.current?.id ||
-          activeSpeaker.current?.peerId === null
-        )
-          return;
+      socket.current.on("producer-closed", ({ remoteProducerId }) => {
+        const producerToClose = consumerTransports.current.find(
+          (transportData) => transportData.producerId === remoteProducerId
+        );
+        producerToClose?.consumerTransport.close();
+        producerToClose?.consumer.close();
+        consumerTransports.current = consumerTransports.current.filter(
+          (transportData) => transportData.producerId !== remoteProducerId
+        );
+        // videoContainer.current.removeChild(
+        //   document.getElementById(`td-${remoteProducerId}`)
+        // );
+        delete streams.current[producerToClose?.consumer.appData.socketId];
+        // streams.current = streams.current.filter((stream) => {
+        //   // console.log("Stream", stream.id);
+        //   // console.log("Stream", remoteProducerId);
+        //   // console.log(stream.id === remoteProducerId);
+        //   return !(stream.id === remoteProducerId);
+        // });
+        // console.log(streams.current);
+        // setOtherStreams(streams.current);
         adjustPeerStream();
-      }
-    );
-
-    // getLocalStream();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      });
+      socket.current.on(
+        "active-speaker",
+        (params: { activeSpeaker: typeof activeSpeaker.current }) => {
+          activeSpeaker.current = params.activeSpeaker;
+          console.log("Active Speaker", params.activeSpeaker);
+          if (
+            activeSpeaker.current?.peerId === socket.current?.id ||
+            activeSpeaker.current?.peerId === null
+          )
+            return;
+          adjustPeerStream();
+        }
+      );
+    }
+  };
   useEffect(() => {
-    if (roomName) {
-      console.log("Room name:", roomName);
-      joinRoom();
+    if (uri !== "") {
+      // const uri = `http://65.1.130.82:3000/mediasoup`;
+      console.log("IP", uri);
+      socket.current = io(uri, {
+        rejectUnauthorized: false,
+        secure: false,
+      });
+      assignListener();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roomName]);
+  }, [uri]);
+
+  // useEffect(() => {
+  //   if (roomName && ready) {
+  //     console.log("Room name:", roomName);
+  //     joinRoom();
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [roomName, ready]);
 
   useEffect(() => {
+    if (!ready) return;
+    console.log("ready", ready);
+    console.log(stream?.getTracks());
     const audioTrack = stream?.getAudioTracks()[0];
     if (audioTrack) {
       // Audio Track to produces
@@ -633,7 +555,7 @@ const useMediaServer = () => {
         // console.log(videoTrack);
       }
     }
-  }, [stream]);
+  }, [stream, ready]);
   useEffect(() => {
     if (!audioProducer.current) return;
     if (microphone) {
@@ -641,7 +563,7 @@ const useMediaServer = () => {
     } else {
       audioProducer.current.pause();
     }
-  }, [microphone]);
+  }, [microphone, ready]);
 
   useEffect(() => {
     if (!videoProducer.current) return;
@@ -650,7 +572,7 @@ const useMediaServer = () => {
     } else {
       videoProducer.current.pause();
     }
-  }, [webcam, screenShare, usingAR]);
+  }, [webcam, screenShare, usingAR, ready]);
 };
 export { useMediaServer };
 

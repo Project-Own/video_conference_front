@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { createContext, FC, useRef, useState } from "react";
+import React, { createContext, FC, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { addURLPath } from "src/utils/utils";
 
@@ -52,6 +52,12 @@ interface ConferenceContextProps {
     peerId: string | null;
     volume: number | null;
   }>;
+
+  message: string;
+  uri: string;
+
+  setUri: React.Dispatch<React.SetStateAction<string>>;
+  setMessage: React.Dispatch<React.SetStateAction<string>>;
 
   setPeers: React.Dispatch<
     React.SetStateAction<{
@@ -205,7 +211,49 @@ const ConferenceContextProvider: FC = ({ children }) => {
 
   // Threejs Model name
   const [modelName, setModelName] = useState("");
+  type Result = {
+    error?: "string";
+    public_ip?: "string";
+    public_dns: "string";
+    server_status: "running" | "stopped" | "stopping" | "pending";
+    message: "string";
+  };
+  const [uri, setUri] = useState("");
+  const [message, setMessage] = useState("");
+  const getPublicIp = async () => {
+    try {
+      const response = await fetch(
+        "https://w9j7p3zf63.execute-api.ap-south-1.amazonaws.com/test/public-ip"
+      );
 
+      const res: Result = await response.json();
+      console.log("Response:", res);
+      setMessage(res.message);
+
+      if (res.server_status === "running") {
+        console.log(res);
+        const uri = `http://${res.public_ip}:3000/mediasoup`;
+        setUri(uri);
+        return;
+      } else {
+        setTimeout(() => {
+          getPublicIp();
+          // navigate(0);
+        }, 30000);
+      }
+    } catch (err) {
+      console.log(err);
+      setTimeout(() => {
+        // navigate(0);
+        getPublicIp();
+      }, 30000);
+    }
+  };
+
+  useEffect(() => {
+    getPublicIp();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <ConferenceContext.Provider
       value={{
@@ -231,7 +279,10 @@ const ConferenceContextProvider: FC = ({ children }) => {
         webcamTrack,
         showCORSInfo,
         peers,
-
+        uri,
+        message,
+        setUri,
+        setMessage,
         setPeers,
 
         setShowCORSInfo,
