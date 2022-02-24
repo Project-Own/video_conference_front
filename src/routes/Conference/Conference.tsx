@@ -1,5 +1,5 @@
 import { Close } from "@mui/icons-material";
-import { Grid, IconButton, Snackbar } from "@mui/material";
+import { Button, Grid, IconButton, Snackbar } from "@mui/material";
 import { FC, useContext, useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import BottomBar from "src/components/BottomComponents/BottomBar";
@@ -17,6 +17,7 @@ const Conference: FC = () => {
     setRoomName,
     message,
     otherStreams,
+    uri,
 
     screenShare,
     name,
@@ -48,6 +49,9 @@ const Conference: FC = () => {
   };
   const action = (
     <>
+      <Button href={uri.split("mediasoup")[0]} target="_blank">
+        Open Server
+      </Button>
       <IconButton
         size="small"
         aria-label="close"
@@ -63,7 +67,7 @@ const Conference: FC = () => {
     <Layout>
       <Snackbar
         open={open}
-        autoHideDuration={6000}
+        // autoHideDuration={6000}
         onClose={handleClose}
         message={message}
         action={action}

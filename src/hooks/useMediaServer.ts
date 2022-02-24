@@ -32,6 +32,7 @@ const useMediaServer = () => {
     setPeers,
     otherStreams,
     setOtherStreams,
+    setMessage,
     uri,
   } = useContext(ConferenceContext);
   // const { webcam, webcamVideoTracks } = useWebcam({});
@@ -447,6 +448,13 @@ const useMediaServer = () => {
   };
   const assignListener = () => {
     if (socket.current) {
+      socket.current.on("connect_error", (err) => {
+        // console.log(err);
+        // console.log(uri);
+        setMessage(
+          `Allow HTTPS connection through self signed SSL certificate!! Open server link, "Advanced", "Proceed to *.*.*.*"`
+        );
+      });
       socket.current.on("connection-success", ({ socketId }) => {
         console.log("Socket Id", socketId);
         console.log(socket.current?.id);
@@ -499,14 +507,12 @@ const useMediaServer = () => {
       );
     }
   };
+
   useEffect(() => {
     if (uri !== "") {
       // const uri = `http://65.1.130.82:3000/mediasoup`;
       console.log("IP", uri);
-      socket.current = io(uri, {
-        rejectUnauthorized: false,
-        secure: false,
-      });
+      socket.current = io(uri, {});
       assignListener();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
