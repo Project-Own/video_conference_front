@@ -1,5 +1,5 @@
 import { Close } from "@mui/icons-material";
-import { Button, Grid, IconButton, Snackbar } from "@mui/material";
+import { Alert, Button, Grid, IconButton } from "@mui/material";
 import { FC, useContext, useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import BottomBar from "src/components/BottomComponents/BottomBar";
@@ -65,13 +65,11 @@ const Conference: FC = () => {
 
   return (
     <Layout>
-      <Snackbar
-        open={open}
-        // autoHideDuration={6000}
-        onClose={handleClose}
-        message={message}
-        action={action}
-      />
+      {open ? (
+        <Alert severity="warning">
+          {message} {action}
+        </Alert>
+      ) : null}
       <Grid
         container
         direction="column"

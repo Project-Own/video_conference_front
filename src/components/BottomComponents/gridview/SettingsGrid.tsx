@@ -1,5 +1,6 @@
 import { Close } from "@mui/icons-material";
 import {
+  Button,
   FormControl,
   Grid,
   IconButton,
@@ -244,12 +245,12 @@ const SettingsGrid = () => {
           <Typography> AR Marker:</Typography>
           <Typography>
             Download the marker and use it for AR.
-            <Link
+            <Button
               href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png"
               target="_blank"
             >
-              Hiro
-            </Link>
+              Download Marker(Hiro)
+            </Button>
           </Typography>
           <Typography>Display marker to place AR model on.</Typography>
           <Typography>Rotation: w🔺 s🔻 d🔺 a🔻</Typography>
