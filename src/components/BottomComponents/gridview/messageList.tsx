@@ -1,6 +1,5 @@
 import { Divider, ListItemText, Typography } from "@mui/material";
-import { FC, useContext } from "react";
-import { ConferenceContext } from "src/context/ConferenceContext";
+import { FC } from "react";
 
 
 
@@ -27,7 +26,7 @@ const MessageList: FC<{ messages: MessageInterface[]}> = ({ messages }) => {
   // const classes = useStyles();
   // const messages = props;
   // console.log(messages);
-  const { toggle,name,roomName } = useContext(ConferenceContext);
+ // const { toggle,name,roomName } = useContext(ConferenceContext);
 
   return (
     <>
