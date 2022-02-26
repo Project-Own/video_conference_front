@@ -29,10 +29,15 @@ const Conference: FC = () => {
   useEffect(() => {
     console.log("Context room", roomName);
     console.log("Path room", room);
-    if (!roomName && room) setRoomName(room);
+    if (!roomName && room) {setRoomName(room);
+      console.log(room)
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useEffect(()=>{
+    console.log("Check",roomName)
+  },[roomName])
 
   useEffect(() => {
     if (message !== "") setOpen(true);

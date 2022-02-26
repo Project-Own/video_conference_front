@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { createContext, FC, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { MessageInterface } from "src/components/BottomComponents/gridview/messageList";
 import { addURLPath } from "src/utils/utils";
-
 const ConferenceContext = createContext<ConferenceContextProps>(undefined!);
 
 // interface CallProps {
@@ -54,11 +54,14 @@ interface ConferenceContextProps {
   }>;
 
   message: string;
+  chatMessage: string;
+  messages: MessageInterface[];
   uri: string;
 
   setUri: React.Dispatch<React.SetStateAction<string>>;
   setMessage: React.Dispatch<React.SetStateAction<string>>;
-
+  setChatMessage: React.Dispatch<React.SetStateAction<string>>;
+  setMessages: React.Dispatch<React.SetStateAction<MessageInterface[]>>;
   setPeers: React.Dispatch<
     React.SetStateAction<{
       [key: string]: {
@@ -183,6 +186,10 @@ const ConferenceContextProvider: FC = ({ children }) => {
 
   const [name, setName] = useState("hero");
   const [roomName, setRoomName] = useState<string>();
+  const [chatMessage, setChatMessage] = useState<string>("");
+  const [messages, setMessages] = useState<MessageInterface[]>([]);
+
+
 
   const navigate = useNavigate();
 
@@ -281,10 +288,14 @@ const ConferenceContextProvider: FC = ({ children }) => {
         showCORSInfo,
         peers,
         uri,
-        message,
+        messages,
+        chatMessage,
+        setChatMessage,
+        setMessages,
         setUri,
-        setMessage,
         setPeers,
+        message,
+        setMessage,
 
         setShowCORSInfo,
         setWebcamTrack,
@@ -319,3 +330,4 @@ const ConferenceContextProvider: FC = ({ children }) => {
 };
 
 export { ConferenceContextProvider, ConferenceContext };
+
