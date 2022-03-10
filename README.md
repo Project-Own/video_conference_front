@@ -89,4 +89,12 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
+### Images
+<img src="https://github.com/Project-Own/video_conference_front/blob/main/public/Gesture_Dark_1.png" width="400px" height="100%"/>
+
+<img src="https://github.com/Project-Own/video_conference_front/blob/main/public/Gesture_Dark_2.png" width="400px" height="100%"/>
+
+<img src="https://github.com/Project-Own/video_conference_front/blob/main/public/AR_edit.png" width="400px" height="100%"/>
+
+<img src="https://github.com/Project-Own/video_conference_front/blob/main/public/AR_paper_edit.png" width="400px" height="100%"/>
 
