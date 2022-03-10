@@ -18,7 +18,7 @@
     "@emotion/styled": "^11.8.1",
     "@mediapipe/camera_utils": "^0.3.1640029074",
     "@mediapipe/drawing_utils": "^0.3.1620248257",
-    "@mediapipe/hands": "^0.4.1635986972",
+    "@mediapipe/hands": "^0.4.1646424915",
     "@mui/icons-material": "^5.4.1",
     "@mui/material": "^5.5.0",
     "@tensorflow/tfjs": "^3.14.0",
