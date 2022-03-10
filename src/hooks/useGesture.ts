@@ -1,6 +1,5 @@
 import { useContext, useEffect, useRef } from "react";
 import { Hands, Results } from "@mediapipe/hands";
-
 import {
   classify,
   displayLandmarks,
@@ -10,55 +9,21 @@ import { ConferenceContext } from "src/context/ConferenceContext";
 
 export const useGesture = (
   canvas: { height: number; width: number },
-  canvasRef?: HTMLCanvasElement,
+  canvasRef?: React.RefObject<HTMLCanvasElement>,
   callback?: (gesture: string, results: Results) => void,
   display = true
 ) => {
   // const { webcam } = useTray();
 
-  const { usingGesture, webcamTrack, webcam, setWebcam } =
+  const { usingGesture, webcamTrack, webcam, setWebcam, setGesture } =
     useContext(ConferenceContext);
   const videoRef = useRef(document.createElement("video"));
 
   // const videoElement = useRef(document.createElement("video"));
-  const canvasElement = canvasRef
-    ? canvasRef
-    : document.createElement("canvas");
 
-  display = canvasRef && display ? display : false;
+  display = display ? display : false;
   // const canvasElement = useRef(document.createElement("canvas"));
   const requestRef = useRef<number | undefined>();
-  useEffect(() => {
-    if (webcamTrack?.readyState === "ended") setWebcam(false);
-    if (videoRef.current) {
-      videoRef.current.srcObject = webcamTrack
-        ? new MediaStream([webcamTrack])
-        : null;
-    }
-    videoRef.current.autoplay = true;
-    videoRef.current.playsInline = true;
-    videoRef.current.muted = true;
-    videoRef.current.onloadedmetadata = () => {
-      videoRef.current?.play().catch((e) => {
-        console.log(e);
-      });
-      // draw();
-      // setState({ type: "usingGesture", value: true });
-    };
-    // videoRef.current.oncanplaythrough = () => {
-    //   // setIsVideoPlaying(true);
-    //   videoRef.current?.play().catch((e) => {
-    //     console.log(e);
-    //   });
-    // };
-    videoRef.current.height = canvas.height;
-    videoRef.current.width = canvas.width;
-
-    if (canvasElement) {
-      canvasElement.height = canvas.height;
-      canvasElement.width = canvas.width; // console.log;
-    }
-  }, [webcamTrack, canvas.height, canvas.width, canvasElement, setWebcam]);
 
   // let pastX = 0,
   //   pastY = 0,
@@ -109,7 +74,9 @@ export const useGesture = (
     // console.log(results);
     // console.log(canvasElement.current);
     // console.log(canvasElement.current!.getContext("2d"));
-    if (canvasElement && display) displayLandmarks(canvasElement, results);
+
+    if (canvasRef?.current && display)
+      displayLandmarks(canvasRef.current, results);
     try {
       const fingersStatus = getFingerStatuses(results);
       // count = 0;
@@ -118,6 +85,8 @@ export const useGesture = (
       //   if (fingersStatus[0][fingerKey] === true) count += 1;
       // }
       gesture = classify(fingersStatus[0]);
+      setGesture(gesture);
+      // console.log("Gesture Mediapipe:", gesture);
       // console.log(callback);
       if (callback) callback(gesture, results);
       // console.log("Gesture: ", gesture);
@@ -131,7 +100,7 @@ export const useGesture = (
   const count = useRef(0);
   const draw = () => {
     requestRef.current = undefined;
-    const context = canvasElement?.getContext("2d");
+    const context = canvasRef?.current?.getContext("2d");
 
     context?.clearRect(0, 0, canvas.width, canvas.height);
     context?.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
@@ -140,12 +109,12 @@ export const useGesture = (
 
     count.current += 1;
 
-    mp_hands.current?.send({ image: canvasElement! }).then(() => {
+    mp_hands.current?.send({ image: canvasRef?.current! }).then(() => {
       start();
     });
   };
   const clearFrame = () => {
-    const context = canvasElement?.getContext("2d");
+    const context = canvasRef?.current?.getContext("2d");
 
     context?.clearRect(0, 0, canvas.width, canvas.height);
   };
@@ -190,4 +159,36 @@ export const useGesture = (
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [webcam, usingGesture]);
+
+  useEffect(() => {
+    if (webcamTrack?.readyState === "ended") setWebcam(false);
+    if (videoRef.current) {
+      videoRef.current.srcObject = webcamTrack
+        ? new MediaStream([webcamTrack])
+        : null;
+    }
+    videoRef.current.autoplay = true;
+    videoRef.current.playsInline = true;
+    videoRef.current.muted = true;
+    videoRef.current.onloadedmetadata = () => {
+      videoRef.current?.play().catch((e) => {
+        console.log(e);
+      });
+      // draw();
+      // setState({ type: "usingGesture", value: true });
+    };
+    // videoRef.current.oncanplaythrough = () => {
+    //   // setIsVideoPlaying(true);
+    //   videoRef.current?.play().catch((e) => {
+    //     console.log(e);
+    //   });
+    // };
+    videoRef.current.height = canvas.height;
+    videoRef.current.width = canvas.width;
+
+    if (canvasRef?.current) {
+      canvasRef.current.height = canvas.height;
+      canvasRef.current.width = canvas.width; // console.log;
+    }
+  }, [webcamTrack, canvas.height, canvas.width, canvasRef, setWebcam]);
 };

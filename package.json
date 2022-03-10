@@ -21,6 +21,7 @@
     "@mediapipe/hands": "^0.4.1635986972",
     "@mui/icons-material": "^5.4.1",
     "@mui/material": "^5.4.1",
+    "@tensorflow/tfjs": "^3.14.0",
     "animejs": "^3.2.1",
     "mediasoup-client": "^3.6.50",
     "react": "^17.0.2",
