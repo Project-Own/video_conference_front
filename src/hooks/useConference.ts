@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { ConferenceContext } from "src/context/ConferenceContext";
 import { MathUtils, Object3D } from "three";
 import useAR from "./useAR";
@@ -8,6 +8,7 @@ import { useWebcam } from "./useWebcam";
 import { Results } from "@mediapipe/hands";
 import { useMediaServer } from "./useMediaServer";
 import { useAudio } from "./useAudio";
+import useTrainedGesture from "./useTrainedGesture";
 
 export const useConference = () => {
   const { setUsingAR, setStream, webcam, screenShare, usingAR, setWebcam } =
@@ -190,7 +191,11 @@ export const useConference = () => {
   };
 
   const { arVideoTrack } = useAR({ ...params }, createControls);
-  useGesture(params, undefined, func, false);
+  const canvasRef = useRef(document.createElement("canvas"));
+
+  useGesture(params, canvasRef, func, false);
+  useTrainedGesture(params);
+
   useMediaServer();
 
   useEffect(() => {

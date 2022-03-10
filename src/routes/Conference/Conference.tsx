@@ -1,5 +1,5 @@
 import { Close } from "@mui/icons-material";
-import { Alert, Button, Grid, IconButton } from "@mui/material";
+import { Alert, Button, Grid, IconButton, Typography } from "@mui/material";
 import { FC, useContext, useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import BottomBar from "src/components/BottomComponents/BottomBar";
@@ -22,6 +22,11 @@ const Conference: FC = () => {
     screenShare,
     name,
     peers,
+    trainedGesture,
+    frame,
+    usingTrainedGesture,
+    usingGesture,
+    gesture,
   } = useContext(ConferenceContext);
   const location = useLocation();
   const room = location.pathname.split("/room/")[1];
@@ -122,6 +127,24 @@ const Conference: FC = () => {
               controls={false}
               displayName={name}
             />
+            {usingTrainedGesture ? (
+              <>
+                <Typography variant="body2">
+                  <b>Frame:</b> {frame.current}
+                </Typography>
+
+                <Typography variant="body1">
+                  <b>Trained Gesture:</b>
+                  {trainedGesture ? trainedGesture : "No gesture"}
+                </Typography>
+              </>
+            ) : null}
+
+            {usingGesture ? (
+              <Typography variant="body1">
+                <b>Hands Gesture:</b> {gesture ? gesture : "No gesture"}
+              </Typography>
+            ) : null}
           </Grid>
 
           {otherStreams?.length! > 0 &&
@@ -177,7 +200,7 @@ const Conference: FC = () => {
             setHideBottomBar(false);
             hideTimeout.current = setTimeout(() => {
               setHideBottomBar(true);
-            }, 10000);
+            }, 30000);
           }}
         >
           <BottomBar />
