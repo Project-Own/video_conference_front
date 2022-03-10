@@ -15,7 +15,7 @@
   "dependencies": {
     "@ar-js-org/ar.js": "https://github.com/AR-js-org/AR.js.git#90e83dc4003aa1980b242014b3ca054effed8edf",
     "@emotion/react": "^11.8.1",
-    "@emotion/styled": "^11.6.0",
+    "@emotion/styled": "^11.8.1",
     "@mediapipe/camera_utils": "^0.3.1640029074",
     "@mediapipe/drawing_utils": "^0.3.1620248257",
     "@mediapipe/hands": "^0.4.1635986972",
