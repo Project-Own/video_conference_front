@@ -20,7 +20,7 @@
     "@mediapipe/drawing_utils": "^0.3.1620248257",
     "@mediapipe/hands": "^0.4.1635986972",
     "@mui/icons-material": "^5.4.1",
-    "@mui/material": "^5.4.1",
+    "@mui/material": "^5.5.0",
     "@tensorflow/tfjs": "^3.14.0",
     "animejs": "^3.2.1",
     "mediasoup-client": "^3.6.50",
