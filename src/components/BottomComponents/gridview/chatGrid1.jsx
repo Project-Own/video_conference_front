@@ -61,9 +61,11 @@ import MessageList from "./messageList";
 //     },
 //   })
 // );
+//const ENDPOINT = 'https://chat-backend-virtual-meet.herokuapp.com/';
 
 const ChatGrid = () => {
-  const { toggle } = useContext(ConferenceContext);
+  const { toggle,  setChatMessage, messages} = useContext(ConferenceContext);
+  const [message, setMessage] = useState("")
 
   // const [isOpen, setisOpen] = useState(false);
 
@@ -72,26 +74,36 @@ const ChatGrid = () => {
   //     setisOpen(open);
   //   };
 
-  const [message, setmessage] = useState([
-    { user: "1", text: "Hello, Welcome to Virtual meet" },
-  ]);
-  const [fieldValue, setfieldValue] = useState("");
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setfieldValue("");
+    //setfieldValue("");
     // console.log(e);
-    if (fieldValue) {
-      //   console.log(message);
-      setmessage([...message, { user: "2", text: fieldValue }]);
-    }
+    
+   setChatMessage(message)
+   setMessage("")
   };
+
+//   const sendMessage = (event) => {
+//     event.preventDefault();
+
+//     if(message){
+//         socket.emit('sendMessage', message, () => setMessage(''))
+//     }
+// }
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+    e
   ) => {
-    setfieldValue(e.target.value);
+    setMessage(e.target.value);
   };
+
+
+
+
+
+
+
+
 
   return (
     <Grid
@@ -121,7 +133,7 @@ const ChatGrid = () => {
         // className={classes.chatBox}
       >
         <List>
-          <MessageList messages={message} />
+          <MessageList messages={messages} />
         </List>
       </Grid>
 
@@ -149,7 +161,7 @@ const ChatGrid = () => {
             ),
           }}
           size="small"
-          value={fieldValue}
+          value={message}
           placeholder="Send a message"
           onChange={(e) => {
             handleChange(e);

@@ -1,6 +1,8 @@
 import { Divider, ListItemText, Typography } from "@mui/material";
 import { FC } from "react";
 
+
+
 // const useStyles = makeStyles((theme: Theme) =>
 //   createStyles({
 //     text: {
@@ -13,20 +15,22 @@ import { FC } from "react";
 //   })
 // );
 
-interface messageInterface {
-  senderId: number;
+export interface MessageInterface {
+  user: string;
   text: string;
 }
 
-const MessageList: FC<{ messages: messageInterface[] }> = ({ messages }) => {
+const MessageList: FC<{ messages: MessageInterface[]}> = ({ messages }) => {
   //   const { text, senderId } = props;
   // console.log(props);
   // const classes = useStyles();
   // const messages = props;
   // console.log(messages);
+ // const { toggle,name,roomName } = useContext(ConferenceContext);
+
   return (
     <>
-      {messages.map((msg: messageInterface, index: number) => {
+      {messages.map((msg: MessageInterface, index: number) => {
         return (
           <div key={index}>
             <ListItemText>
@@ -34,7 +38,7 @@ const MessageList: FC<{ messages: messageInterface[] }> = ({ messages }) => {
 
               // lassName={classes.text}
               >
-                {index + " : " + msg.text}
+                {msg.user+ " :: " + msg.text}
               </Typography>
             </ListItemText>
             <Divider variant="fullWidth" />

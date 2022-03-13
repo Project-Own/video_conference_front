@@ -8,14 +8,14 @@ import {
   Settings,
   StopScreenShareOutlined,
   VideoCameraBackOutlined,
-  VideoCameraFrontOutlined,
+  VideoCameraFrontOutlined
 } from "@mui/icons-material";
 import { Button, Drawer, Grid, useTheme } from "@mui/material";
 import { useContext } from "react";
 import { ConferenceContext } from "src/context/ConferenceContext";
 import { UIContext } from "src/context/UIContext";
 import ButtonInfo from "./ButtonInfo";
-import ChatGrid from "./gridview/chatGrid";
+import ChatGrid from "./gridview/chatGrid1";
 import ParticipantGrid from "./gridview/participantGrid";
 import SettingsGrid from "./gridview/SettingsGrid";
 

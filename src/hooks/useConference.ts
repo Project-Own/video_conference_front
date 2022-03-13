@@ -1,10 +1,17 @@
+
+import { Results } from "@mediapipe/hands";
 import { useContext, useEffect, useRef } from "react";
+
 import { ConferenceContext } from "src/context/ConferenceContext";
 import { MathUtils, Object3D } from "three";
 import useAR from "./useAR";
+import { useAudio } from "./useAudio";
+import { useChat } from "./usechat";
 import { useGesture } from "./useGesture";
+import { useMediaServer } from "./useMediaServer";
 import { useScreenShare } from "./useScreenShare";
 import { useWebcam } from "./useWebcam";
+
 import { Results } from "@mediapipe/hands";
 import { useMediaServer } from "./useMediaServer";
 import { useAudio } from "./useAudio";
@@ -20,8 +27,7 @@ export const useConference = () => {
     frameRate: 24,
   };
   const { webcamVideoTracks } = useWebcam({ ...params });
-  const { audioTracks } = useAudio();
-
+  const { audioTracks } = useAudio()
   const { screenShareVideoTracks } = useScreenShare({
     ...params,
     cursor: "always",
@@ -229,4 +235,5 @@ export const useConference = () => {
     screenShare,
     arVideoTrack,
   ]);
+useChat()  
 };
