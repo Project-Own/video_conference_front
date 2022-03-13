@@ -34,6 +34,7 @@ interface ConferenceContextProps {
   setting: boolean;
   usingAR: boolean;
   usingGesture: boolean;
+  usingTrainedGesture: boolean;
   webcamDeviceId: string;
   microphoneDeviceId: string;
   webcamDevices: MediaDeviceInfo[];
@@ -56,12 +57,22 @@ interface ConferenceContextProps {
   message: string;
   chatMessage: string;
   messages: MessageInterface[];
+
+  gesture: string;
+  trainedGesture: string;
+
   uri: string;
+  frame: React.MutableRefObject<number>;
 
   setUri: React.Dispatch<React.SetStateAction<string>>;
   setMessage: React.Dispatch<React.SetStateAction<string>>;
+
   setChatMessage: React.Dispatch<React.SetStateAction<string>>;
   setMessages: React.Dispatch<React.SetStateAction<MessageInterface[]>>;
+
+  setGesture: React.Dispatch<React.SetStateAction<string>>;
+  setTrainedGesture: React.Dispatch<React.SetStateAction<string>>;
+
   setPeers: React.Dispatch<
     React.SetStateAction<{
       [key: string]: {
@@ -84,6 +95,7 @@ interface ConferenceContextProps {
   setParticipant: React.Dispatch<React.SetStateAction<boolean>>;
   setUsingAR: React.Dispatch<React.SetStateAction<boolean>>;
   setUsingGesture: React.Dispatch<React.SetStateAction<boolean>>;
+  setUsingTrainedGesture: React.Dispatch<React.SetStateAction<boolean>>;
   setWebcamDeviceId: React.Dispatch<React.SetStateAction<string>>;
   setMicrophoneDeviceId: React.Dispatch<React.SetStateAction<string>>;
   setOtherStreams: React.Dispatch<React.SetStateAction<PeerStream[]>>;
@@ -103,6 +115,7 @@ interface ConferenceContextProps {
       | "usingAR"
       | "usingGesture"
       | "participant"
+      | "usingTrainedGesture"
   ) => void;
 
   joinRoom: (room: string, name: string) => void;
@@ -124,6 +137,8 @@ const ConferenceContextProvider: FC = ({ children }) => {
   }>({});
   const [showCORSInfo, setShowCORSInfo] = useState<boolean>(true);
   const [microphone, setMicrophone] = useState<boolean>(true);
+  const [usingTrainedGesture, setUsingTrainedGesture] =
+    useState<boolean>(false);
   const [webcam, setWebcam] = useState<boolean>(true);
   const [screenShare, setScreenShare] = useState<boolean>(false);
   const [chat, setChat] = useState<boolean>(false);
@@ -140,6 +155,10 @@ const ConferenceContextProvider: FC = ({ children }) => {
     []
   );
 
+  const frame = useRef(0);
+  const [gesture, setGesture] = useState("");
+  const [trainedGesture, setTrainedGesture] = useState("");
+
   const toggle = (
     type:
       | "microphone"
@@ -151,6 +170,7 @@ const ConferenceContextProvider: FC = ({ children }) => {
       | "usingAR"
       | "usingGesture"
       | "participant"
+      | "usingTrainedGesture"
   ) => {
     const param = (prevValue: boolean) => !prevValue;
     switch (type) {
@@ -180,6 +200,9 @@ const ConferenceContextProvider: FC = ({ children }) => {
         break;
       case "participant":
         setParticipant(param);
+        break;
+      case "usingTrainedGesture":
+        setUsingTrainedGesture(param);
         break;
     }
   };
@@ -228,34 +251,36 @@ const ConferenceContextProvider: FC = ({ children }) => {
   const [uri, setUri] = useState("");
   const [message, setMessage] = useState("");
   const getPublicIp = async () => {
-    try {
-      const response = await fetch(
-        "https://w9j7p3zf63.execute-api.ap-south-1.amazonaws.com/test/public-ip"
-      );
+    const uri = `https://major.sahasp.com.np:3000/mediasoup`;
+    setUri(uri);
+    // try {
+    //   const response = await fetch(
+    //     "https://w9j7p3zf63.execute-api.ap-south-1.amazonaws.com/test/public-ip"
+    //   );
 
-      const res: Result = await response.json();
-      console.log("Response:", res);
-      setMessage(res.message);
+    //   const res: Result = await response.json();
+    //   console.log("Response:", res);
+    //   setMessage(res.message);
 
-      if (res.server_status === "running") {
-        console.log(res);
-        const uri = `https://${res.public_ip}:3000/mediasoup`;
-        setUri(uri);
-        return;
-      } else {
-        setTimeout(() => {
-          getPublicIp();
-          // navigate(0);
-        }, 30000);
-      }
-    } catch (err) {
-      console.log(err);
-      setMessage("Wait sometime for server to launch!");
-      setTimeout(() => {
-        // navigate(0);
-        getPublicIp();
-      }, 30000);
-    }
+    //   if (res.server_status === "running") {
+    //     console.log(res);
+    //     const uri = `https://${res.public_ip}:3000/mediasoup`;
+    //     setUri(uri);
+    //     return;
+    //   } else {
+    //     setTimeout(() => {
+    //       getPublicIp();
+    //       // navigate(0);
+    //     }, 30000);
+    //   }
+    // } catch (err) {
+    //   console.log(err);
+    //   setMessage("Wait sometime for server to launch!");
+    //   setTimeout(() => {
+    //     // navigate(0);
+    //     getPublicIp();
+    //   }, 30000);
+    // }
   };
 
   useEffect(() => {
@@ -292,6 +317,17 @@ const ConferenceContextProvider: FC = ({ children }) => {
         chatMessage,
         setChatMessage,
         setMessages,
+
+        message,
+        gesture,
+        frame,
+        trainedGesture,
+        usingTrainedGesture,
+
+        setTrainedGesture,
+        setUsingTrainedGesture,
+
+        setGesture,
         setUri,
         setPeers,
         message,

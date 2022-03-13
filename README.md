@@ -1,10 +1,85 @@
-# Getting Started with Create React App
+# Virtual Meet
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Description
+Virtual meet is a video conferencing app where people can talk with each other. With this app, 3D model can be displayed in augmented reality. Gestures can be used to control different functionalities. Screen sharing can be done for presenting content towards other users. Participant can use the chat feature for communication.
+
+## Libraries Used
+<ul>
+  <li>Mediasoup(mediasoup-client)</li>
+  <li>Tensorflow.js(@tensorflow/tfjs)</li>
+  <li>Ar.js(@ar-js-org/ar.js)</li>
+  <li>Socket.io</li>
+  <li>Mediapipe(@mediapipe)</li>
+  <li>Material UI (@mui(</li>
+</ul>
+
+
+### Mediapipe Hands
+We use medaipipe hands library for web. The library was used to instantiate a
+pre-trained model. Webcam video frames are taken from the browser. Each frame
+obtained is passed to the model instance and a 21 point landmark is extracted
+from it.
+Gesture classification is done using the 21 point landmarks. On the basis of open
+and close of a finger’s status, gesture is classified.
+
+### Mediasoup
+SFU is implemented using MediaSoup library in nodejs. This nodejs media server
+allows us to create a multiparty video stream.
+For now SFU is only hosted locally due to limitation of resource and budget.
+Previously used heroku for deployment of peer-peer service does not support me-
+dia servers and other services available in internet for deployment are not viable
+for us, hence for now media server implementation is restricted to the local host
+
+### AR.js
+Threejs draws 3D environment on canvas. In order to get
+relevant 3D information from a video either a dedicated hardware are required such
+as in mobile devices or a mechanism needs to be in place to map 2D information
+into 3D. We used marker based AR to map 3D space from video. By capturing
+this 3D context from a monocular video stream, we are able to draw 3D objects
+relative to the video stream on the canvas. Now by making the canvas background
+transparent we are able to merge the canvas and video giving illusion of AR. This
+process can be further refined by programmatically merging the web cam video
+stream and canvas video stream. To achieve this we took the webcam video stream
+and painted each frame on a canvas, then layered the canvas stream on top of it.
+This new canvas was then used to produce a new stream with desired frames per
+second. By doing this we generate a single AR integrated video stream to view
+and transfer among peers. A dedicated button is used for turning AR on and off
+on the video stream. We have linked the toggling of AR mode to a ”Start AR”
+button so that user can turn on AR as required.
+
+
+#### Model Loading
+Loading of 3D model from Github
+There are various formats to create and distribute 3D models. Fbx, blend, mtl
+et are a few examples. However to transfer and load 3D models over the inter-
+net glTF/GLB are the standard 3D format. GLB is a binary form of glTF that
+includes textures instead of referencing them as external images. Thus providing
+comfort of a single source for transmission. Threejs has support for loading scenes
+and models from various formats. GLTFLoader provides simple methods to load
+glTF/GLB file formats from any URI source.
+33
+For this project’s demonstration, we pull freely availabe models from threejs repos-
+itories’ model examples.
+(https://github.com/mrdoob/three.js/tree/dev/examples/models/gltf)
+
+
+#### Addition of User Control
+User interaction with the AR model makes AR fun to use. Currently we listen to
+the keyboard buttons being pressed and when certain keys are pressed we perform
+respective mapped functions. The following functions are currently mapped to
+AR model
+• Rotation with 90 degree increment/decrement on X axis - ’a’ & ’d’ (Lower-
+cases)
+• Rotation with 90 degree increment/decrement on Y axis- ’w’ & ’s’ (Lower-
+cases)
+• Scaling by factor of 0.01 - ’W’ & ’S’ (Uppercases)
+• Reset Rotation - ’D’ (Uppercases)
+• Reset Scaling - ’A’ (Uppercases)
+We have also implemented a select input that lists the available models from
+threejs glTF model examples. When user selects a model, it is downloaded and
+replaces the current model on the screen. By default, a cube is loaded.
 
 ## Available Scripts
-
-In the project directory, you can run:
 
 ### `yarn start`
 
@@ -14,33 +89,12 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
-### `yarn test`
+### Images
+<img src="https://github.com/Project-Own/video_conference_front/blob/main/public/Gesture_Dark_1.png" width="400px" height="100%"/>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+<img src="https://github.com/Project-Own/video_conference_front/blob/main/public/Gesture_Dark_2.png" width="400px" height="100%"/>
 
-### `yarn build`
+<img src="https://github.com/Project-Own/video_conference_front/blob/main/public/AR_edit.png" width="400px" height="100%"/>
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+<img src="https://github.com/Project-Own/video_conference_front/blob/main/public/AR_paper_edit.png" width="400px" height="100%"/>
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).

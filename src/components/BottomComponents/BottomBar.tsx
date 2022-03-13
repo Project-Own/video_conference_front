@@ -58,7 +58,7 @@ import ButtonTray from "./ButtonTray";
 // );
 
 const BottomBar = () => {
-  const { usingAR, usingGesture, webcam, toggle } =
+  const { usingAR, usingGesture, usingTrainedGesture, webcam, toggle } =
     useContext(ConferenceContext);
   const isHost = true;
   // const [ar_text, usingAR_text] = useState(false);
@@ -84,7 +84,7 @@ const BottomBar = () => {
       <Grid item sx={{ display: { xs: "none", md: "block" } }} md={1} lg={2} />
       {isHost ? (
         <Grid item container xs={7} sm={4} md={3} lg={2} direction="row">
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <Button
               variant="contained"
               color={usingAR ? "success" : "primary"}
@@ -92,10 +92,14 @@ const BottomBar = () => {
               disabled={!webcam}
               onClick={() => toggle("usingAR")}
             >
-              <Typography>{usingAR ? "Stop AR" : "Start AR"}</Typography>
+              <Typography>
+                AR
+                {/* {usingAR ? "Stop AR" : "Start AR"} */}
+              </Typography>
             </Button>
           </Grid>
-          <Grid item xs={6}>
+
+          <Grid item xs={4}>
             <Button
               sx={{ height: "100%" }}
               variant="contained"
@@ -104,7 +108,25 @@ const BottomBar = () => {
               disabled={!webcam}
             >
               <Typography>
-                {usingGesture ? "Stop Gesture" : "Start Gesture"}
+                Ges
+                {/* {usingGesture ? "Stop Gesture" : "Start Gesture"} */}
+              </Typography>
+            </Button>
+          </Grid>
+
+          <Grid item xs={4}>
+            <Button
+              variant="contained"
+              color={usingTrainedGesture ? "success" : "primary"}
+              sx={{ height: "100%" }}
+              disabled={!webcam}
+              onClick={() => toggle("usingTrainedGesture")}
+            >
+              <Typography>
+                Train Ges
+                {/* {usingTrainedGesture
+                  ? "Stop Trained Gesture"
+                  : "Start Trained Gesture"} */}
               </Typography>
             </Button>
           </Grid>

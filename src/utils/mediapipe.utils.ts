@@ -16,13 +16,13 @@ export const displayLandmarks = (
   if (canvasCtx) {
     canvasCtx.save();
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-    // canvasCtx.drawImage(
-    //   results.image,
-    //   0,
-    //   0,
-    //   canvasElement.width,
-    //   canvasElement.height
-    // );
+    canvasCtx.drawImage(
+      results.image,
+      0,
+      0,
+      canvasElement.width,
+      canvasElement.height
+    );
     //   canvasCtx.fillText("Count: " + count, 10, 50);
     //   canvasCtx.fillText("Gesture: " + gesture, 50, 50);
     if (results.multiHandLandmarks) {
