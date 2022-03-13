@@ -38,7 +38,7 @@ const MessageList: FC<{ messages: MessageInterface[]}> = ({ messages }) => {
 
               // lassName={classes.text}
               >
-                {msg.user+ " : " + msg.text}
+                {msg.user+ " :: " + msg.text}
               </Typography>
             </ListItemText>
             <Divider variant="fullWidth" />
