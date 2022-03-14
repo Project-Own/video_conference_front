@@ -212,8 +212,6 @@ const ConferenceContextProvider: FC = ({ children }) => {
   const [chatMessage, setChatMessage] = useState<string>("");
   const [messages, setMessages] = useState<MessageInterface[]>([]);
 
-
-
   const navigate = useNavigate();
 
   const joinRoom = (room: string, name: string) => {
@@ -330,7 +328,6 @@ const ConferenceContextProvider: FC = ({ children }) => {
         setGesture,
         setUri,
         setPeers,
-        message,
         setMessage,
 
         setShowCORSInfo,
@@ -366,4 +363,3 @@ const ConferenceContextProvider: FC = ({ children }) => {
 };
 
 export { ConferenceContextProvider, ConferenceContext };
-
