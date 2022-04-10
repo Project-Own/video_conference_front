@@ -1,9 +1,11 @@
 # Virtual Meet
 
 ## Description
+
 Virtual meet is a video conferencing app where people can talk with each other. With this app, 3D model can be displayed in augmented reality. Gestures can be used to control different functionalities. Screen sharing can be done for presenting content towards other users. Participant can use the chat feature for communication.
 
 ## Libraries Used
+
 <ul>
   <li>Mediasoup(mediasoup-client)</li>
   <li>Tensorflow.js(@tensorflow/tfjs)</li>
@@ -13,8 +15,8 @@ Virtual meet is a video conferencing app where people can talk with each other. 
   <li>Material UI (@mui(</li>
 </ul>
 
-
 ### Mediapipe Hands
+
 We use medaipipe hands library for web. The library was used to instantiate a
 pre-trained model. Webcam video frames are taken from the browser. Each frame
 obtained is passed to the model instance and a 21 point landmark is extracted
@@ -23,6 +25,7 @@ Gesture classification is done using the 21 point landmarks. On the basis of ope
 and close of a finger’s status, gesture is classified.
 
 ### Mediasoup
+
 SFU is implemented using MediaSoup library in nodejs. This nodejs media server
 allows us to create a multiparty video stream.
 For now SFU is only hosted locally due to limitation of resource and budget.
@@ -31,6 +34,7 @@ dia servers and other services available in internet for deployment are not viab
 for us, hence for now media server implementation is restricted to the local host
 
 ### AR.js
+
 Threejs draws 3D environment on canvas. In order to get
 relevant 3D information from a video either a dedicated hardware are required such
 as in mobile devices or a mechanism needs to be in place to map 2D information
@@ -47,8 +51,8 @@ and transfer among peers. A dedicated button is used for turning AR on and off
 on the video stream. We have linked the toggling of AR mode to a ”Start AR”
 button so that user can turn on AR as required.
 
-
 #### Model Loading
+
 Loading of 3D model from Github
 There are various formats to create and distribute 3D models. Fbx, blend, mtl
 et are a few examples. However to transfer and load 3D models over the inter-
@@ -62,8 +66,8 @@ For this project’s demonstration, we pull freely availabe models from threejs 
 itories’ model examples.
 (https://github.com/mrdoob/three.js/tree/dev/examples/models/gltf)
 
-
 #### Addition of User Control
+
 User interaction with the AR model makes AR fun to use. Currently we listen to
 the keyboard buttons being pressed and when certain keys are pressed we perform
 respective mapped functions. The following functions are currently mapped to
@@ -79,15 +83,8 @@ We have also implemented a select input that lists the available models from
 threejs glTF model examples. When user selects a model, it is downloaded and
 replaces the current model on the screen. By default, a cube is loaded.
 
-## Available Scripts
-
-### `yarn start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-
 ### Images
+
 <img src="https://github.com/Project-Own/video_conference_front/blob/main/public/Gesture_Dark_1.png" width="400px" height="100%"/>
 
 <img src="https://github.com/Project-Own/video_conference_front/blob/main/public/Gesture_Dark_2.png" width="400px" height="100%"/>
@@ -95,4 +92,3 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 <img src="https://github.com/Project-Own/video_conference_front/blob/main/public/AR_edit.png" width="400px" height="100%"/>
 
 <img src="https://github.com/Project-Own/video_conference_front/blob/main/public/AR_paper_edit.png" width="400px" height="100%"/>
-
