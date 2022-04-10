@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/video_conference_front/main/static/css/main.a82c188f.css",
+    "main.js": "/video_conference_front/main/static/js/main.b78aeec4.js",
+    "static/js/59.a70f6c63.chunk.js": "/video_conference_front/main/static/js/59.a70f6c63.chunk.js",
+    "static/js/787.d3cbc067.chunk.js": "/video_conference_front/main/static/js/787.d3cbc067.chunk.js",
+    "index.html": "/video_conference_front/main/index.html",
+    "main.a82c188f.css.map": "/video_conference_front/main/static/css/main.a82c188f.css.map",
+    "main.b78aeec4.js.map": "/video_conference_front/main/static/js/main.b78aeec4.js.map",
+    "59.a70f6c63.chunk.js.map": "/video_conference_front/main/static/js/59.a70f6c63.chunk.js.map",
+    "787.d3cbc067.chunk.js.map": "/video_conference_front/main/static/js/787.d3cbc067.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a82c188f.css",
+    "static/js/main.b78aeec4.js"
+  ]
+}
