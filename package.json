@@ -23,7 +23,7 @@
     "@mui/material": "^5.5.0",
     "@tensorflow/tfjs": "^3.14.0",
     "animejs": "^3.2.1",
-    "mediasoup-client": "^3.6.50",
+    "mediasoup-client": "^3.6.82",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "^6.2.1",
