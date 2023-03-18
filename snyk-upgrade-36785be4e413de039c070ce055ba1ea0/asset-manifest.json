@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/video_conference_front/snyk-upgrade-36785be4e413de039c070ce055ba1ea0/static/css/main.a82c188f.css",
+    "main.js": "/video_conference_front/snyk-upgrade-36785be4e413de039c070ce055ba1ea0/static/js/main.cd9f6926.js",
+    "static/js/59.72a01aa1.chunk.js": "/video_conference_front/snyk-upgrade-36785be4e413de039c070ce055ba1ea0/static/js/59.72a01aa1.chunk.js",
+    "static/js/787.d3cbc067.chunk.js": "/video_conference_front/snyk-upgrade-36785be4e413de039c070ce055ba1ea0/static/js/787.d3cbc067.chunk.js",
+    "index.html": "/video_conference_front/snyk-upgrade-36785be4e413de039c070ce055ba1ea0/index.html",
+    "main.a82c188f.css.map": "/video_conference_front/snyk-upgrade-36785be4e413de039c070ce055ba1ea0/static/css/main.a82c188f.css.map",
+    "main.cd9f6926.js.map": "/video_conference_front/snyk-upgrade-36785be4e413de039c070ce055ba1ea0/static/js/main.cd9f6926.js.map",
+    "59.72a01aa1.chunk.js.map": "/video_conference_front/snyk-upgrade-36785be4e413de039c070ce055ba1ea0/static/js/59.72a01aa1.chunk.js.map",
+    "787.d3cbc067.chunk.js.map": "/video_conference_front/snyk-upgrade-36785be4e413de039c070ce055ba1ea0/static/js/787.d3cbc067.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a82c188f.css",
+    "static/js/main.cd9f6926.js"
+  ]
+}
