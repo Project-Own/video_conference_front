@@ -1,18 +1,17 @@
 {
   "files": {
     "main.css": "/video_conference_front/snyk-fix-a4176886f53892f55e1e74cc58262e39/static/css/main.a82c188f.css",
-    "main.js": "/video_conference_front/snyk-fix-a4176886f53892f55e1e74cc58262e39/static/js/main.3652e367.js",
+    "main.js": "/video_conference_front/snyk-fix-a4176886f53892f55e1e74cc58262e39/static/js/main.da18f7d1.js",
     "static/js/59.9d1ae24c.chunk.js": "/video_conference_front/snyk-fix-a4176886f53892f55e1e74cc58262e39/static/js/59.9d1ae24c.chunk.js",
     "static/js/787.d3cbc067.chunk.js": "/video_conference_front/snyk-fix-a4176886f53892f55e1e74cc58262e39/static/js/787.d3cbc067.chunk.js",
-    "static/media/three.cjs": "/video_conference_front/snyk-fix-a4176886f53892f55e1e74cc58262e39/static/media/three.9987f7a237eb4ba031fb.cjs",
     "index.html": "/video_conference_front/snyk-fix-a4176886f53892f55e1e74cc58262e39/index.html",
     "main.a82c188f.css.map": "/video_conference_front/snyk-fix-a4176886f53892f55e1e74cc58262e39/static/css/main.a82c188f.css.map",
-    "main.3652e367.js.map": "/video_conference_front/snyk-fix-a4176886f53892f55e1e74cc58262e39/static/js/main.3652e367.js.map",
+    "main.da18f7d1.js.map": "/video_conference_front/snyk-fix-a4176886f53892f55e1e74cc58262e39/static/js/main.da18f7d1.js.map",
     "59.9d1ae24c.chunk.js.map": "/video_conference_front/snyk-fix-a4176886f53892f55e1e74cc58262e39/static/js/59.9d1ae24c.chunk.js.map",
     "787.d3cbc067.chunk.js.map": "/video_conference_front/snyk-fix-a4176886f53892f55e1e74cc58262e39/static/js/787.d3cbc067.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a82c188f.css",
-    "static/js/main.3652e367.js"
+    "static/js/main.da18f7d1.js"
   ]
 }
