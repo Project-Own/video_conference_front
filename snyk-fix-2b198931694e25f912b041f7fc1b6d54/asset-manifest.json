@@ -1,18 +1,17 @@
 {
   "files": {
     "main.css": "/video_conference_front/snyk-fix-2b198931694e25f912b041f7fc1b6d54/static/css/main.a82c188f.css",
-    "main.js": "/video_conference_front/snyk-fix-2b198931694e25f912b041f7fc1b6d54/static/js/main.b8a3388b.js",
+    "main.js": "/video_conference_front/snyk-fix-2b198931694e25f912b041f7fc1b6d54/static/js/main.c6ab2bfa.js",
     "static/js/59.62c4064a.chunk.js": "/video_conference_front/snyk-fix-2b198931694e25f912b041f7fc1b6d54/static/js/59.62c4064a.chunk.js",
     "static/js/787.d3cbc067.chunk.js": "/video_conference_front/snyk-fix-2b198931694e25f912b041f7fc1b6d54/static/js/787.d3cbc067.chunk.js",
-    "static/media/three.cjs": "/video_conference_front/snyk-fix-2b198931694e25f912b041f7fc1b6d54/static/media/three.9987f7a237eb4ba031fb.cjs",
     "index.html": "/video_conference_front/snyk-fix-2b198931694e25f912b041f7fc1b6d54/index.html",
     "main.a82c188f.css.map": "/video_conference_front/snyk-fix-2b198931694e25f912b041f7fc1b6d54/static/css/main.a82c188f.css.map",
-    "main.b8a3388b.js.map": "/video_conference_front/snyk-fix-2b198931694e25f912b041f7fc1b6d54/static/js/main.b8a3388b.js.map",
+    "main.c6ab2bfa.js.map": "/video_conference_front/snyk-fix-2b198931694e25f912b041f7fc1b6d54/static/js/main.c6ab2bfa.js.map",
     "59.62c4064a.chunk.js.map": "/video_conference_front/snyk-fix-2b198931694e25f912b041f7fc1b6d54/static/js/59.62c4064a.chunk.js.map",
     "787.d3cbc067.chunk.js.map": "/video_conference_front/snyk-fix-2b198931694e25f912b041f7fc1b6d54/static/js/787.d3cbc067.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a82c188f.css",
-    "static/js/main.b8a3388b.js"
+    "static/js/main.c6ab2bfa.js"
   ]
 }
